@@ -1,0 +1,73 @@
+{
+    "name": "ts-cli-starter",
+    "type": "module",
+    "version": "0.0.0",
+    "packageManager": "pnpm@9.5.0",
+    "description": "",
+    "author": "rainbowatcher <rainbow-w@qq.com>",
+    "license": "MIT",
+    "homepage": "https://github.com/rainbowatcher/ts-cli-starter#readme",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/rainbowatcher/ts-cli-starter.git"
+    },
+    "bugs": {
+        "url": "https://github.com/rainbowatcher/ts-cli-starter/issues"
+    },
+    "keywords": [
+        "ts-cli-starter"
+    ],
+    "sideEffects": false,
+    "main": "./dist/index.cjs",
+    "typesVersions": {
+        "*": {
+            "*": [
+                "./dist/*",
+                "./dist/index.d.ts"
+            ]
+        }
+    },
+    "bin": {
+        "sum": "./bin/cmd.js"
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "pkgroll",
+        "lint": "eslint .",
+        "prepare": "husky install",
+        "changelog": "conventional-changelog -si CHANGELOG.md",
+        "release": "bumpp -all -x 'pnpm changlog' && npm publish",
+        "start": "jiti src/index.ts",
+        "test": "vitest",
+        "typecheck": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@clack/prompts": "^0.7.0",
+        "cac": "^6.7.14"
+    },
+    "devDependencies": {
+        "@rainbowatcher/eslint-config": "0.10.2",
+        "@rainbowatcher/eslint-config-ignore": "0.10.2",
+        "@rainbowatcher/eslint-config-js": "0.10.2",
+        "@rainbowatcher/eslint-config-json": "0.10.2",
+        "@rainbowatcher/eslint-config-md": "0.10.2",
+        "@rainbowatcher/eslint-config-prettier": "0.10.2",
+        "@rainbowatcher/eslint-config-ts": "0.10.2",
+        "@types/node": "^20.14.10",
+        "bumpp": "^9.4.1",
+        "commitlint": "^19.3.0",
+        "conventional-changelog-cli": "^5.0.0",
+        "eslint": "^9.6.0",
+        "husky": "^9.0.11",
+        "jiti": "^1.21.6",
+        "lint-staged": "^15.2.7",
+        "pkgroll": "^2.1.1",
+        "typescript": "^5.5.3",
+        "vitest": "^2.0.1"
+    },
+    "lint-staged": {
+        "*.{js,jsx,ts,tsx,vue,json}": "eslint --fix"
+    }
+}
