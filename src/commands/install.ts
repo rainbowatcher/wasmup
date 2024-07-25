@@ -6,7 +6,7 @@ import {
 } from "../prompts"
 import { commandExists } from "../util/fs"
 import { getLatestRelease } from "../util/github"
-import type { PackageManager } from "../types"
+import type { PackageManager } from "../prompts/types"
 
 export async function installPreRequisites(args: any) {
     const { dry } = args

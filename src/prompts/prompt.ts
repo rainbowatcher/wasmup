@@ -8,7 +8,7 @@ import {
 } from "../consts"
 import type {
     ConfirmOptions, LimitOptionsParams, Option, SelectOptions,
-} from "../types"
+} from "./types"
 import type { State } from "@clack/core"
 
 
