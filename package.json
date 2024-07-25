@@ -1,71 +1,81 @@
 {
-    "name": "ts-cli-starter",
+    "name": "wasmup",
     "type": "module",
-    "version": "0.0.0",
-    "packageManager": "pnpm@9.5.0",
-    "description": "",
+    "version": "0.1.0",
+    "packageManager": "pnpm@9.6.0",
+    "description": "package util for wasm",
     "author": "rainbowatcher <rainbow-w@qq.com>",
     "license": "MIT",
-    "homepage": "https://github.com/rainbowatcher/ts-cli-starter#readme",
+    "homepage": "https://github.com/rainbowatcher/wasmup#readme",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/rainbowatcher/ts-cli-starter.git"
+        "url": "git+https://github.com/rainbowatcher/wasmup.git"
     },
     "bugs": {
-        "url": "https://github.com/rainbowatcher/ts-cli-starter/issues"
+        "url": "https://github.com/rainbowatcher/wasmup/issues"
     },
     "keywords": [
-        "ts-cli-starter"
+        "webassembly",
+        "wasm",
+        "web"
     ],
     "sideEffects": false,
-    "main": "./dist/index.cjs",
-    "typesVersions": {
-        "*": {
-            "*": [
-                "./dist/*",
-                "./dist/index.d.ts"
-            ]
-        }
-    },
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
     "bin": {
-        "sum": "./bin/cmd.js"
+        "wasmup": "./bin/cli.js"
     },
     "files": [
         "dist"
     ],
     "scripts": {
-        "build": "pkgroll",
+        "build": "tsup",
         "lint": "eslint .",
-        "prepare": "husky install",
+        "prepare": "husky",
         "changelog": "conventional-changelog -si CHANGELOG.md",
         "release": "bumpp -all -x 'pnpm changlog' && npm publish",
-        "start": "jiti src/index.ts",
+        "start": "tsx src/cli.ts",
         "test": "vitest",
         "typecheck": "tsc --noEmit"
     },
     "dependencies": {
-        "@clack/prompts": "^0.7.0",
-        "cac": "^6.7.14"
+        "@clack/core": "^0.3.4",
+        "cac": "^6.7.14",
+        "debug": "^4.3.5",
+        "defu": "^6.1.4",
+        "execa": "^9.3.0",
+        "is-executable": "^2.0.1",
+        "is-unicode-supported": "^2.0.0",
+        "lookpath": "^1.2.2",
+        "ofetch": "^1.3.4",
+        "picocolors": "^1.0.1",
+        "rimraf": "^6.0.1",
+        "sisteransi": "^1.0.5",
+        "smol-toml": "^1.3.0",
+        "tar": "^7.4.2",
+        "unconfig": "^0.4.5"
     },
     "devDependencies": {
-        "@rainbowatcher/eslint-config": "^0.11.2",
-        "@rainbowatcher/eslint-config-ignore": "^0.11.2",
-        "@rainbowatcher/eslint-config-js": "^0.11.2",
-        "@rainbowatcher/eslint-config-json": "^0.11.2",
-        "@rainbowatcher/eslint-config-md": "^0.11.2",
-        "@rainbowatcher/eslint-config-prettier": "^0.11.2",
-        "@rainbowatcher/eslint-config-ts": "^0.11.2",
-        "@types/node": "^20.14.11",
+        "@rainbowatcher/eslint-config": "^0.11.3",
+        "@rainbowatcher/eslint-config-ignore": "^0.11.3",
+        "@rainbowatcher/eslint-config-js": "^0.11.3",
+        "@rainbowatcher/eslint-config-json": "^0.11.3",
+        "@rainbowatcher/eslint-config-md": "^0.11.3",
+        "@rainbowatcher/eslint-config-prettier": "^0.11.3",
+        "@rainbowatcher/eslint-config-ts": "^0.11.3",
+        "@types/debug": "^4.1.12",
+        "@types/node": "^20.14.12",
         "bumpp": "^9.4.1",
         "commitlint": "^19.3.0",
         "conventional-changelog-cli": "^5.0.0",
         "eslint": "^9.7.0",
-        "husky": "^9.1.0",
-        "jiti": "^1.21.6",
+        "husky": "^9.1.1",
         "lint-staged": "^15.2.7",
-        "tsup": "^8.1.2",
-        "typescript": "^5.5.3",
-        "vitest": "^2.0.3"
+        "tsup": "^8.2.3",
+        "tsx": "^4.16.2",
+        "typescript": "^5.5.4",
+        "vitest": "^2.0.4"
     },
     "lint-staged": {
         "*.{js,jsx,ts,tsx,vue,json}": "eslint --fix"

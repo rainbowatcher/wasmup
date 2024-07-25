@@ -12,4 +12,10 @@
         "jsonc",
         "markdown",
     ],
+    "cSpell.words": [
+        "binaryen",
+        "defu",
+        "pwasm",
+        "wasmup",
+    ],
 }

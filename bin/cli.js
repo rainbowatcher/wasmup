@@ -1,3 +1,5 @@
 #!/usr/bin/env node
 
-import("../dist/index.cjs")
+"use strict"
+
+import("../dist/index.js")

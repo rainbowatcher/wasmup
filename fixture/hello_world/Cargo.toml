@@ -1,0 +1,17 @@
+[package]
+name = "todo-mvc"
+version = "0.1.0"
+edition = "2021"
+repository = "https://github.com/rainbowatcher/wasmup"
+author = "rainbowatcher <rainbow-w@qq.com>"
+license = "MIT"
+description = "a simple todo-mvc project"
+keywords = ["webassembly", "wasm", "web"]
+homepage = "https://github.com/rainbowatcher/wasmup/#readme"
+readme = "README.md"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = "0.2.92"
