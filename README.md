@@ -1,6 +1,6 @@
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/rainbowatcher/wasmup/ci.yml)](https://github.com/rainbowatcher/wasmup/actions)
 ![GitHub License](https://img.shields.io/github/license/rainbowatcher/wasmup)
-![GitHub package.json version](https://img.shields.io/github/package-json/v/rainbowatcher/wasmup)
+[![NPM Version](https://img.shields.io/npm/v/wasmup)](https://www.npmjs.com/package/wasmup)
 
 # wasmup
 
