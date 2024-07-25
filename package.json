@@ -34,7 +34,7 @@
         "lint": "eslint .",
         "prepare": "husky",
         "changelog": "conventional-changelog -si CHANGELOG.md",
-        "release": "bumpp -all -x 'pnpm changlog' && npm publish",
+        "release": "bumpp -all -x 'pnpm changelog' && npm publish",
         "start": "tsx src/cli.ts",
         "test": "vitest",
         "typecheck": "tsc --noEmit"
