@@ -2,4 +2,4 @@
 
 "use strict"
 
-import("../dist/index.js")
+import("../dist/cli.js")
