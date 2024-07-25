@@ -70,7 +70,6 @@ export function stableStringify(obj: any, options: StringifyOptions = {}): strin
         const properties = keys
             .map((k) => {
                 const value = stringify(node, k, node[k], level + 1)
-                // eslint-disable-next-line array-callback-return
                 if (value === undefined) return
                 return `${nextIndent}${JSON.stringify(k)}${colonSeparator}${value}`
             })
