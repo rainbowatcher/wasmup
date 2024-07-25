@@ -1,3 +1,15 @@
+## <small>0.1.1 (2024-07-25)</small>
+
+* ci: reduce env matrix ([b1d13bf](https://github.com/rainbowatcher/wasmup/commit/b1d13bf))
+* ci: update pnpm action version ([2b38f57](https://github.com/rainbowatcher/wasmup/commit/2b38f57))
+* style: apply eslint rule ([2301f1f](https://github.com/rainbowatcher/wasmup/commit/2301f1f))
+* test: remove unused import ([9bef78d](https://github.com/rainbowatcher/wasmup/commit/9bef78d))
+* chore: add changelog ([64bd261](https://github.com/rainbowatcher/wasmup/commit/64bd261))
+* chore: bump deps ([34c07e9](https://github.com/rainbowatcher/wasmup/commit/34c07e9))
+* fix: build before publish ([704a508](https://github.com/rainbowatcher/wasmup/commit/704a508))
+
+
+
 ## 0.1.0 (2024-07-25)
 
 * fix: typo in command release ([d042ad7](https://github.com/rainbowatcher/wasmup/commit/d042ad7))
