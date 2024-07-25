@@ -1,3 +1,12 @@
+## <small>0.1.2 (2024-07-25)</small>
+
+* fix: missing dash in release script ([ff627ce](https://github.com/rainbowatcher/wasmup/commit/ff627ce))
+* feat: add cli.ts into build entry list ([49bf043](https://github.com/rainbowatcher/wasmup/commit/49bf043))
+* docs: update changelog ([8623b64](https://github.com/rainbowatcher/wasmup/commit/8623b64))
+* docs: use npm version badge ([6ac3f82](https://github.com/rainbowatcher/wasmup/commit/6ac3f82))
+
+
+
 ## <small>0.1.1 (2024-07-25)</small>
 
 * ci: reduce env matrix ([b1d13bf](https://github.com/rainbowatcher/wasmup/commit/b1d13bf))
