@@ -24,9 +24,12 @@ function main() {
 
     cli.version(version)
     cli.help()
-    cli.showHelpOnExit = true
     try {
-        cli.parse(process.argv)
+        const argv = cli.parse(process.argv, { run: false })
+        if (Object.keys(argv.args).length === 0 && Object.keys(argv.options).length === 1 && argv.options["--"].length === 0) {
+            cli.outputHelp()
+        }
+        cli.runMatchedCommand()
     } catch (error: any) {
         log.error(error.message)
         process.exit(1)
