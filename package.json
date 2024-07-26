@@ -37,6 +37,7 @@
         "release": "bumpp --all -x 'pnpm changelog' && pnpm build && npm publish",
         "start": "tsx src/cli.ts",
         "test": "vitest",
+        "coverage": "vitest run --coverage",
         "typecheck": "tsc --noEmit"
     },
     "dependencies": {
@@ -66,6 +67,7 @@
         "@rainbowatcher/eslint-config-ts": "^0.11.4",
         "@types/debug": "^4.1.12",
         "@types/node": "^20.14.12",
+        "@vitest/coverage-v8": "^2.0.4",
         "bumpp": "^9.4.1",
         "commitlint": "^19.3.0",
         "conventional-changelog-cli": "^5.0.0",
