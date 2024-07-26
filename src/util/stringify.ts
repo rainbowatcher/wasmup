@@ -12,9 +12,59 @@ type StringifyOptions = {
     space?: number | string
 }
 
-
 // eslint-disable-next-line ts/no-unsafe-return
 const defaultReplacer: ReplacerFunction = (_, value) => value
+
+export const pkgJsonComparator: CompareFunction = (a, b) => {
+    const order = [
+        "publisher",
+        "name",
+        "displayName",
+        "type",
+        "version",
+        "private",
+        "packageManager",
+        "description",
+        "author",
+        "license",
+        "funding",
+        "homepage",
+        "repository",
+        "bugs",
+        "keywords",
+        "categories",
+        "sideEffects",
+        "exports",
+        "main",
+        "module",
+        "unpkg",
+        "jsdelivr",
+        "types",
+        "typesVersions",
+        "bin",
+        "icon",
+        "files",
+        "engines",
+        "activationEvents",
+        "contributes",
+        "scripts",
+        "peerDependencies",
+        "peerDependenciesMeta",
+        "dependencies",
+        "optionalDependencies",
+        "devDependencies",
+        "pnpm",
+        "overrides",
+        "resolutions",
+        "husky",
+        "simple-git-hooks",
+        "lint-staged",
+        "eslintConfig",
+    ]
+    const idxPre = order.includes(a.key) ? order.indexOf(a.key) : 99
+    const idxNext = order.includes(b.key) ? order.indexOf(b.key) : 99
+    return idxPre - idxNext
+}
 
 export function stableStringify(obj: any, options: StringifyOptions = {}): string {
     const {
