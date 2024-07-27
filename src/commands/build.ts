@@ -8,7 +8,9 @@ import { parse } from "smol-toml"
 import { loadConfig } from "unconfig"
 import { DEFAULT_BUILD_OPTIONS } from "../consts"
 import { createSpinner, log } from "../prompts"
-import { isDirSync, isFileSync, toAbsolute } from "../util"
+import {
+    isDirSync, isFileSync, pkgJsonComparator, stableStringify, toAbsolute,
+} from "../util"
 import type { BuildOptions, CommandLineArgs } from "../util"
 
 
@@ -16,7 +18,6 @@ const spinner = createSpinner()
 
 export async function buildWasm(entry: string, opts: CommandLineArgs) {
     const _opts = await resolveOptions(entry, opts)
-    // process.exit(0)
     cleanOutputDir(_opts)
     build(_opts)
     optimize(_opts)
@@ -223,7 +224,7 @@ export function gereratePackageJson(opts: BuildOptions) {
         types: "index.d.ts",
         version,
     }
-    writeFileSync(`${output}/package.json`, `${JSON.stringify(packageJson, null, 2)}\n`)
+    writeFileSync(`${output}/package.json`, `${stableStringify(packageJson, { cmp: pkgJsonComparator, space: 4 })}\n`)
     spinner.stop()
     log.debug("package.json generated")
 }
