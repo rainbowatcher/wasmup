@@ -188,7 +188,7 @@ export function chores(opts: BuildOptions) {
 export function gereratePackageJson(opts: BuildOptions) {
     const {
         package: {
-            author,
+            authors,
             description,
             homepage: customHomepage,
             keywords,
@@ -208,9 +208,12 @@ export function gereratePackageJson(opts: BuildOptions) {
     })
     const bugs = typeof repository === "string" ? `${repository}/issues` : undefined
     const homepage = customHomepage ?? (typeof repository === "string" ? `${repository}#readme` : undefined)
+    const author = authors?.length > 0 ? authors[0] : undefined
+    const contributors = authors?.length > 1 ? authors.slice(1) : undefined
     const packageJson = {
         author,
         bugs,
+        contributors,
         description,
         files,
         homepage,
