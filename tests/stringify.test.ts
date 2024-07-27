@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest"
 import stableStringify, { pkgJsonComparator } from "../src/util/stringify"
 import type { KVPair } from "../src/util/stringify"
 
-describe("stableStringify", () => {
+describe.concurrent("stableStringify", () => {
     it("should stringify simple objects", () => {
         const obj = { a: 1, b: "two", c: true }
         expect(stableStringify(obj)).toEqual(JSON.stringify(obj))
@@ -60,7 +60,7 @@ describe("stableStringify", () => {
         expect(stableStringify(obj, { space: 2 })).toEqual(JSON.stringify(obj, null, 2))
     })
 
-    it("should sort by custom compare function", () => {
+    it.sequential("should sort by custom compare function", () => {
         const obj = {
             author: "rainbowatcher <rainbow-w@qq.com>",
             bugs: "https://github.com/rainbowatcher/wasmup/issues",
@@ -113,7 +113,7 @@ describe("stableStringify", () => {
         `)
     })
 
-    it("should sort by custom compare function 2", () => {
+    it.sequential("should sort by custom compare function 2", () => {
         const obj = {
             age: 1,
             husky: "n/a",

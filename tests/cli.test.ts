@@ -1,4 +1,5 @@
-import { $, ExecaError } from "execa"
+import { readFile } from "node:fs/promises"
+import { $, ExecaError, execaSync } from "execa"
 import { describe, expect, it } from "vitest"
 import { version } from "../package.json"
 
@@ -6,7 +7,7 @@ describe("CLI", () => {
     it("show help", async () => {
         const { stdout } = await $`tsx src/cli.ts -h`
         expect(stdout).toMatchInlineSnapshot(`
-          "wasmup/0.1.2
+          "wasmup/${version}
 
           Usage:
             $ wasmup <command> [options]
@@ -28,7 +29,7 @@ describe("CLI", () => {
     it("show help when no command passed", async () => {
         const { stdout } = await $`tsx src/cli.ts`
         expect(stdout).toMatchInlineSnapshot(`
-          "wasmup/0.1.2
+          "wasmup/${version}
 
           Usage:
             $ wasmup <command> [options]
@@ -47,13 +48,18 @@ describe("CLI", () => {
         `)
     })
 
-    it("show version", async () => {
+    it.concurrent("show version", async () => {
         const { stdout } = await $`tsx src/cli.ts -v`
         expect(stdout).toContain(`wasmup/${version}`)
     })
 
-    it("should throw missing args", async () => {
-        const fn = async () => await $({ node: true })`tsx src/cli.ts build`
-        await expect(fn).rejects.toThrowError(ExecaError)
+    it.concurrent("should throw missing args", async () => {
+        await expect(async () => await $({ node: true })`tsx src/cli.ts build`).rejects.toThrowError(ExecaError)
+    })
+
+    it("should has scope", async () => {
+        await $`tsx src/cli.ts build fixture/less --scope myscope`
+        const pkgJson = await readFile("wasm-dist/package.json", "utf8")
+        expect(JSON.parse(pkgJson).name).toContain("@myscope")
     })
 })

@@ -6,7 +6,7 @@ import { resolveOptions } from "../src/commands/build"
 import { DEFAULT_BUILD_OPTIONS } from "../src/consts"
 import type { CommandLineArgs } from "../src/util"
 
-describe("build", () => {
+describe.concurrent("build", () => {
     it("should equal to default", async () => {
         const entry = "fixture/less"
         const cliArgs: CommandLineArgs = {}
