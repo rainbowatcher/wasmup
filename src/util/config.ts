@@ -9,14 +9,26 @@ export type CommandLineArgs = Partial<Omit<BuildOptions, "entry" | "opt">>
 export type BuildOptions = {
     /**
      * Whether to clean output directory
+     * @default false
      */
     clean: boolean
 
     /**
      * Config file to load
+     * @default undefined
      */
     config?: string
+
+    /**
+     * Whether to build for development
+     * @default false
+     */
     dev: boolean
+
+    /**
+     * Whether to dry run
+     * @default false
+     */
     dry: boolean
 
     /**
@@ -32,8 +44,13 @@ export type BuildOptions = {
 
     /**
      * Whether to add a .gitignore file in output directory, to ignore wasmup output directory in git
+     * @default false
      */
     ignoreOutput: boolean
+
+    /**
+     * Optimization settings
+     */
     opt: Optimization
 
     /**
@@ -43,6 +60,7 @@ export type BuildOptions = {
 
     /**
      * Whether to build for release
+     * @default false
      */
     release: boolean
 
@@ -54,6 +72,15 @@ export type BuildOptions = {
 }
 
 export type Optimization = {
+    /**
+     * Optimization level
+     * @default 4
+     */
     optLevel: string
+
+    /**
+     * Shrink level
+     * @default 4
+     */
     shrinkLevel: string
 }
