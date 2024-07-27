@@ -58,13 +58,11 @@ jobs:
           node-version: ${{ matrix.node_version }}
           cache: pnpm
 
-      - name: Install development tools
-        uses: taiki-e/install-action@v2.42.9
-        with:
-          tool: wasm-pack,wasm-opt
-
       - name: Install
         run: pnpm i --frozen-lockfile
+
+      - name: Install wasm-pack and wasm-opt
+        run: pnpm i -g wasm-pack wasm-opt
 
       - name: Type Check
         run: pnpm run typecheck
