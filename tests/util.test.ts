@@ -17,7 +17,7 @@ import {
 
 describe("commandExists", () => {
     it("should return true if the command exists and is executable", async () => {
-        const command = "echo"
+        const command = "git"
         const result = await commandExists(command)
         expect(result).toBe(true)
     })
