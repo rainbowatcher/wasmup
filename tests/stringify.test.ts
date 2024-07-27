@@ -1,5 +1,6 @@
+/* eslint-disable unicorn/consistent-function-scoping */
 import { describe, expect, it } from "vitest"
-import stableStringify from "../src/util/stringify"
+import stableStringify, { pkgJsonComparator } from "../src/util/stringify"
 import type { KVPair } from "../src/util/stringify"
 
 describe("stableStringify", () => {
@@ -14,10 +15,12 @@ describe("stableStringify", () => {
     })
 
     it("should stringify arrays", () => {
-        const arr2 = { a: ["index.js", "index.d.ts", "index.wasm"] }
-        expect(stableStringify(arr2)).toEqual(JSON.stringify(arr2))
         const arr1 = { a: [1, 2, 3] }
         expect(stableStringify(arr1)).toEqual(JSON.stringify(arr1))
+        const arr2 = { a: ["index.js", "index.d.ts", "index.wasm"] }
+        expect(stableStringify(arr2)).toEqual(JSON.stringify(arr2))
+        const arr3 = { a: [1, 2, undefined] }
+        expect(stableStringify(arr3)).toEqual(JSON.stringify(arr3))
     })
 
     it("should handle circular structures", () => {
@@ -25,6 +28,13 @@ describe("stableStringify", () => {
         // @ts-expect-error assign self
         obj.a.b = obj
         expect(() => stableStringify(obj)).toThrow("Converting circular structure to JSON")
+    })
+
+    it("should handle circular structures", () => {
+        const obj = { a: {} }
+        // @ts-expect-error assign self
+        obj.a.b = obj
+        expect(stableStringify(obj, { cycles: true })).toEqual(JSON.stringify({ a: { b: "__cycle__" } }))
     })
 
     it("should handle custom toJSON methods", () => {
@@ -50,7 +60,7 @@ describe("stableStringify", () => {
         expect(stableStringify(obj, { space: 2 })).toEqual(JSON.stringify(obj, null, 2))
     })
 
-    it("test", () => {
+    it("should sort by custom compare function", () => {
         const obj = {
             author: "rainbowatcher <rainbow-w@qq.com>",
             bugs: "https://github.com/rainbowatcher/wasmup/issues",
@@ -75,53 +85,7 @@ describe("stableStringify", () => {
             types: "index.d.ts",
             version: "0.1.0",
         }
-        const order = [
-            "publisher",
-            "name",
-            "displayName",
-            "type",
-            "version",
-            "private",
-            "packageManager",
-            "description",
-            "author",
-            "license",
-            "funding",
-            "homepage",
-            "repository",
-            "bugs",
-            "keywords",
-            "categories",
-            "sideEffects",
-            "exports",
-            "main",
-            "module",
-            "unpkg",
-            "jsdelivr",
-            "types",
-            "typesVersions",
-            "bin",
-            "icon",
-            "files",
-            "engines",
-            "activationEvents",
-            "contributes",
-            "scripts",
-            "peerDependencies",
-            "peerDependenciesMeta",
-            "dependencies",
-            "optionalDependencies",
-            "devDependencies",
-            "pnpm",
-            "overrides",
-            "resolutions",
-            "husky",
-            "simple-git-hooks",
-            "lint-staged",
-            "eslintConfig",
-        ]
-        const cmp = (a: KVPair, b: KVPair): number => order.indexOf(a.key) - order.indexOf(b.key)
-        expect(stableStringify(obj, { cmp, space: 4 })).toMatchInlineSnapshot(`
+        expect(stableStringify(obj, { cmp: pkgJsonComparator, space: 4 })).toMatchInlineSnapshot(`
           "{
               "name": "wasmup",
               "type": "module",
@@ -147,5 +111,34 @@ describe("stableStringify", () => {
               ]
           }"
         `)
+    })
+
+    it("should sort by custom compare function 2", () => {
+        const obj = {
+            age: 1,
+            husky: "n/a",
+            name: "wasmup",
+            os: "windows",
+            sex: "male",
+            type: "module",
+            version: "0.1.0",
+        }
+        expect(stableStringify(obj, { cmp: pkgJsonComparator, space: 4 })).toMatchInlineSnapshot(`
+          "{
+              "name": "wasmup",
+              "type": "module",
+              "version": "0.1.0",
+              "husky": "n/a",
+              "age": 1,
+              "os": "windows",
+              "sex": "male"
+          }"
+        `)
+    })
+
+    it("should return null", () => {
+        expect(stableStringify(null)).toEqual("null")
+        // eslint-disable-next-line unicorn/no-useless-undefined
+        expect(stableStringify(undefined)).toEqual("null")
     })
 })

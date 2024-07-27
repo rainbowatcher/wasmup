@@ -118,4 +118,7 @@ describe("toAbsolute", () => {
         expect(toAbsolute("../fixture/hello_world")).toBe(path.resolve(process.cwd(), "../fixture/hello_world"))
     })
 
+    it("should throw an error if inputPath is not provided", () => {
+        expect(() => toAbsolute()).toThrowErrorMatchingInlineSnapshot("[Error: param inputPath is required]")
+    })
 })
