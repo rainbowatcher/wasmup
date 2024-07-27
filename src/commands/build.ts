@@ -66,6 +66,7 @@ export async function resolveOptions(entry: string, args: CommandLineArgs): Prom
         resolvedOpts = defu(resolvedOpts, configObj)
     }
 
+    // @ts-expect-error type incompatible
     resolvedOpts = defu(resolvedOpts, DEFAULT_BUILD_OPTIONS)
     resolvedOpts.output = toAbsolute(resolvedOpts.output)
     log.debug("resolved config:", resolvedOpts)
@@ -127,6 +128,7 @@ export function build(opts: BuildOptions) {
     const extraBuildArgs = [release ? "--release" : ""].filter(Boolean)
     log.debug("execute command:", `wasm-pack build -t web --no-opt --no-pack --out-name index -d ${output} ${entry} ${extraBuildArgs.join(" ")}`)
     const { exitCode: buildExitCode } = execaSync`wasm-pack build -t web --no-opt --no-pack --out-name index -d ${output} ${entry} ${extraBuildArgs}`
+    log.debug("build exit code:", buildExitCode)
     spinner.stop(undefined, buildExitCode)
 }
 
@@ -193,12 +195,12 @@ export function gereratePackageJson(opts: BuildOptions) {
             homepage: customHomepage,
             keywords,
             license,
-            name,
+            name: cargoPkgName,
             repository,
             version,
         },
     } = parseProjectFile(opts.entry)
-    const { extensions, output } = opts
+    const { extensions, output, scope } = opts
 
     spinner.start("Generating package.json...")
     const files = readdirSync(output).filter((f) => {
@@ -210,6 +212,7 @@ export function gereratePackageJson(opts: BuildOptions) {
     const homepage = customHomepage ?? (typeof repository === "string" ? `${repository}#readme` : undefined)
     const author = authors?.length > 0 ? authors[0] : undefined
     const contributors = authors?.length > 1 ? authors.slice(1) : undefined
+    const name = scope ? `@${scope}/${cargoPkgName}` : cargoPkgName
     const packageJson = {
         author,
         bugs,

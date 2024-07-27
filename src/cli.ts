@@ -21,6 +21,7 @@ function initCliApp() {
         .option("--ignore-output", "Add a .gitignore file in output directory")
         .option("-o, --output <output>", "Output path")
         .option("--release", "Build for release")
+        .option("--scope <scope>", "The npm scope to use in package.json")
         .action(buildWasm)
 
     app.version(version)

@@ -45,6 +45,12 @@ export type BuildOptions = {
      * Whether to build for release
      */
     release: boolean
+
+    /**
+     * The npm scope to use in package.json
+     * @default undefined
+     */
+    scope?: string
 }
 
 export type Optimization = {
