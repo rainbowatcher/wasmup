@@ -61,9 +61,6 @@ jobs:
       - name: Install
         run: pnpm i --frozen-lockfile
 
-      - name: Install wasm-pack and wasm-opt
-        run: pnpm i -g wasm-pack wasm-opt
-
       - name: Type Check
         run: pnpm run typecheck
 

@@ -1,5 +1,5 @@
 import { readFile } from "node:fs/promises"
-import { platform } from "node:os"
+import process from "node:process"
 import { $, ExecaError } from "execa"
 import { describe, expect, it } from "vitest"
 import { version } from "../package.json"
@@ -59,7 +59,8 @@ describe("CLI", () => {
         await expect(async () => await $({ node: true })`tsx src/cli.ts build`).rejects.toThrowError(ExecaError)
     })
 
-    it.runIf(platform() !== "win32")("should has scope", { timeout: 20_000 }, async () => {
+    // this test need compile rust project, it cost too much time in CI, only run it locally
+    it.skipIf(process.env.CI)("should has scope", { timeout: 20_000 }, async () => {
         await $`tsx src/cli.ts build fixture/less --scope myscope`
         const pkgJson = await readFile(toAbsolute("wasm-dist/package.json"), "utf8")
         expect(JSON.parse(pkgJson).name).toContain("@myscope")
