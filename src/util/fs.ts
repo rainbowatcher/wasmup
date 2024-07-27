@@ -43,7 +43,8 @@ export function isDirSync(dirPath: string): boolean {
  * @param inputPath - The path to convert.
  * @return The absolute path.
  */
-export function toAbsolute(inputPath: string) {
+export function toAbsolute(inputPath?: string) {
+    if (!inputPath) throw new Error("param inputPath is required")
     return /^(?:\/|[a-z]+:\/\/)/.test(inputPath) ? inputPath : path.resolve(process.cwd(), inputPath)
 }
 
