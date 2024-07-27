@@ -17,7 +17,7 @@ import {
 
 describe("commandExists", () => {
     it("should return true if the command exists and is executable", async () => {
-        const command = process.platform === "win32" ? "dir" : "ls"
+        const command = process.platform === "win32" ? "dir.exe" : "ls"
         const result = await commandExists(command)
         expect(result).toBe(true)
     })
