@@ -1,5 +1,5 @@
 import { readFile } from "node:fs/promises"
-import { $, ExecaError, execaSync } from "execa"
+import { $, ExecaError } from "execa"
 import { describe, expect, it } from "vitest"
 import { version } from "../package.json"
 
