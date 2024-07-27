@@ -6,34 +6,40 @@ import { buildWasm } from "./commands/build"
 import { installPreRequisites } from "./commands/install"
 import { log } from "./prompts"
 
-function main() {
-    const cli = cac("wasmup")
-    cli.command("install", "Install pre-requisites")
+function initCliApp() {
+    const app = cac("wasmup")
+    app.command("install", "Install pre-requisites")
         .option("--dry", "Dry run")
         .action(installPreRequisites)
 
-    cli.command("build [entry]", "Build wasm")
+    app.command("build <entry>", "Build wasm")
         .option("--clean", "Clean output directory")
-        .option("--dry", "Dry run")
+        .option("--config", "Config to load")
         .option("--dev", "Build for development")
+        .option("--dry", "Dry run")
         .option("-e, --extensions <exts>", "File extensions should be included, separated by comma")
+        .option("--ignore-output", "Add a .gitignore file in output directory")
         .option("-o, --output <output>", "Output path")
         .option("--release", "Build for release")
-        .option("--entry <entry>", "Entry directory")
         .action(buildWasm)
 
-    cli.version(version)
-    cli.help()
+    app.version(version)
+    app.help()
+    return app
+}
+
+function execute() {
+    const app = initCliApp()
     try {
-        const argv = cli.parse(process.argv, { run: false })
+        const argv = app.parse(process.argv, { run: false })
         if (Object.keys(argv.args).length === 0 && Object.keys(argv.options).length === 1 && argv.options["--"].length === 0) {
-            cli.outputHelp()
+            app.outputHelp()
         }
-        cli.runMatchedCommand()
+        app.runMatchedCommand()
     } catch (error: any) {
         log.error(error.message)
         process.exit(1)
     }
 }
 
-main()
+execute()

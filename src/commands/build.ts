@@ -9,14 +9,13 @@ import { loadConfig } from "unconfig"
 import { DEFAULT_BUILD_OPTIONS } from "../consts"
 import { createSpinner, log } from "../prompts"
 import { isDirSync, isFileSync, toAbsolute } from "../util"
-import type { BuildConfig as BuildOptions } from "../util"
+import type { BuildOptions, CommandLineArgs } from "../util"
 
 
 const spinner = createSpinner()
 
-export async function buildWasm(entry: string, opts: BuildOptions) {
-    preCheck(entry)
-    const _opts = await handleOptions(entry, opts)
+export async function buildWasm(entry: string, opts: CommandLineArgs) {
+    const _opts = await resolveOptions(entry, opts)
     // process.exit(0)
     cleanOutputDir(_opts)
     build(_opts)
@@ -28,43 +27,61 @@ export async function buildWasm(entry: string, opts: BuildOptions) {
     log.success("Build success")
 }
 
-async function handleOptions(entry: string, args: BuildOptions) {
-    log.debug("cli args:", args)
-    const { config, sources } = await loadConfig<Partial<BuildOptions>>({
-        sources: [{
-            extensions: ["ts", "mts", "cts", "js", "mjs", "cjs", "json"],
-            files: "wasmup.config",
-        }, {
-            files: "package.json",
-            rewrite(config: any) {
-                // eslint-disable-next-line ts/no-unsafe-return
-                return config.wasmup
-            },
-        }],
-    })
-    log.debug(`Find config: ${sources.join(" ")}`)
-    log.debug("config:", config)
-
-    const resolvedConfig = defu(args, config, DEFAULT_BUILD_OPTIONS)
-    resolvedConfig.output = toAbsolute(resolvedConfig.output)
-    if (!resolvedConfig.entry) {
-        resolvedConfig.entry = toAbsolute(entry)
+export async function resolveOptions(entry: string, args: CommandLineArgs): Promise<BuildOptions> {
+    log.debug("cli args:", entry, args)
+    const absEntry = preCheck(entry)
+    let resolvedOpts = { entry: absEntry, ...args }
+    if (args.config) {
+        const config = toAbsolute(args.config)
+        let configObj = {}
+        if (!isFileSync(config)) {
+            log.error(`${config} is not a valid file.`)
+            process.exit(1)
+        }
+        const configExt = args.config.split(".").pop() ?? ""
+        if (configExt === "json") {
+            const configStr = readFileSync(config, "utf8")
+            configObj = JSON.parse(configStr)
+        } else if (["cjs", "js", "mjs", "mts", "ts"].includes(configExt)) {
+            const { default: co } = await import(config)
+            configObj = co
+        }
+        resolvedOpts = defu(resolvedOpts, configObj)
+        resolvedOpts.config = toAbsolute(resolvedOpts.config)
+    } else {
+        const { config: configObj, sources } = await loadConfig<Partial<BuildOptions>>({
+            sources: [{
+                extensions: ["ts", "mts", "cts", "js", "mjs", "cjs", "json"],
+                files: "wasmup.config",
+            }, {
+                files: "package.json",
+                rewrite(config: any) {
+                    // eslint-disable-next-line ts/no-unsafe-return
+                    return config.wasmup
+                },
+            }],
+        })
+        log.debug("find config file:", sources)
+        resolvedOpts = defu(resolvedOpts, configObj)
     }
-    log.debug(resolvedConfig)
 
-    const { dev, release } = resolvedConfig
+    resolvedOpts = defu(resolvedOpts, DEFAULT_BUILD_OPTIONS)
+    resolvedOpts.output = toAbsolute(resolvedOpts.output)
+    log.debug("resolved config:", resolvedOpts)
+
+    const { dev, release } = resolvedOpts
     if (dev && release) {
         log.error("Cannot specify both --dev and --release")
         process.exit(1)
     }
 
-    return resolvedConfig
+    return resolvedOpts as BuildOptions
 }
 
-function rewriteIndexDts(opts: BuildOptions) {
+export function rewriteIndexDts(opts: BuildOptions) {
     const { output } = opts
     spinner.start("Re-Writing index.d.js...")
-    log.debug("index.d.js:", `${output}/index.d.ts`)
+    log.debug("begin re-write index.d.js:", `${output}/index.d.ts`)
     const indexDStr = readFileSync(`${output}/index.d.ts`, "utf8")
     const newIndexDStr = `/* eslint-disable unicorn/no-abusive-eslint-disable */\n${indexDStr}`
     writeFileSync(`${output}/index.d.ts`, newIndexDStr)
@@ -72,7 +89,7 @@ function rewriteIndexDts(opts: BuildOptions) {
     log.debug("index.d.js generated")
 }
 
-function rewriteIndexJs(opts: BuildOptions) {
+export function rewriteIndexJs(opts: BuildOptions) {
     const { output } = opts
     spinner.start("Re-Writing index.js...")
     const indexStr = readFileSync(`${output}/index.js`, "utf8")
@@ -93,17 +110,17 @@ function rewriteIndexJs(opts: BuildOptions) {
     spinner.stop()
 }
 
-function cleanOutputDir(opts: BuildOptions) {
+export function cleanOutputDir(opts: BuildOptions) {
     const { clean, output } = opts
     if (clean) {
         spinner.start("Clean output directory...")
-        log.debug("Clean output directory:", output)
+        log.debug("clean output directory:", output)
         const success = rimrafSync(output)
         spinner.stop(undefined, success ? 0 : 1)
     }
 }
 
-function build(opts: BuildOptions) {
+export function build(opts: BuildOptions) {
     const { entry, output, release } = opts
     spinner.start("Building wasm...")
     const extraBuildArgs = [release ? "--release" : ""].filter(Boolean)
@@ -112,7 +129,7 @@ function build(opts: BuildOptions) {
     spinner.stop(undefined, buildExitCode)
 }
 
-function optimize(opts: BuildOptions) {
+export function optimize(opts: BuildOptions) {
     const { opt, output, release } = opts
     spinner.start("Optimizing wasm...")
     const extraOptArgs = [
@@ -133,30 +150,32 @@ function optimize(opts: BuildOptions) {
     }
 }
 
-function parseProjectFile(entry: string): Record<string, any> {
+export function parseProjectFile(entry: string): Record<string, any> {
     const file = readFileSync(`${entry}/Cargo.toml`, "utf8")
     const projectConfig = parse(file)
     log.debug("project config:", projectConfig)
     return projectConfig
 }
 
-function preCheck(entry: string) {
-    const absPath = toAbsolute(entry)
-    if (!isDirSync(absPath)) {
-        log.error(`${absPath} is not a valid directory.`)
+export function preCheck(entry: string) {
+    const absEntry = toAbsolute(entry)
+    if (!isDirSync(absEntry)) {
+        log.error(`${absEntry} is not a valid directory.`)
         process.exit(1)
     }
 
-    const isProjectConfigExists = isFileSync(`${absPath}/Cargo.toml`)
+    const isProjectConfigExists = isFileSync(`${absEntry}/Cargo.toml`)
     if (!isProjectConfigExists) {
-        log.error(`${absPath}/Cargo.toml is not found.`)
+        log.error(`${absEntry}/Cargo.toml is not found.`)
         process.exit(1)
     }
+
+    return absEntry
 }
 
-function chores(opts: BuildOptions) {
+export function chores(opts: BuildOptions) {
     spinner.start("Clearing build output...")
-    const files = ["index_bg.wasm", "index_bg.wasm.d.ts", ".gitignore"]
+    const files = ["index_bg.wasm", "index_bg.wasm.d.ts", opts.ignoreOutput ? "" : ".gitignore"].filter(Boolean)
     for (const file of files) {
         const filePath = `${opts.output}/${file}`
         log.debug("remove:", filePath)
@@ -165,7 +184,7 @@ function chores(opts: BuildOptions) {
     spinner.stop()
 }
 
-function gereratePackageJson(opts: BuildOptions) {
+export function gereratePackageJson(opts: BuildOptions) {
     const {
         package: {
             author,
@@ -182,7 +201,7 @@ function gereratePackageJson(opts: BuildOptions) {
 
     spinner.start("Generating package.json...")
     const files = readdirSync(output).filter((f) => {
-        const ext = f.split(".").at(-1)
+        const ext = f.split(".").pop()
         if (!ext) return false
         return extensions.includes(ext)
     })
