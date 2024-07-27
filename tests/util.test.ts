@@ -112,10 +112,13 @@ describe("isFileSync", () => {
 
 describe("toAbsolute", () => {
     it("should return an absolute path", () => {
-        expect(toAbsolute("./fixture/hello_world/Cargo.toml")).toBe(`${process.cwd()}/fixture/hello_world/Cargo.toml`)
-        expect(toAbsolute("fixture/hello_world/Cargo.toml")).toBe(`${process.cwd()}/fixture/hello_world/Cargo.toml`)
-        expect(toAbsolute("fixture/hello_world")).toBe(`${process.cwd()}/fixture/hello_world`)
-        expect(toAbsolute("../fixture/hello_world")).toBe(path.resolve(process.cwd(), "../fixture/hello_world"))
+        expect(toAbsolute("/")).toBe("/")
+        expect(toAbsolute("/home/user")).toBe("/home/user")
+        expect(toAbsolute("")).toBe(path.normalize(process.cwd()))
+        expect(toAbsolute(".")).toBe(path.normalize(process.cwd()))
+        expect(toAbsolute("./fixture/hello_world/Cargo.toml")).toBe(path.normalize(`${process.cwd()}/fixture/hello_world/Cargo.toml`))
+        expect(toAbsolute("fixture/hello_world/Cargo.toml")).toBe(path.normalize(`${process.cwd()}/fixture/hello_world/Cargo.toml`))
+        expect(toAbsolute("../fixture/hello_world")).toBe(path.normalize(path.resolve(process.cwd(), "../fixture/hello_world")))
     })
 
     it("should throw an error if inputPath is not provided", () => {

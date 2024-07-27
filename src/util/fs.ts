@@ -44,8 +44,8 @@ export function isDirSync(dirPath: string): boolean {
  * @return The absolute path.
  */
 export function toAbsolute(inputPath?: string) {
-    if (!inputPath) throw new Error("param inputPath is required")
-    return /^(?:\/|[a-z]+:\/\/)/.test(inputPath) ? inputPath : path.resolve(process.cwd(), inputPath)
+    if (inputPath === undefined) throw new Error("param inputPath is required")
+    return /^(?:\/|[a-z]+:\/\/)/.test(inputPath) ? inputPath : path.normalize(path.resolve(process.cwd(), inputPath))
 }
 
 /**
