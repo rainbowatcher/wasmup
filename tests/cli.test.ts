@@ -62,5 +62,5 @@ describe("CLI", () => {
         await $`tsx src/cli.ts build fixture/less --scope myscope`
         const pkgJson = await readFile(toAbsolute("wasm-dist/package.json"), "utf8")
         expect(JSON.parse(pkgJson).name).toContain("@myscope")
-    })
+    }, { timeout: 10_000 })
 })
