@@ -17,6 +17,7 @@
         "defu",
         "dtolnay",
         "pwasm",
+        "taiki",
         "wasmup",
     ],
 }

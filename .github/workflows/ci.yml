@@ -58,11 +58,10 @@ jobs:
           node-version: ${{ matrix.node_version }}
           cache: pnpm
 
-      - name: Install cargo-binstall
-        uses: cargo-bins/cargo-binstall@main
-
-      - name: Install wasm-pack and wasm-opt
-        run: cargo binstall wasm-pack wasm-opt -yv --github-token ${{ secrets.GITHUB_TOKEN }}
+      - name: Install development tools
+        uses: taiki-e/install-action@v2.42.9
+        with:
+          tool: wasm-pack,wasm-opt
 
       - name: Install
         run: pnpm i --frozen-lockfile
