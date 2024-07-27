@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises"
 import { $, ExecaError } from "execa"
 import { describe, expect, it } from "vitest"
 import { version } from "../package.json"
+import { toAbsolute } from "../src/util"
 
 describe("CLI", () => {
     it("show help", async () => {
@@ -59,7 +60,7 @@ describe("CLI", () => {
 
     it("should has scope", async () => {
         await $`tsx src/cli.ts build fixture/less --scope myscope`
-        const pkgJson = await readFile("wasm-dist/package.json", "utf8")
+        const pkgJson = await readFile(toAbsolute("wasm-dist/package.json"), "utf8")
         expect(JSON.parse(pkgJson).name).toContain("@myscope")
     })
 })
