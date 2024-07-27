@@ -16,8 +16,11 @@
         "binaryen",
         "defu",
         "dtolnay",
+        "ofetch",
         "pwasm",
+        "smol",
         "taiki",
+        "unconfig",
         "wasmup",
     ],
 }
