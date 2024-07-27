@@ -4,7 +4,7 @@
 
 # wasmup
 
-Wasm build, make easy
+Wasm build, made easy
 
 > [!WARN]
 > It's in early development status, use in your own risk.
