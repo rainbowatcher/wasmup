@@ -7,4 +7,6 @@ export default defineConfig({
     style: true,
     typescript: true,
     yaml: true,
+}, {
+    ignores: ["**/fixture/**"],
 })
