@@ -1,3 +1,23 @@
+## 0.2.0 (2024-07-27)
+
+* docs: update ([4621e92](https://github.com/rainbowatcher/wasmup/commit/4621e92))
+* feat: add comparison function for package.json ([5e5d101](https://github.com/rainbowatcher/wasmup/commit/5e5d101))
+* feat: add config and ignore-output option ([9ff41fd](https://github.com/rainbowatcher/wasmup/commit/9ff41fd))
+* feat: add coverage script ([d1aeb6a](https://github.com/rainbowatcher/wasmup/commit/d1aeb6a))
+* feat: make param optional, throw error when it missing ([b70b7ae](https://github.com/rainbowatcher/wasmup/commit/b70b7ae))
+* feat: show help when no arg passed ([df85157](https://github.com/rainbowatcher/wasmup/commit/df85157))
+* feat: sort genrerated package.json ([2acc344](https://github.com/rainbowatcher/wasmup/commit/2acc344))
+* test: add build test ([2dec788](https://github.com/rainbowatcher/wasmup/commit/2dec788))
+* test: add cli test cases ([2945521](https://github.com/rainbowatcher/wasmup/commit/2945521))
+* test: add edge test case ([7d153a3](https://github.com/rainbowatcher/wasmup/commit/7d153a3))
+* chore: add eslint ignore ([e87f082](https://github.com/rainbowatcher/wasmup/commit/e87f082))
+* chore: move types ([9a03d8a](https://github.com/rainbowatcher/wasmup/commit/9a03d8a))
+* chore: remove file ([d106106](https://github.com/rainbowatcher/wasmup/commit/d106106))
+* chore: remove fix options for lint-staged ([b4edb8b](https://github.com/rainbowatcher/wasmup/commit/b4edb8b))
+* ci: add windows and macos environment ([c78972e](https://github.com/rainbowatcher/wasmup/commit/c78972e))
+
+
+
 ## <small>0.1.2 (2024-07-25)</small>
 
 * fix: missing dash in release script ([ff627ce](https://github.com/rainbowatcher/wasmup/commit/ff627ce))
