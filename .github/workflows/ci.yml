@@ -62,7 +62,7 @@ jobs:
         uses: cargo-bins/cargo-binstall@main
 
       - name: Install wasm-pack and wasm-opt
-        run: cargo binstall wasm-pack wasm-opt -y
+        run: cargo binstall wasm-pack wasm-opt -yv --github-token ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install
         run: pnpm i --frozen-lockfile
