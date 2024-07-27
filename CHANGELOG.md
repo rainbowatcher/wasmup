@@ -1,3 +1,28 @@
+## 0.3.0 (2024-07-27)
+
+* feat: add scope option ([d168f2b](https://github.com/rainbowatcher/wasmup/commit/d168f2b))
+* feat: add warning when call commandExists in windows ([1aea894](https://github.com/rainbowatcher/wasmup/commit/1aea894))
+* test: add concurrent for tests ([d8bfff9](https://github.com/rainbowatcher/wasmup/commit/d8bfff9))
+* test: add timeout param for scope test ([da7df82](https://github.com/rainbowatcher/wasmup/commit/da7df82))
+* test: increase the timeout limit ([639fe33](https://github.com/rainbowatcher/wasmup/commit/639fe33))
+* test: make command check work in windows ([f8808f5](https://github.com/rainbowatcher/wasmup/commit/f8808f5))
+* test: remove unused import ([1b825fa](https://github.com/rainbowatcher/wasmup/commit/1b825fa))
+* test: skip test case that need compiler rust ([896c042](https://github.com/rainbowatcher/wasmup/commit/896c042))
+* test: timeout in windows, skip now ([cc53ce2](https://github.com/rainbowatcher/wasmup/commit/cc53ce2))
+* test: try fix test fail ([8f0687d](https://github.com/rainbowatcher/wasmup/commit/8f0687d))
+* test: try fix test fail in windows ([703582a](https://github.com/rainbowatcher/wasmup/commit/703582a))
+* test: use absolute path ([09bcaac](https://github.com/rainbowatcher/wasmup/commit/09bcaac))
+* ci: add no confirm option ([4ddc03b](https://github.com/rainbowatcher/wasmup/commit/4ddc03b))
+* ci: test for cargo binstall ([eb5074e](https://github.com/rainbowatcher/wasmup/commit/eb5074e))
+* ci: try use taiki-e/install-action ([855d085](https://github.com/rainbowatcher/wasmup/commit/855d085))
+* ci: turn on the verbose log and pass the github token ([8403c8a](https://github.com/rainbowatcher/wasmup/commit/8403c8a))
+* ci: use pnpm install wasm-pack and wasm-opt ([bd0ef17](https://github.com/rainbowatcher/wasmup/commit/bd0ef17))
+* chore: adjust function toAbsolute ([81a8dee](https://github.com/rainbowatcher/wasmup/commit/81a8dee))
+* docs: add doc comment for options ([7ba27ba](https://github.com/rainbowatcher/wasmup/commit/7ba27ba))
+* fix: there has't a field named author, only authors in Cargo.toml ([43b6766](https://github.com/rainbowatcher/wasmup/commit/43b6766))
+
+
+
 ## 0.2.0 (2024-07-27)
 
 * docs: update ([4621e92](https://github.com/rainbowatcher/wasmup/commit/4621e92))
