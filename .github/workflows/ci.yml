@@ -62,7 +62,7 @@ jobs:
         uses: cargo-bins/cargo-binstall@main
 
       - name: Install wasm-pack and wasm-opt
-        run: cargo binstall wasm-pack wasm-opt
+        run: cargo binstall wasm-pack wasm-opt -y
 
       - name: Install
         run: pnpm i --frozen-lockfile
