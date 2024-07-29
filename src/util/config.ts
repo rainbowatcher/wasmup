@@ -32,9 +32,9 @@ export type BuildOptions = {
     dry: boolean
 
     /**
-     * Entry directory for wasm project
+     * Entry directories for wasm project to package
      */
-    entry: string
+    entries: string[]
 
     /**
      * File extensions should be included for The files field in package.json

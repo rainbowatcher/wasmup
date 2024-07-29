@@ -23,10 +23,11 @@ export const S_RADIO_ACTIVE = s("●", "-")
 export const S_RADIO_INACTIVE = s("○", " ")
 
 
-export const DEFAULT_BUILD_OPTIONS: Omit<BuildOptions, "config" | "entry"> = {
+export const DEFAULT_BUILD_OPTIONS: Omit<BuildOptions, "config"> = {
     clean: false,
     dev: false,
     dry: false,
+    entries: [],
     extensions: ["js", "ts", "wasm"],
     ignoreOutput: false,
     opt: {

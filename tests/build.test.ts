@@ -8,38 +8,38 @@ import type { CommandLineArgs } from "../src/util"
 
 describe.concurrent("build", () => {
     it("should equal to default", async () => {
-        const entry = "fixture/less"
+        const entries = ["fixture/less"]
         const cliArgs: CommandLineArgs = {}
-        const resolvedOptions = await resolveOptions(entry, cliArgs)
+        const resolvedOptions = await resolveOptions(entries, cliArgs)
         expect(resolvedOptions).toEqual({
             ...DEFAULT_BUILD_OPTIONS,
-            entry: path.join(process.cwd(), entry),
+            entries: entries.map(entry => path.join(process.cwd(), entry)),
             output: path.join(process.cwd(), DEFAULT_BUILD_OPTIONS.output),
         })
     })
 
     it("config options should overwrite default option", async () => {
         const config = "fixture/configs/config.json"
-        const entry = "fixture/less"
+        const entries = ["fixture/less"]
         await writeFile(config, JSON.stringify({
             clean: true,
         }))
         const cliArgs: CommandLineArgs = {
             config,
         }
-        const result = await resolveOptions(entry, cliArgs)
+        const result = await resolveOptions(entries, cliArgs)
         expect(result).toEqual({
             ...DEFAULT_BUILD_OPTIONS,
             clean: true,
             config: path.join(process.cwd(), config),
-            entry: path.join(process.cwd(), entry),
+            entries: entries.map(entry => path.join(process.cwd(), entry)),
             output: path.join(process.cwd(), DEFAULT_BUILD_OPTIONS.output),
         })
     })
 
     it("cli args priority should higher than config", async () => {
         const config = "fixture/configs/config.json"
-        const entry = "fixture/less"
+        const entries = ["fixture/less"]
         await writeFile(config, JSON.stringify({
             clean: true,
             release: false,
@@ -49,12 +49,12 @@ describe.concurrent("build", () => {
             config,
             release: true,
         }
-        const result = await resolveOptions(entry, args)
+        const result = await resolveOptions(entries, args)
         expect(result).toEqual({
             ...DEFAULT_BUILD_OPTIONS,
             clean: false,
             config: path.join(process.cwd(), config),
-            entry: path.join(process.cwd(), entry),
+            entries: entries.map(entry => path.join(process.cwd(), entry)),
             output: path.join(process.cwd(), DEFAULT_BUILD_OPTIONS.output),
             release: true,
         })
