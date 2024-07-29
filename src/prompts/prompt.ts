@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-process-exit */
 import process from "node:process"
 import { ConfirmPrompt, SelectPrompt, isCancel } from "@clack/core"
 import createDebug from "debug"
@@ -63,7 +64,6 @@ export async function confirm(opts: ConfirmOptions | string): Promise<string> {
     }).prompt()
 
     if (isCancel(result)) {
-        // eslint-disable-next-line unicorn/no-process-exit
         process.exit(exitCode)
     }
 
@@ -155,7 +155,7 @@ export async function select<Value>(opts: SelectOptions<Value>): Promise<string>
     }).prompt()
 
     if (isCancel(result)) {
-        // eslint-disable-next-line unicorn/no-process-exit
+
         process.exit(exitCode)
     } else {
         return result
