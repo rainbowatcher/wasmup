@@ -1,3 +1,13 @@
+## 0.4.0 (2024-07-29)
+
+* test: reset config file after test, add array option test, remove unused import ([b0b43f2](https://github.com/rainbowatcher/wasmup/commit/b0b43f2))
+* test: tweak cli test ([4778620](https://github.com/rainbowatcher/wasmup/commit/4778620))
+* feat: support multientry ([d75b6cb](https://github.com/rainbowatcher/wasmup/commit/d75b6cb))
+* fix: regexp to test windows add line begin match symbol ([06fdeb3](https://github.com/rainbowatcher/wasmup/commit/06fdeb3))
+* chore: use dist/cli.js as bin ([bd4441b](https://github.com/rainbowatcher/wasmup/commit/bd4441b))
+
+
+
 ## 0.3.0 (2024-07-27)
 
 * feat: add scope option ([d168f2b](https://github.com/rainbowatcher/wasmup/commit/d168f2b))
