@@ -18,7 +18,7 @@ import { lookpath } from "lookpath"
  */
 export async function commandExists(command: string): Promise<boolean> {
     const isWasmPackInstalled = await lookpath(command)
-    if (!isWasmPackInstalled && /win*/.test(process.platform) && !command.endsWith(".exe")) {
+    if (!isWasmPackInstalled && /^win*/.test(process.platform) && !command.endsWith(".exe")) {
         console.warn(`The command ${command} in windows should end with ".exe".`)
     }
     return isWasmPackInstalled ? isExecutableSync(isWasmPackInstalled) : false
