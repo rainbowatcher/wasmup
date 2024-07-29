@@ -24,7 +24,7 @@ export async function buildWasm(entries: string[], opts: CommandLineArgs): Promi
         await Promise.all(resolvedOpts.entries.map(entry => processEntry(entry, resolvedOpts)))
         log.success(c.green("CLI"), "build success")
     } catch (error: any) {
-        log.error(`Build failed: ${error.message}`)
+        log.error(`build failed: ${error.message}`)
         process.exit(1)
     }
 }
@@ -112,7 +112,7 @@ async function cleanOutputDir(opts: BuildOptions): Promise<void> {
     if (opts.clean) {
         log.debug("clean output directory:", opts.output)
         await rimraf(opts.output)
-        log.success(c.green("CLI"), `clean ${opts.output} directory`)
+        log.success(c.green("CLI"), `clean ${opts.output}`)
     }
 }
 
@@ -137,7 +137,7 @@ async function build(entry: string, outputDir: string, opts: BuildOptions): Prom
 
     try {
         await execa("wasm-pack", buildCommand)
-        log.success(c.green("CLI"), `build entry ${entry}`)
+        log.success(c.green("CLI"), `build ${entry}`)
     } catch (error: any) {
         throw new Error(`Build failed: ${error.message}`)
     }
@@ -159,7 +159,7 @@ async function optimize(outputDir: string, opts: BuildOptions): Promise<void> {
 
     try {
         await execa("wasm-opt", [sourceWasm, "-o", targetWasm, ...extraOptArgs])
-        log.success(c.green("CLI"), `optimized wasm file ${targetWasm} optimized`)
+        log.success(c.green("CLI"), `optimize ${targetWasm}`)
     } catch (error: any) {
         throw new Error(`Optimization failed: ${error.message}`)
     }
@@ -181,7 +181,7 @@ ${indexStr.replace(fetchExpr, `if (globalThis.process?.release?.name === "node")
 }`)}`
 
         await writeFile(indexFile, indexStr)
-        log.success(c.green("CLI"), `generated js file ${indexFile}`)
+        log.success(c.green("CLI"), `generate ${indexFile}`)
     } else {
         throw new Error("CLI: generated js file may be incorrect")
     }
@@ -195,7 +195,7 @@ async function rewriteIndexDts(outputDir: string): Promise<void> {
     indexDtsStr = `/* eslint-disable unicorn/no-abusive-eslint-disable */\n${indexDtsStr}`
 
     await writeFile(indexDtsFile, indexDtsStr)
-    log.success(c.blue("DTS"), `generated dts file ${indexDtsFile}`)
+    log.success(c.blue("DTS"), `generate ${indexDtsFile}`)
 }
 
 
