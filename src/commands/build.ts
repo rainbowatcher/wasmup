@@ -1,14 +1,12 @@
 /* eslint-disable unicorn/no-process-exit */
-import { readFileSync, readdirSync, writeFileSync } from "node:fs"
 import {
     readFile, readdir, unlink, writeFile,
 } from "node:fs/promises"
 import path from "node:path"
 import process from "node:process"
-import defu from "defu"
-import { execa, execaSync } from "execa"
+import { execa } from "execa"
 import c from "picocolors"
-import { rimraf, rimrafSync } from "rimraf"
+import { rimraf } from "rimraf"
 import { parse } from "smol-toml"
 import { loadConfig } from "unconfig"
 import { DEFAULT_BUILD_OPTIONS } from "../consts"
