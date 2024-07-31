@@ -166,25 +166,33 @@ async function optimize(outputDir: string, opts: BuildOptions): Promise<void> {
     }
 }
 
+function addTopLineComment(indexStr: string) {
+    const disableComment = dedent`
+        /* eslint-disable unicorn/no-abusive-eslint-disable */
+        /* eslint-disable */
+    `
+    return `${disableComment}\n${indexStr}`
+}
+
+function replaceFetch(indexStr: string, fetchExpr: string) {
+    const nodeShims = `if (globalThis.process?.release?.name === "node") {
+        const fs = (await import('fs')).default;
+        input = fs.readFileSync(input);
+    } else {
+        input = fetch(input);
+    }`
+    return indexStr.replace(fetchExpr, nodeShims)
+}
+
 async function rewriteIndexJs(outputDir: string): Promise<void> {
     const indexFile = path.join(outputDir, "index.js")
     let indexStr = await readFile(indexFile, "utf8")
 
     const fetchExpr = "input = fetch(input);"
+    indexStr = addTopLineComment(indexStr)
+    indexStr = indexStr.replace("index_bg.wasm", "index.wasm")
     if (indexStr.includes(fetchExpr)) {
-        const nodeShims = `if (globalThis.process?.release?.name === "node") {
-            const fs = (await import('fs')).default;
-            input = fs.readFileSync(input);
-        } else {
-            input = fetch(input);
-        }`
-        indexStr = indexStr.replace(fetchExpr, nodeShims)
-        const disableComment = dedent`
-            /* eslint-disable unicorn/no-abusive-eslint-disable */
-            /* eslint-disable */
-        `
-        indexStr = `${disableComment}\n${indexStr}`
-
+        indexStr = replaceFetch(indexStr, fetchExpr)
         await writeFile(indexFile, indexStr)
         log.success(c.green("CLI"), `generate ${indexFile}`)
     } else {
