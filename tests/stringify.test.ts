@@ -1,4 +1,5 @@
 /* eslint-disable unicorn/consistent-function-scoping */
+import dedent from "dedent"
 import { describe, expect, it } from "vitest"
 import stableStringify, { pkgJsonComparator } from "../src/util/stringify"
 import type { KVPair } from "../src/util/stringify"
@@ -85,31 +86,31 @@ describe.concurrent("stableStringify", () => {
             types: "index.d.ts",
             version: "0.1.0",
         }
-        expect(stableStringify(obj, { cmp: pkgJsonComparator, space: 4 })).toMatchInlineSnapshot(`
-          "{
-              "name": "wasmup",
-              "type": "module",
-              "version": "0.1.0",
-              "description": "a simple wasm project",
-              "author": "rainbowatcher <rainbow-w@qq.com>",
-              "license": "MIT",
-              "homepage": "https://github.com/rainbowatcher/wasmup/#readme",
-              "repository": "https://github.com/rainbowatcher/wasmup",
-              "bugs": "https://github.com/rainbowatcher/wasmup/issues",
-              "keywords": [
-                  "webassembly",
-                  "wasm",
-                  "web"
-              ],
-              "main": "index.js",
-              "module": "index.js",
-              "types": "index.d.ts",
-              "files": [
-                  "index.d.ts",
-                  "index.js",
-                  "index.wasm"
-              ]
-          }"
+        expect(stableStringify(obj, { cmp: pkgJsonComparator, space: 4 })).toBe(dedent`
+            {
+                "name": "wasmup",
+                "type": "module",
+                "version": "0.1.0",
+                "description": "a simple wasm project",
+                "author": "rainbowatcher <rainbow-w@qq.com>",
+                "license": "MIT",
+                "homepage": "https://github.com/rainbowatcher/wasmup/#readme",
+                "repository": "https://github.com/rainbowatcher/wasmup",
+                "bugs": "https://github.com/rainbowatcher/wasmup/issues",
+                "keywords": [
+                    "webassembly",
+                    "wasm",
+                    "web"
+                ],
+                "main": "index.js",
+                "module": "index.js",
+                "types": "index.d.ts",
+                "files": [
+                    "index.d.ts",
+                    "index.js",
+                    "index.wasm"
+                ]
+            }
         `)
     })
 
@@ -123,16 +124,16 @@ describe.concurrent("stableStringify", () => {
             type: "module",
             version: "0.1.0",
         }
-        expect(stableStringify(obj, { cmp: pkgJsonComparator, space: 4 })).toMatchInlineSnapshot(`
-          "{
-              "name": "wasmup",
-              "type": "module",
-              "version": "0.1.0",
-              "husky": "n/a",
-              "age": 1,
-              "os": "windows",
-              "sex": "male"
-          }"
+        expect(stableStringify(obj, { cmp: pkgJsonComparator, space: 4 })).toBe(dedent`
+            {
+                "name": "wasmup",
+                "type": "module",
+                "version": "0.1.0",
+                "husky": "n/a",
+                "age": 1,
+                "os": "windows",
+                "sex": "male"
+            }
         `)
     })
 
