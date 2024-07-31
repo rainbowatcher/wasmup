@@ -1,16 +1,16 @@
 /* eslint-disable unicorn/no-process-exit */
 import process from "node:process"
-import { ConfirmPrompt, SelectPrompt, isCancel } from "@clack/core"
+import { ConfirmPrompt, isCancel, SelectPrompt } from "@clack/core"
 import createDebug from "debug"
 import c from "picocolors"
 import {
     S_RADIO_ACTIVE, S_RADIO_INACTIVE, S_STEP_ACTIVE, S_STEP_CANCEL, S_STEP_ERROR, S_STEP_SUBMIT,
     SYMBOLS,
 } from "../consts"
+import type { State } from "@clack/core"
 import type {
     ConfirmOptions, LimitOptionsParams, Option, SelectOptions,
 } from "./types"
-import type { State } from "@clack/core"
 
 
 export function symbol(state: State) {

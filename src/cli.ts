@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/no-process-exit */
 import process from "node:process"
 import cac from "cac"
 import { version } from "../package.json"
