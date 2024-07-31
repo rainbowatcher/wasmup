@@ -1,9 +1,10 @@
 /* eslint-disable unicorn/no-process-exit */
 import {
-    readFile, readdir, unlink, writeFile,
+    readdir, readFile, unlink, writeFile,
 } from "node:fs/promises"
 import path from "node:path"
 import process from "node:process"
+import dedent from "dedent"
 import { execa } from "execa"
 import c from "picocolors"
 import { rimraf } from "rimraf"
@@ -171,14 +172,18 @@ async function rewriteIndexJs(outputDir: string): Promise<void> {
 
     const fetchExpr = "input = fetch(input);"
     if (indexStr.includes(fetchExpr)) {
-        indexStr = `/* eslint-disable unicorn/no-abusive-eslint-disable */
-/* eslint-disable */
-${indexStr.replace(fetchExpr, `if (globalThis.process?.release?.name === "node") {
-    const fs = (await import('fs')).default;
-    input = fs.readFileSync(input);
-} else {
-    input = fetch(input);
-}`)}`
+        const nodeShims = `if (globalThis.process?.release?.name === "node") {
+            const fs = (await import('fs')).default;
+            input = fs.readFileSync(input);
+        } else {
+            input = fetch(input);
+        }`
+        indexStr = indexStr.replace(fetchExpr, nodeShims)
+        const disableComment = dedent`
+            /* eslint-disable unicorn/no-abusive-eslint-disable */
+            /* eslint-disable */
+        `
+        indexStr = `${disableComment}\n${indexStr}`
 
         await writeFile(indexFile, indexStr)
         log.success(c.green("CLI"), `generate ${indexFile}`)
