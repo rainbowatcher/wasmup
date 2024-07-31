@@ -1,3 +1,17 @@
+## <small>0.4.1 (2024-07-31)</small>
+
+* feat: remove toAbsolute in isFileSync ([f67600e](https://github.com/rainbowatcher/wasmup/commit/f67600e))
+* feat: replace index_bg.wasm to index.wasm ([4c96c41](https://github.com/rainbowatcher/wasmup/commit/4c96c41))
+* style: apply eslint rules ([abc2e19](https://github.com/rainbowatcher/wasmup/commit/abc2e19))
+* test: use dedent for multiline string ([a1fe3d8](https://github.com/rainbowatcher/wasmup/commit/a1fe3d8))
+* chore: add dedent ([407d37e](https://github.com/rainbowatcher/wasmup/commit/407d37e))
+* chore: bump deps ([6ce5e32](https://github.com/rainbowatcher/wasmup/commit/6ce5e32))
+* chore: bump deps ([63bbd67](https://github.com/rainbowatcher/wasmup/commit/63bbd67))
+* chore: clear build log message ([ebf431f](https://github.com/rainbowatcher/wasmup/commit/ebf431f))
+* chore: tweaks ([e2b54a3](https://github.com/rainbowatcher/wasmup/commit/e2b54a3))
+
+
+
 ## 0.4.0 (2024-07-29)
 
 * test: reset config file after test, add array option test, remove unused import ([b0b43f2](https://github.com/rainbowatcher/wasmup/commit/b0b43f2))
