@@ -64,6 +64,5 @@ export function toAbsolute(inputPath?: string) {
  * @return Whether the file exists.
  */
 export function isFileSync(absPath: string): boolean {
-    const absolutePath = toAbsolute(absPath)
-    return fs.existsSync(absolutePath) && fs.statSync(absolutePath).isFile()
+    return fs.existsSync(absPath) && fs.statSync(absPath).isFile()
 }
