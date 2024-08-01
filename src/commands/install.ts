@@ -17,8 +17,12 @@ export async function installPreRequisites(args: any) {
 
     if (process.env.CI) {
         log.info("CI detected, install pre-requisites through package manager")
-        log.info(process.env.CI)
-        const { exitCode } = spawn("pnpm", ["install", "-g", "wasm-pack", "wasm-opt"])
+        const proc = spawn("pnpm", ["install", "-g", "wasm-pack", "wasm-opt"])
+        const exitCode = await new Promise<number>((resolve, reject) => {
+            proc.on("error", reject)
+            proc.on("close", resolve)
+            proc.on("message", console.log)
+        })
         log.info("Install pre-requisites done")
         process.exit(exitCode)
     }
