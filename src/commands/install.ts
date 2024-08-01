@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/no-process-exit */
-import { spawn } from "node:child_process"
 import process from "node:process"
+import { execa } from "execa"
 import c from "picocolors"
 import {
     confirm, createSpinner, log, select,
@@ -17,12 +17,7 @@ export async function installPreRequisites(args: any) {
 
     if (process.env.CI) {
         log.info("CI detected, install pre-requisites through package manager")
-        const proc = spawn("pnpm", ["install", "-g", "wasm-pack", "wasm-opt"])
-        const exitCode = await new Promise<number>((resolve, reject) => {
-            proc.on("error", reject)
-            proc.on("close", resolve)
-            proc.on("message", console.log)
-        })
+        const { exitCode } = await execa("pnpm", ["install", "-g", "wasm-pack", "wasm-opt"])
         log.info("Install pre-requisites done")
         process.exit(exitCode)
     }
