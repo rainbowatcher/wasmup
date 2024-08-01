@@ -1,3 +1,10 @@
+## 0.5.0 (2024-08-01)
+
+* chore: bump deps ([8e1c0eb](https://github.com/rainbowatcher/wasmup/commit/8e1c0eb))
+* feat: install pre-requisites through package manager in ci ([8f62b54](https://github.com/rainbowatcher/wasmup/commit/8f62b54))
+
+
+
 ## <small>0.4.1 (2024-07-31)</small>
 
 * feat: remove toAbsolute in isFileSync ([f67600e](https://github.com/rainbowatcher/wasmup/commit/f67600e))
