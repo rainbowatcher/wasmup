@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/no-process-exit */
+import { spawn } from "node:child_process"
 import process from "node:process"
-import { installPackage } from "@antfu/install-pkg"
 import c from "picocolors"
 import {
     confirm, createSpinner, log, select,
@@ -9,13 +9,18 @@ import { commandExists } from "../util/fs"
 import { getLatestRelease } from "../util/github"
 import type { PackageManager } from "../prompts/types"
 
+const WASM_PACK = "wasm-pack"
+const WASM_OPT = "wasm-opt"
+
 export async function installPreRequisites(args: any) {
     const { dry } = args
 
     if (process.env.CI) {
         log.info("CI detected, install pre-requisites through package manager")
-        const { status } = await installPackage(["wasm-pack", "wasm-opt"], { silent: true })
-        process.exit(status)
+        log.info(process.env.CI)
+        const { exitCode } = spawn("pnpm", ["install", "-g", "wasm-pack", "wasm-opt"])
+        log.info("Install pre-requisites done")
+        process.exit(exitCode)
     }
 
     const spinner = createSpinner()
@@ -26,8 +31,8 @@ export async function installPreRequisites(args: any) {
     if (!isCargoExists) {
         spinner.stop("Command cargo is not found", 1)
     }
-    const isWasmPackExists = await commandExists("wasm-pack1")
-    const isWasmOptExists = await commandExists("wasm-opt")
+    const isWasmPackExists = await commandExists(WASM_PACK)
+    const isWasmOptExists = await commandExists(WASM_OPT)
     const ctx = {
         installWasmOpt: false,
         installWasmPack: false,
@@ -69,40 +74,43 @@ export async function installPreRequisites(args: any) {
 
     spinner.start("Installing wasm-pack...")
     if (!dry) {
-        ctx.installWasmPack && install(pm, "wasm-pack")
-        ctx.installWasmOpt && install(pm, "wasm-opt")
+        ctx.installWasmPack && install(pm, WASM_PACK)
+        ctx.installWasmOpt && install(pm, WASM_OPT)
     }
     spinner.stop(`All pre-requisites are installed${dryRun}`)
 }
 
-
 function install(pm: string, name: string) {
+    let ps
     switch (pm) {
         case "cargo": {
-            console.log(`cargo install ${name} --locked`)
+            ps = spawn("cargo", ["install", name, "--locked"])
             break
         }
         case "npm": {
-            console.log(`npm i ${name} -g`)
+            ps = spawn("npm", ["install", name, "-g"])
             break
         }
         case "pnpm": {
-            console.log(`pnpm i ${name} -g`)
+            ps = spawn("pnpm", ["install", name, "-g"])
             break
         }
         case "yarn": {
-            console.log(`yarn global add ${name}`)
+            ps = spawn("yarn", ["global", "add", name])
             break
         }
         case "bun": {
-            console.log(`bun i ${name} -g`)
+            ps = spawn("bun", ["install", name, "-g"])
             break
         }
         case "local": {
-            console.log(`${name}`)
+            console.log("not implement yet")
             break
         }
     }
+
+    ps?.on("message", console.log)
+    ps?.on("error", console.log)
 }
 
 export async function getBinaryenDownloadUrl() {

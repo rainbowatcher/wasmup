@@ -41,7 +41,6 @@
         "typecheck": "tsc --noEmit"
     },
     "dependencies": {
-        "@antfu/install-pkg": "^0.3.3",
         "@clack/core": "^0.3.4",
         "cac": "^6.7.14",
         "debug": "^4.3.6",
