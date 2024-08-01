@@ -20,6 +20,9 @@ import type { BuildOptions, CommandLineArgs } from "../util"
 
 export async function buildWasm(entries: string[], opts: CommandLineArgs): Promise<void> {
     try {
+        if (entries.length === 0) {
+            throw new Error("no entry provided")
+        }
         const resolvedOpts = await resolveOptions(entries, opts)
         await cleanOutputDir(resolvedOpts)
         await Promise.all(resolvedOpts.entries.map(entry => processEntry(entry, resolvedOpts)))
@@ -176,11 +179,11 @@ function addTopLineComment(indexStr: string) {
 
 function replaceFetch(indexStr: string, fetchExpr: string) {
     const nodeShims = `if (globalThis.process?.release?.name === "node") {
-        const fs = (await import('fs')).default;
-        input = fs.readFileSync(input);
-    } else {
-        input = fetch(input);
-    }`
+            const fs = (await import('fs')).default;
+            input = fs.readFileSync(input);
+        } else {
+            input = fetch(input);
+        }`
     return indexStr.replace(fetchExpr, nodeShims)
 }
 
