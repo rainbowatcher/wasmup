@@ -1,3 +1,9 @@
+## <small>0.5.4 (2024-08-01)</small>
+
+* fix: forget replace spawn to execa ([b67e788](https://github.com/rainbowatcher/wasmup/commit/b67e788))
+
+
+
 ## <small>0.5.3 (2024-08-01)</small>
 
 * chore: use execa ([232326e](https://github.com/rainbowatcher/wasmup/commit/232326e))
