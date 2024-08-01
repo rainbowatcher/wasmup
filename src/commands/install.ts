@@ -73,33 +73,32 @@ export async function installPreRequisites(args: any) {
 
     spinner.start("Installing wasm-pack...")
     if (!dry) {
-        ctx.installWasmPack && install(pm, WASM_PACK)
-        ctx.installWasmOpt && install(pm, WASM_OPT)
+        ctx.installWasmPack && await install(pm, WASM_PACK)
+        ctx.installWasmOpt && await install(pm, WASM_OPT)
     }
     spinner.stop(`All pre-requisites are installed${dryRun}`)
 }
 
-function install(pm: string, name: string) {
-    let ps
+async function install(pm: string, name: string) {
     switch (pm) {
         case "cargo": {
-            ps = spawn("cargo", ["install", name, "--locked"])
+            await execa("cargo", ["install", name, "--locked"])
             break
         }
         case "npm": {
-            ps = spawn("npm", ["install", name, "-g"])
+            await execa("npm", ["install", name, "-g"])
             break
         }
         case "pnpm": {
-            ps = spawn("pnpm", ["install", name, "-g"])
+            await execa("pnpm", ["install", name, "-g"])
             break
         }
         case "yarn": {
-            ps = spawn("yarn", ["global", "add", name])
+            await execa("yarn", ["global", "add", name])
             break
         }
         case "bun": {
-            ps = spawn("bun", ["install", name, "-g"])
+            await execa("bun", ["install", name, "-g"])
             break
         }
         case "local": {
@@ -107,9 +106,6 @@ function install(pm: string, name: string) {
             break
         }
     }
-
-    ps?.on("message", console.log)
-    ps?.on("error", console.log)
 }
 
 export async function getBinaryenDownloadUrl() {
