@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@antfu/install-pkg':
+        specifier: ^0.3.3
+        version: 0.3.3
       '@clack/core':
         specifier: ^0.3.4
         version: 0.3.4

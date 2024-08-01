@@ -1,5 +1,6 @@
 /* eslint-disable unicorn/no-process-exit */
 import process from "node:process"
+import { installPackage } from "@antfu/install-pkg"
 import c from "picocolors"
 import {
     confirm, createSpinner, log, select,
@@ -10,6 +11,13 @@ import type { PackageManager } from "../prompts/types"
 
 export async function installPreRequisites(args: any) {
     const { dry } = args
+
+    if (process.env.CI) {
+        log.info("CI detected, install pre-requisites through package manager")
+        const { status } = await installPackage(["wasm-pack", "wasm-opt"], { silent: true })
+        process.exit(status)
+    }
+
     const spinner = createSpinner()
     const dryRun = dry ? ` ${c.bgBlue(" DRY RUN ")}` : ""
     log.info(`Start Install pre-requisites${dryRun}`)
