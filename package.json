@@ -1,7 +1,7 @@
 {
     "name": "wasmup",
     "type": "module",
-    "version": "0.5.0",
+    "version": "0.5.1",
     "packageManager": "pnpm@9.6.0",
     "description": "package util for wasm",
     "author": "rainbowatcher <rainbow-w@qq.com>",

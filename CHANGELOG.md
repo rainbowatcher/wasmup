@@ -1,3 +1,11 @@
+## <small>0.5.1 (2024-08-01)</small>
+
+* feat: update install command ([e3ad10b](https://github.com/rainbowatcher/wasmup/commit/e3ad10b))
+* fix: hide help message when command is provided ([1600f77](https://github.com/rainbowatcher/wasmup/commit/1600f77))
+* fix: throw a error when no entry provided ([c68d43c](https://github.com/rainbowatcher/wasmup/commit/c68d43c))
+
+
+
 ## 0.5.0 (2024-08-01)
 
 * chore: bump deps ([8e1c0eb](https://github.com/rainbowatcher/wasmup/commit/8e1c0eb))
