@@ -35,7 +35,7 @@ function execute() {
     const app = initCliApp()
     try {
         const argv = app.parse(process.argv, { run: false })
-        if (Object.keys(argv.args).length === 0 && Object.keys(argv.options).length === 1 && argv.options["--"].length === 0) {
+        if (!app.matchedCommand && Object.keys(argv.args).length === 0 && Object.keys(argv.options).length === 1 && argv.options["--"].length === 0) {
             app.outputHelp()
         }
         app.runMatchedCommand()
