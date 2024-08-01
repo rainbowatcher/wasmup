@@ -1,3 +1,9 @@
+## <small>0.5.2 (2024-08-01)</small>
+
+* fix: spawn not block main process, use promise and await to block ([70b4fe1](https://github.com/rainbowatcher/wasmup/commit/70b4fe1))
+
+
+
 ## <small>0.5.1 (2024-08-01)</small>
 
 * feat: update install command ([e3ad10b](https://github.com/rainbowatcher/wasmup/commit/e3ad10b))
