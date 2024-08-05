@@ -5,6 +5,7 @@ import {
 import path from "node:path"
 import process from "node:process"
 import dedent from "dedent"
+import { createDefu } from "defu"
 import { execa } from "execa"
 import c from "picocolors"
 import { rimraf } from "rimraf"
@@ -17,12 +18,14 @@ import {
 } from "../util"
 import type { BuildOptions, CommandLineArgs } from "../util"
 
+const defu = createDefu((obj, key, value) => {
+    if (Array.isArray(obj[key]) && Array.isArray(value)) {
+        return [...new Set([...obj[key], ...value])]
+    }
+})
 
 export async function buildWasm(entries: string[], opts: CommandLineArgs): Promise<void> {
     try {
-        if (entries.length === 0) {
-            throw new Error("no entry provided")
-        }
         const resolvedOpts = await resolveOptions(entries, opts)
         await cleanOutputDir(resolvedOpts)
         await Promise.all(resolvedOpts.entries.map(entry => processEntry(entry, resolvedOpts)))
@@ -51,46 +54,45 @@ function getOutputDir(entry: string, opts: BuildOptions): string {
 
 export async function resolveOptions(entries: string[], args: CommandLineArgs): Promise<BuildOptions> {
     log.debug("cli args:", entries, args)
-    const absEntries = preCheck(entries)
-    let resolvedOpts: Partial<BuildOptions> = { entries: absEntries, ...args }
+    let resolvedOpts: Partial<BuildOptions> = { entries, ...args }
 
     if (args.config) {
-        resolvedOpts = await loadConfigFile(args.config, resolvedOpts)
+        resolvedOpts = await loadUserSpecifiedConfigFile(args.config, resolvedOpts)
     } else {
         resolvedOpts = await loadDefaultConfig(resolvedOpts)
     }
 
     resolvedOpts = { ...DEFAULT_BUILD_OPTIONS, ...resolvedOpts } satisfies BuildOptions
-    resolvedOpts.output = toAbsolute(resolvedOpts.output)
+    resolvedOpts.entries = resolvedOpts.entries?.map(entry => toAbsolute(entry))
 
+    if (resolvedOpts.entries?.length === 0) {
+        throw new Error("no entry provided")
+    }
+    resolvedOpts.output = toAbsolute(resolvedOpts.output)
     validateOptions(resolvedOpts)
 
     log.debug("resolved config:", resolvedOpts)
     return resolvedOpts as BuildOptions
 }
 
-async function loadConfigFile(configPath: string, currentOpts: Partial<BuildOptions>): Promise<Partial<BuildOptions>> {
-    const config = toAbsolute(configPath)
-    if (!isFileSync(config)) {
-        throw new Error(`${config} is not a valid file.`)
+export async function loadUserSpecifiedConfigFile(configPath: string, currentOpts: Partial<BuildOptions>): Promise<Partial<BuildOptions>> {
+    const absConfigPath = toAbsolute(configPath)
+    if (!isFileSync(absConfigPath)) {
+        throw new Error(`${absConfigPath} is not a valid file.`)
     }
 
-    const configExt = path.extname(configPath).slice(1)
-    let configObj = {}
+    const { config, sources } = await loadConfig<Partial<BuildOptions>>({
+        sources: [{
+            files: absConfigPath,
+        }],
+    })
 
-    if (configExt === "json") {
-        const configStr = await readFile(config, "utf8")
-        configObj = JSON.parse(configStr)
-    } else if (["cjs", "js", "mjs", "mts", "ts"].includes(configExt)) {
-        const { default: co } = await import(config)
-        configObj = co
-    }
-
-    return { ...configObj, ...currentOpts, config: toAbsolute(currentOpts.config) }
+    log.debug("load specified config file:", sources)
+    return defu({ config: toAbsolute(currentOpts.config) }, currentOpts, config)
 }
 
 async function loadDefaultConfig(currentOpts: Partial<BuildOptions>): Promise<Partial<BuildOptions>> {
-    const { config: configObj, sources } = await loadConfig<Partial<BuildOptions>>({
+    const { config, sources } = await loadConfig<Partial<BuildOptions>>({
         sources: [{
             extensions: ["ts", "mts", "cts", "js", "mjs", "cjs", "json"],
             files: "wasmup.config",
@@ -103,7 +105,7 @@ async function loadDefaultConfig(currentOpts: Partial<BuildOptions>): Promise<Pa
         }],
     })
     log.debug("find config file:", sources)
-    return { ...configObj, ...currentOpts }
+    return defu(currentOpts, config)
 }
 
 function validateOptions(opts: Partial<BuildOptions>): void {
@@ -290,9 +292,9 @@ async function chores(outputDir: string, opts: BuildOptions): Promise<void> {
     }))
 }
 
-export function preCheck(entries: string[]) {
-    const absEntries = []
-    for (const entry of entries) {
+export function checkOptions(opts: Partial<BuildOptions>) {
+    const { entries } = opts
+    for (const entry of entries ?? []) {
         const absEntry = toAbsolute(entry)
         if (!isDirSync(absEntry)) {
             log.error(`${absEntry} is not a valid directory.`)
@@ -304,9 +306,5 @@ export function preCheck(entries: string[]) {
             log.error(`${absEntry}/Cargo.toml is not found.`)
             process.exit(1)
         }
-
-        absEntries.push(absEntry)
     }
-
-    return absEntries
 }
