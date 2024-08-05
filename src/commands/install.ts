@@ -17,7 +17,7 @@ export async function installPreRequisites(args: any) {
 
     if (process.env.CI) {
         log.info("CI detected, install pre-requisites through package manager")
-        const { exitCode } = await execa("pnpm", ["install", "-g", "wasm-pack", "wasm-opt"])
+        const { exitCode } = await execa("pnpm", ["install", "-g", WASM_PACK, WASM_OPT])
         log.info("Install pre-requisites done")
         process.exit(exitCode)
     }
