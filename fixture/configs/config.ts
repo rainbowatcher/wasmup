@@ -1,0 +1,1 @@
+export default {"entries":["fixture/less"],"extensions":["cjs","mts","wasm"]}
