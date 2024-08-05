@@ -1,3 +1,12 @@
+## <small>0.5.5 (2024-08-05)</small>
+
+* chore: distinguish between publish and release ([7b1b694](https://github.com/rainbowatcher/wasmup/commit/7b1b694))
+* chore: use constant ([a555efa](https://github.com/rainbowatcher/wasmup/commit/a555efa))
+* fix: error when entries not provide in cli ([eadc93b](https://github.com/rainbowatcher/wasmup/commit/eadc93b))
+* test: add test case for build ([2d5245b](https://github.com/rainbowatcher/wasmup/commit/2d5245b))
+
+
+
 ## <small>0.5.4 (2024-08-01)</small>
 
 * fix: forget replace spawn to execa ([b67e788](https://github.com/rainbowatcher/wasmup/commit/b67e788))
