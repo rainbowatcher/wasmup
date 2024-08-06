@@ -1,1 +1,1 @@
-module.exports = {"entries":["fixture/less"],"extensions":["cjs","wasm"]}
+module.exports = {"entry":["fixture/less"],"extensions":["cjs","wasm"]}

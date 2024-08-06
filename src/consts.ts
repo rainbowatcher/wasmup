@@ -27,7 +27,7 @@ export const DEFAULT_BUILD_OPTIONS: Omit<BuildOptions, "config"> = {
     clean: false,
     dev: false,
     dry: false,
-    entries: [],
+    entry: [],
     extensions: ["js", "ts", "wasm"],
     ignoreOutput: false,
     opt: {

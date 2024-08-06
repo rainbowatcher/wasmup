@@ -4,7 +4,7 @@ export function defineConfig(config: ConfigOptions) {
 }
 
 export type ConfigOptions = Partial<Omit<BuildOptions, "config">>
-export type CommandLineArgs = Partial<Omit<BuildOptions, "entry" | "opt">>
+export type CommandLineArgs = Partial<Omit<BuildOptions, "opt">>
 
 export type BuildOptions = {
     /**
@@ -34,7 +34,7 @@ export type BuildOptions = {
     /**
      * Entry directories for wasm project to package
      */
-    entries: string[]
+    entry: string[]
 
     /**
      * File extensions should be included for The files field in package.json

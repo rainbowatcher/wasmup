@@ -11,7 +11,7 @@ function initCliApp() {
         .option("--dry", "Dry run")
         .action(installPreRequisites)
 
-    app.command("build [...entries]", "Build wasm")
+    app.command("build [...entry]", "Build wasm")
         .option("--clean", "Clean output directory")
         .option("-c, --config", "Config to load")
         .option("--dev", "Build for development")

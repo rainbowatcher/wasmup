@@ -31,7 +31,7 @@ export async function buildWasm(entries: string[], opts: CommandLineArgs): Promi
     try {
         const resolvedOpts = await resolveOptions(entries, opts)
         await cleanOutputDir(resolvedOpts)
-        await Promise.all(resolvedOpts.entries.map(entry => processEntry(entry, resolvedOpts)))
+        await Promise.all(resolvedOpts.entry.map(entry => processEntry(entry, resolvedOpts)))
         log.success(c.green("CLI"), "build success")
     } catch (error: any) {
         log.error(`build failed: ${error.message}`)
@@ -50,14 +50,17 @@ async function processEntry(entry: string, opts: BuildOptions): Promise<void> {
 }
 
 function getOutputDir(entry: string, opts: BuildOptions): string {
-    return opts.entries.length > 1
+    return opts.entry.length > 1
         ? path.join(opts.output, path.basename(entry))
         : opts.output
 }
 
-export async function resolveOptions(entries: string[], args: CommandLineArgs): Promise<BuildOptions> {
-    log.debug("cli args:", entries, args)
-    let resolvedOpts: Partial<BuildOptions> = { entries, ...args }
+export async function resolveOptions(entry: string[], args: CommandLineArgs): Promise<BuildOptions> {
+    log.debug("cli args:", entry, args)
+    let resolvedOpts: Partial<BuildOptions> = {
+        ...args,
+        entry: typeof args.entry === "string" ? [args.entry] : args.entry ?? entry,
+    }
 
     if (args.config) {
         resolvedOpts = await loadUserSpecifiedConfigFile(args.config, resolvedOpts)
@@ -66,9 +69,9 @@ export async function resolveOptions(entries: string[], args: CommandLineArgs): 
     }
 
     resolvedOpts = { ...DEFAULT_BUILD_OPTIONS, ...resolvedOpts } satisfies BuildOptions
-    resolvedOpts.entries = resolvedOpts.entries?.map(entry => toAbsolute(entry))
+    resolvedOpts.entry = resolvedOpts.entry?.map(entry => toAbsolute(entry))
 
-    if (resolvedOpts.entries?.length === 0) {
+    if (resolvedOpts.entry?.length === 0) {
         throw new Error("no entry provided")
     }
     resolvedOpts.output = toAbsolute(resolvedOpts.output)
@@ -320,7 +323,7 @@ async function chores(outputDir: string, opts: BuildOptions): Promise<void> {
 }
 
 export function checkOptions(opts: Partial<BuildOptions>) {
-    const { entries } = opts
+    const { entry: entries } = opts
     for (const entry of entries ?? []) {
         const absEntry = toAbsolute(entry)
         if (!isDirSync(absEntry)) {

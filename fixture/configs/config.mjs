@@ -1,1 +1,1 @@
-export default {"entries":["fixture/less"],"extensions":["mjs","wasm"]}
+export default {"entry":["fixture/less"],"extensions":["mjs","wasm"]}

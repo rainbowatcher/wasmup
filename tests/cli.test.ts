@@ -14,8 +14,8 @@ Usage:
   $ wasmup <command> [options]
 
 Commands:
-  install             Install pre-requisites
-  build [...entries]  Build wasm
+  install           Install pre-requisites
+  build [...entry]  Build wasm
 
 For more info, run any command with the \`--help\` flag:
   $ wasmup install --help
@@ -25,7 +25,7 @@ Options:
   -v, --version  Display version number 
   -h, --help     Display this message `
 
-describe.concurrent("Cli", () => {
+describe.concurrent("cli stdout", () => {
     it("show help", async () => {
         const { stdout } = await $`${RUNNER} ${SCRIPT} -h`
         expect(stdout).toEqual(HELP_OUTPUT)
@@ -44,11 +44,18 @@ describe.concurrent("Cli", () => {
     it("should throw missing args", async () => {
         await expect(async () => await $({ node: true })`${RUNNER} ${SCRIPT} build`).rejects.toThrowError(ExecaError)
     })
+})
 
+describe.skipIf(process.env.CI)("build command", () => {
     // this test need compile rust project, it cost too much time in CI, only run it locally
-    it.skipIf(process.env.CI)("should has scope", { timeout: 20_000 }, async () => {
+    it("should has scope", { timeout: 20_000 }, async () => {
         await $`${RUNNER} ${SCRIPT} build fixture/less --scope myscope`
         const pkgJson = await readFile(toAbsolute("wasm-dist/package.json"), "utf8")
         expect(JSON.parse(pkgJson).name).toContain("@myscope")
+    })
+
+    it("should has scope", { timeout: 20_000 }, async () => {
+        const { failed } = await $({ reject: false })`${RUNNER} ${SCRIPT} build --entry fixture/less`
+        expect(failed).toBeFalsy()
     })
 })

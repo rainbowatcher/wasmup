@@ -19,7 +19,7 @@ describe.concurrent("arg parse", () => {
         const resolvedOptions = await resolveOptions(entries, cliArgs)
         expect(resolvedOptions).toEqual({
             ...DEFAULT_BUILD_OPTIONS,
-            entries: entries.map(entry => path.join(process.cwd(), entry)),
+            entry: entries.map(entry => path.join(process.cwd(), entry)),
             output: path.join(process.cwd(), DEFAULT_BUILD_OPTIONS.output),
         })
     })
@@ -38,7 +38,7 @@ describe.concurrent("arg parse", () => {
             ...DEFAULT_BUILD_OPTIONS,
             clean: true,
             config: path.join(process.cwd(), config),
-            entries: entries.map(entry => path.join(process.cwd(), entry)),
+            entry: entries.map(entry => path.join(process.cwd(), entry)),
             output: path.join(process.cwd(), DEFAULT_BUILD_OPTIONS.output),
         })
     })
@@ -62,7 +62,7 @@ describe.concurrent("arg parse", () => {
             ...DEFAULT_BUILD_OPTIONS,
             clean: true,
             config: path.join(process.cwd(), config),
-            entries: entries.map(entry => path.join(process.cwd(), entry)),
+            entry: entries.map(entry => path.join(process.cwd(), entry)),
             opt: {
                 optLevel: "2",
                 shrinkLevel: "1",
@@ -88,7 +88,7 @@ describe.concurrent("arg parse", () => {
             ...DEFAULT_BUILD_OPTIONS,
             clean: false,
             config: path.join(process.cwd(), config),
-            entries: entries.map(entry => path.join(process.cwd(), entry)),
+            entry: entries.map(entry => path.join(process.cwd(), entry)),
             output: path.join(process.cwd(), DEFAULT_BUILD_OPTIONS.output),
             release: true,
         })
@@ -107,7 +107,7 @@ describe.concurrent("arg parse", () => {
         expect(result).toEqual({
             ...DEFAULT_BUILD_OPTIONS,
             config: path.join(process.cwd(), config),
-            entries: entries.map(entry => path.join(process.cwd(), entry)),
+            entry: entries.map(entry => path.join(process.cwd(), entry)),
             extensions: ["cjs", "mts", "wasm"],
             output: path.join(process.cwd(), DEFAULT_BUILD_OPTIONS.output),
         })
@@ -117,7 +117,7 @@ describe.concurrent("arg parse", () => {
         const config = "fixture/configs/config.json"
         const entries: string[] = []
         await writeFile(config, JSON.stringify({
-            entries: ["fixture/less"],
+            entry: ["fixture/less"],
             extensions: ["cjs", "mts", "wasm"],
         } satisfies ConfigOptions))
         const cliArgs: CommandLineArgs = {
@@ -128,7 +128,7 @@ describe.concurrent("arg parse", () => {
         expect(result).toEqual({
             ...DEFAULT_BUILD_OPTIONS,
             config: path.join(process.cwd(), config),
-            entries: ["fixture/less"].map(entry => path.join(process.cwd(), entry)),
+            entry: ["fixture/less"].map(entry => path.join(process.cwd(), entry)),
             extensions: ["cjs", "mts", "wasm"],
             output: path.join(process.cwd(), DEFAULT_BUILD_OPTIONS.output),
         })
@@ -141,14 +141,14 @@ describe.concurrent("arg parse", () => {
             config,
         }
         await writeFile(config, `export default ${JSON.stringify({
-            entries: ["fixture/less"],
+            entry: ["fixture/less"],
             extensions: ["cjs", "mts", "wasm"],
         } satisfies ConfigOptions)}`)
         const result = await resolveOptions(entries, cliArgs)
         expect(result).toEqual({
             ...DEFAULT_BUILD_OPTIONS,
             config: path.join(process.cwd(), config),
-            entries: entries.map(entry => path.join(process.cwd(), entry)),
+            entry: entries.map(entry => path.join(process.cwd(), entry)),
             extensions: ["cjs", "mts", "wasm"],
             output: path.join(process.cwd(), DEFAULT_BUILD_OPTIONS.output),
         })
@@ -161,14 +161,14 @@ describe.concurrent("arg parse", () => {
             config,
         }
         await writeFile(config, `export default ${JSON.stringify({
-            entries: ["fixture/less"],
+            entry: ["fixture/less"],
             extensions: ["mjs", "wasm"],
         } satisfies ConfigOptions)}`)
         const result = await resolveOptions(entries, cliArgs)
         expect(result).toEqual({
             ...DEFAULT_BUILD_OPTIONS,
             config: path.join(process.cwd(), config),
-            entries: entries.map(entry => path.join(process.cwd(), entry)),
+            entry: entries.map(entry => path.join(process.cwd(), entry)),
             extensions: ["mjs", "wasm"],
             output: path.join(process.cwd(), DEFAULT_BUILD_OPTIONS.output),
         })
@@ -181,14 +181,14 @@ describe.concurrent("arg parse", () => {
             config,
         }
         await writeFile(config, `module.exports = ${JSON.stringify({
-            entries: ["fixture/less"],
+            entry: ["fixture/less"],
             extensions: ["cjs", "wasm"],
         } satisfies ConfigOptions)}`)
         const result = await resolveOptions(entries, cliArgs)
         expect(result).toEqual({
             ...DEFAULT_BUILD_OPTIONS,
             config: path.join(process.cwd(), config),
-            entries: entries.map(entry => path.join(process.cwd(), entry)),
+            entry: entries.map(entry => path.join(process.cwd(), entry)),
             extensions: ["cjs", "wasm"],
             output: path.join(process.cwd(), DEFAULT_BUILD_OPTIONS.output),
         })
