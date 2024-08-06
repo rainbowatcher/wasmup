@@ -166,8 +166,7 @@ const debug = createDebug("wasmup")
 
 export const log = {
     debug: (...messages: any[]) => {
-        const msg = resolveMsgArr(messages)
-        debug(msg)
+        debug(resolveMsgArr(messages))
     },
     error: (...messages: any[]) => { console.log(`${c.red(SYMBOLS.error)} ${resolveMsgArr(messages)}`) },
     info: (...messages: any[]) => { console.log(`${c.cyan(SYMBOLS.info)} ${resolveMsgArr(messages)}`) },

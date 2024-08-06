@@ -1,0 +1,14 @@
+[workspace]
+resolver = "2"
+members = [
+    "main",
+]
+
+[workspace.package]
+authors = ["rainbowatcher <rainobw-w@qq.com>"]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+homepage = "https://github.com/rainbowatcher/qi#readme"
+repository = "https://github.com/rainbowatcher/qi"
+readme = "README.md"

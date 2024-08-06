@@ -7,16 +7,19 @@ import process from "node:process"
 import dedent from "dedent"
 import { createDefu } from "defu"
 import { execa } from "execa"
+import { findUp } from "find-up"
 import c from "picocolors"
 import { rimraf } from "rimraf"
-import { parse } from "smol-toml"
+import { parse, TomlDate } from "smol-toml"
 import { loadConfig } from "unconfig"
 import { DEFAULT_BUILD_OPTIONS } from "../consts"
 import { log } from "../prompts"
 import {
     isDirSync, isFileSync, pkgJsonComparator, stableStringify, toAbsolute,
 } from "../util"
+import type { TomlPrimitive } from "smol-toml"
 import type { BuildOptions, CommandLineArgs } from "../util"
+
 
 const defu = createDefu((obj, key, value) => {
     if (Array.isArray(obj[key]) && Array.isArray(value)) {
@@ -269,11 +272,35 @@ async function generatePackageJson(entry: string, outputDir: string, opts: Build
 
 
 async function parseProjectFile(entry: string): Promise<Record<string, any>> {
-    const filePath = path.join(entry, "Cargo.toml")
-    const file = await readFile(filePath, "utf8")
+    const cargoPath = path.join(entry, "Cargo.toml")
+    const file = await readFile(cargoPath, "utf8")
+    let parentCargoFile: Record<string, TomlPrimitive> = {}
+    if (file.includes("workspace")) {
+        const parentFilePath = await findUp("Cargo.toml", { cwd: path.dirname(toAbsolute(entry)), type: "file" })
+        if (parentFilePath && isFileSync(parentFilePath)) {
+            log.debug("find parent Cargo.toml:", parentFilePath)
+            parentCargoFile = parse(await readFile(parentFilePath, "utf8"))
+        }
+    }
     const projectConfig = parse(file)
-    log.debug("project config:", projectConfig)
-    return projectConfig
+    const resolved = resolveCargoWorkspace(parentCargoFile, projectConfig)
+    log.debug("resolved project config:", resolved)
+    return resolved
+}
+
+function resolveCargoWorkspace(parent: Record<string, any>, project: Record<string, any>): Record<string, any> {
+    const workspacePkg = parent?.workspace?.package
+    const _project = project
+    for (const [key, value] of Object.entries(project)) {
+        if (typeof value === "object" && !(value instanceof TomlDate) && !Array.isArray(value)) {
+            if (value.workspace === true && workspacePkg) {
+                _project[key] = workspacePkg[key]
+            } else {
+                resolveCargoWorkspace(parent, value)
+            }
+        }
+    }
+    return _project
 }
 
 async function chores(outputDir: string, opts: BuildOptions): Promise<void> {
