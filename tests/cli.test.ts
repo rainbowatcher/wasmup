@@ -46,16 +46,21 @@ describe.concurrent("cli stdout", () => {
     })
 })
 
+// this test need compile rust project, it cost too much time in CI, only run it locally
 describe.skipIf(process.env.CI)("build command", () => {
-    // this test need compile rust project, it cost too much time in CI, only run it locally
+    it("should support entry as option", { timeout: 20_000 }, async () => {
+        const { failed } = await $({ reject: false })`${RUNNER} ${SCRIPT} build fixture/less`
+        expect(failed).toBeFalsy()
+    })
+
+    it("should support entry as command arg", { timeout: 20_000 }, async () => {
+        const { failed } = await $({ reject: false })`${RUNNER} ${SCRIPT} build --entry fixture/less`
+        expect(failed).toBeFalsy()
+    })
+
     it("should has scope", { timeout: 20_000 }, async () => {
         await $`${RUNNER} ${SCRIPT} build fixture/less --scope myscope`
         const pkgJson = await readFile(toAbsolute("wasm-dist/package.json"), "utf8")
         expect(JSON.parse(pkgJson).name).toContain("@myscope")
-    })
-
-    it("should has scope", { timeout: 20_000 }, async () => {
-        const { failed } = await $({ reject: false })`${RUNNER} ${SCRIPT} build --entry fixture/less`
-        expect(failed).toBeFalsy()
     })
 })
