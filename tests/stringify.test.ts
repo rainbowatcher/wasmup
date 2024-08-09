@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/consistent-function-scoping */
 import dedent from "dedent"
 import { describe, expect, it } from "vitest"
 import stableStringify, { pkgJsonComparator } from "../src/util/stringify"
