@@ -75,7 +75,6 @@
         "conventional-changelog-cli": "^5.0.0",
         "cross-release-cli": "0.1.0-alpha.1",
         "eslint": "^9.9.0",
-        "husky": "^9.1.4",
         "lint-staged": "^15.2.9",
         "simple-git-hooks": "^2.11.1",
         "tsup": "^8.2.4",
