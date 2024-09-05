@@ -5,7 +5,7 @@ import c from "picocolors"
 import {
     confirm, createSpinner, log, select,
 } from "../prompts"
-import { commandExists } from "../util/fs"
+import { commandExists } from "../util"
 import { getLatestRelease } from "../util/github"
 import type { PackageManager } from "../prompts/types"
 

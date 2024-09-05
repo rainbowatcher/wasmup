@@ -4,7 +4,8 @@ import {
 } from "node:fs/promises"
 import path from "node:path"
 import process from "node:process"
-import dedent from "dedent"
+import { isDirSync, isFileSync } from "@rainbowatcher/fs-extra"
+import { toAbsolute } from "@rainbowatcher/path-extra"
 import { createDefu } from "defu"
 import { execa } from "execa"
 import { findUp } from "find-up"
@@ -14,9 +15,7 @@ import { parse, TomlDate } from "smol-toml"
 import { loadConfig } from "unconfig"
 import { DEFAULT_BUILD_OPTIONS } from "../consts"
 import { log } from "../prompts"
-import {
-    isDirSync, isFileSync, pkgJsonComparator, stableStringify, toAbsolute,
-} from "../util"
+import { pkgJsonComparator, stableStringify } from "../util"
 import type { TomlPrimitive } from "smol-toml"
 import type { BuildOptions, CommandLineArgs } from "../util"
 
@@ -74,7 +73,9 @@ export async function resolveOptions(entry: string[], args: CommandLineArgs): Pr
     if (resolvedOpts.entry?.length === 0) {
         throw new Error("no entry provided")
     }
-    resolvedOpts.output = toAbsolute(resolvedOpts.output)
+    if (resolvedOpts.output) {
+        resolvedOpts.output = toAbsolute(resolvedOpts.output)
+    }
     validateOptions(resolvedOpts)
 
     log.debug("resolved config:", resolvedOpts)
@@ -94,7 +95,7 @@ export async function loadUserSpecifiedConfigFile(configPath: string, currentOpt
     })
 
     log.debug("load specified config file:", sources)
-    return defu({ config: toAbsolute(currentOpts.config) }, currentOpts, config)
+    return defu({ config: toAbsolute(currentOpts.config!) }, currentOpts, config)
 }
 
 async function loadDefaultConfig(currentOpts: Partial<BuildOptions>): Promise<Partial<BuildOptions>> {
@@ -178,10 +179,8 @@ async function optimize(outputDir: string, opts: BuildOptions): Promise<void> {
 }
 
 function addTopLineComment(indexStr: string) {
-    const disableComment = dedent`
-        /* eslint-disable unicorn/no-abusive-eslint-disable */
-        /* eslint-disable */
-    `
+    const disableComment = `/* eslint-disable unicorn/no-abusive-eslint-disable */
+/* eslint-disable */`
     return `${disableComment}\n${indexStr}`
 }
 

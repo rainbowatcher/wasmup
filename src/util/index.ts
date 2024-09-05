@@ -1,5 +1,4 @@
 export * from "./config"
 export * from "./env"
-export * from "./fs"
 export * from "./github"
 export * from "./stringify"

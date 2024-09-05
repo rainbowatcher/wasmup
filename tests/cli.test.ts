@@ -1,9 +1,9 @@
 import { readFile } from "node:fs/promises"
 import process from "node:process"
+import { toAbsolute } from "@rainbowatcher/path-extra"
 import { $, ExecaError } from "execa"
 import { describe, expect, it } from "vitest"
 import { version } from "../package.json"
-import { toAbsolute } from "../src/util"
 
 const RUNNER = "tsx"
 const SCRIPT = "src/cli.ts"
