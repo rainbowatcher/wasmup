@@ -165,9 +165,7 @@ export async function select<Value>(opts: SelectOptions<Value>): Promise<string>
 const debug = createDebug("wasmup")
 
 export const log = {
-    debug: (...messages: any[]) => {
-        debug(resolveMsgArr(messages))
-    },
+    debug,
     error: (...messages: any[]) => { console.log(`${c.red(SYMBOLS.error)} ${resolveMsgArr(messages)}`) },
     info: (...messages: any[]) => { console.log(`${c.cyan(SYMBOLS.info)} ${resolveMsgArr(messages)}`) },
     success: (...messages: any[]) => { console.log(`${c.green(SYMBOLS.success)} ${resolveMsgArr(messages)}`) },

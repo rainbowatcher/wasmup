@@ -48,6 +48,17 @@ async function processEntry(entry: string, opts: BuildOptions): Promise<void> {
     await generatePackageJson(entry, outputDir, opts)
 }
 
+/**
+ * Get the output directory for the given entry.
+ * If the build has multiple entries, the output directory
+ * will be a subdirectory of the output directory with the
+ * same name as the entry.
+ * If the build has only one entry, the output directory
+ * will be the same as the output directory.
+ * @param entry the entry to get the output directory for
+ * @param opts the build options
+ * @returns the output directory for the given entry
+ */
 function getOutputDir(entry: string, opts: BuildOptions): string {
     return opts.entry.length > 1
         ? path.join(opts.output, path.basename(entry))
@@ -55,7 +66,7 @@ function getOutputDir(entry: string, opts: BuildOptions): string {
 }
 
 export async function resolveOptions(entry: string[], args: CommandLineArgs): Promise<BuildOptions> {
-    log.debug("cli args:", entry, args)
+    log.debug("cli args: %o %o", entry, args)
     let resolvedOpts: Partial<BuildOptions> = {
         ...args,
         entry: typeof args.entry === "string" ? [args.entry] : args.entry ?? entry,
@@ -78,7 +89,7 @@ export async function resolveOptions(entry: string[], args: CommandLineArgs): Pr
     }
     validateOptions(resolvedOpts)
 
-    log.debug("resolved config:", resolvedOpts)
+    log.debug("resolved config: %O", resolvedOpts)
     return resolvedOpts as BuildOptions
 }
 
@@ -94,7 +105,7 @@ export async function loadUserSpecifiedConfigFile(configPath: string, currentOpt
         }],
     })
 
-    log.debug("load specified config file:", sources)
+    log.debug("load specified config file: %s", sources)
     return defu({ config: toAbsolute(currentOpts.config!) }, currentOpts, config)
 }
 
@@ -111,7 +122,7 @@ async function loadDefaultConfig(currentOpts: Partial<BuildOptions>): Promise<Pa
             },
         }],
     })
-    log.debug("find config file:", sources)
+    log.debug("find config file: %s", sources)
     return defu(currentOpts, config)
 }
 
@@ -123,14 +134,14 @@ function validateOptions(opts: Partial<BuildOptions>): void {
 
 async function cleanOutputDir(opts: BuildOptions): Promise<void> {
     if (opts.clean) {
-        log.debug("clean output directory:", opts.output)
+        log.debug("clean output directory: %s", opts.output)
         await rimraf(opts.output)
         log.success(c.green("CLI"), `clean ${opts.output}`)
     }
 }
 
 async function build(entry: string, outputDir: string, opts: BuildOptions): Promise<void> {
-    log.debug("build entry:", entry)
+    log.debug("build entry: %s", entry)
     const extraBuildArgs = opts.release ? ["--release"] : []
     const buildCommand = [
         "build",
@@ -146,7 +157,7 @@ async function build(entry: string, outputDir: string, opts: BuildOptions): Prom
         ...extraBuildArgs,
     ]
 
-    log.debug("execute command:", `wasm-pack ${buildCommand.join(" ")}`)
+    log.debug("execute command: %s", `wasm-pack ${buildCommand.join(" ")}`)
 
     try {
         await execa("wasm-pack", buildCommand)
@@ -168,7 +179,7 @@ async function optimize(outputDir: string, opts: BuildOptions): Promise<void> {
     const sourceWasm = path.join(outputDir, "index_bg.wasm")
     const targetWasm = path.join(outputDir, "index.wasm")
 
-    log.debug("execute command:", `wasm-opt ${sourceWasm} -o ${targetWasm} ${extraOptArgs.join(" ")}`)
+    log.debug("execute command: %s", `wasm-opt ${sourceWasm} -o ${targetWasm} ${extraOptArgs.join(" ")}`)
 
     try {
         await execa("wasm-opt", [sourceWasm, "-o", targetWasm, ...extraOptArgs])
@@ -199,20 +210,22 @@ async function rewriteIndexJs(outputDir: string): Promise<void> {
     let indexStr = await readFile(indexFile, "utf8")
 
     const fetchExpr = "input = fetch(input);"
+
     indexStr = addTopLineComment(indexStr)
     indexStr = indexStr.replace("index_bg.wasm", "index.wasm")
+
     if (indexStr.includes(fetchExpr)) {
         indexStr = replaceFetch(indexStr, fetchExpr)
         await writeFile(indexFile, indexStr)
         log.success(c.green("CLI"), `generate ${indexFile}`)
     } else {
-        throw new Error("CLI: generated js file may be incorrect")
+        log.warn(c.yellow("CLI"), "generated js file may be incorrect")
     }
 }
 
 async function rewriteIndexDts(outputDir: string): Promise<void> {
     const indexDtsFile = path.join(outputDir, "index.d.ts")
-    log.debug("begin re-write index.d.ts:", indexDtsFile)
+    log.debug("begin re-write index.d.ts: %s", indexDtsFile)
 
     let indexDtsStr = await readFile(indexDtsFile, "utf8")
     indexDtsStr = `/* eslint-disable unicorn/no-abusive-eslint-disable */\n${indexDtsStr}`
@@ -280,16 +293,22 @@ async function parseProjectFile(entry: string): Promise<Record<string, any>> {
     if (file.includes("workspace")) {
         const parentFilePath = await findUp("Cargo.toml", { cwd: path.dirname(toAbsolute(entry)), type: "file" })
         if (parentFilePath && isFileSync(parentFilePath)) {
-            log.debug("find parent Cargo.toml:", parentFilePath)
+            log.debug("find parent Cargo.toml: %s", parentFilePath)
             parentCargoFile = parse(await readFile(parentFilePath, "utf8"))
         }
     }
     const projectConfig = parse(file)
     const resolved = resolveCargoWorkspace(parentCargoFile, projectConfig)
-    log.debug("resolved project config:", resolved)
+    log.debug("resolved project config: %O", resolved)
     return resolved
 }
 
+/**
+ * Resolve workspace properties from parent cargo.toml
+ * @param parent - parent cargo.toml content
+ * @param project - current project cargo.toml content
+ * @returns resolved project config
+ */
 function resolveCargoWorkspace(parent: Record<string, any>, project: Record<string, any>): Record<string, any> {
     const workspacePkg = parent?.workspace?.package
     const _project = project
@@ -314,7 +333,7 @@ async function chores(outputDir: string, opts: BuildOptions): Promise<void> {
 
     await Promise.all(filesToRemove.map(async (file) => {
         const filePath = path.join(outputDir, file)
-        log.debug("remove:", filePath)
+        log.debug("remove: %s", filePath)
         await unlink(filePath).catch(() => {
             // Ignore errors if file doesn't exist
         })
