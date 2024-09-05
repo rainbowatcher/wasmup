@@ -1,6 +1,6 @@
 import { writeFile } from "node:fs/promises"
 import path from "node:path"
-import process from "node:process"
+import { toAbsolute } from "@rainbowatcher/path-extra"
 import {
     afterAll, describe, expect, it,
 } from "vitest"
@@ -25,8 +25,8 @@ describe.concurrent("arg parse", () => {
         const resolvedOptions = await resolveOptions(entries, cliArgs)
         expect(resolvedOptions).toStrictEqual({
             ...DEFAULT_BUILD_OPTIONS,
-            entry: entries.map(entry => path.join(process.cwd(), entry)),
-            output: path.join(process.cwd(), DEFAULT_BUILD_OPTIONS.output),
+            entry: entries.map(entry => toAbsolute(entry)),
+            output: toAbsolute(DEFAULT_BUILD_OPTIONS.output),
         })
     })
 
@@ -42,9 +42,9 @@ describe.concurrent("arg parse", () => {
             expect(result).toStrictEqual({
                 ...DEFAULT_BUILD_OPTIONS,
                 clean: true,
-                config: path.join(process.cwd(), JSON_CONFIG),
-                entry: entries.map(entry => path.join(process.cwd(), entry)),
-                output: path.join(process.cwd(), DEFAULT_BUILD_OPTIONS.output),
+                config: toAbsolute(JSON_CONFIG),
+                entry: entries.map(entry => toAbsolute(entry)),
+                output: toAbsolute(DEFAULT_BUILD_OPTIONS.output),
             })
         })
 
@@ -64,13 +64,13 @@ describe.concurrent("arg parse", () => {
             expect(resolvedOptions).toStrictEqual({
                 ...DEFAULT_BUILD_OPTIONS,
                 clean: true,
-                config: path.join(process.cwd(), JSON_CONFIG),
-                entry: entries.map(entry => path.join(process.cwd(), entry)),
+                config: toAbsolute(JSON_CONFIG),
+                entry: entries.map(entry => toAbsolute(entry)),
                 opt: {
                     optLevel: "2",
                     shrinkLevel: "1",
                 },
-                output: path.join(process.cwd(), DEFAULT_BUILD_OPTIONS.output),
+                output: toAbsolute(DEFAULT_BUILD_OPTIONS.output),
             })
         })
 
@@ -88,9 +88,9 @@ describe.concurrent("arg parse", () => {
             expect(result).toStrictEqual({
                 ...DEFAULT_BUILD_OPTIONS,
                 clean: false,
-                config: path.join(process.cwd(), JSON_CONFIG),
-                entry: entries.map(entry => path.join(process.cwd(), entry)),
-                output: path.join(process.cwd(), DEFAULT_BUILD_OPTIONS.output),
+                config: toAbsolute(JSON_CONFIG),
+                entry: entries.map(entry => toAbsolute(entry)),
+                output: toAbsolute(DEFAULT_BUILD_OPTIONS.output),
                 release: true,
             })
         })
@@ -105,10 +105,10 @@ describe.concurrent("arg parse", () => {
             const result = await resolveOptions(entries, cliArgs)
             expect(result).toStrictEqual({
                 ...DEFAULT_BUILD_OPTIONS,
-                config: path.join(process.cwd(), JSON_CONFIG),
-                entry: entries.map(entry => path.join(process.cwd(), entry)),
+                config: toAbsolute(JSON_CONFIG),
+                entry: entries.map(entry => toAbsolute(entry)),
                 extensions: ["cjs", "mts", "wasm"],
-                output: path.join(process.cwd(), DEFAULT_BUILD_OPTIONS.output),
+                output: toAbsolute(DEFAULT_BUILD_OPTIONS.output),
             })
         })
 
@@ -125,10 +125,10 @@ describe.concurrent("arg parse", () => {
 
             expect(result).toStrictEqual({
                 ...DEFAULT_BUILD_OPTIONS,
-                config: path.join(process.cwd(), JSON_CONFIG),
-                entry: entries.map(entry => path.join(process.cwd(), entry)),
+                config: toAbsolute(JSON_CONFIG),
+                entry: entries.map(entry => toAbsolute(entry)),
                 extensions: ["cjs", "mts", "wasm"],
-                output: path.join(process.cwd(), DEFAULT_BUILD_OPTIONS.output),
+                output: toAbsolute(DEFAULT_BUILD_OPTIONS.output),
             })
         })
     })
@@ -144,10 +144,10 @@ describe.concurrent("arg parse", () => {
         const result = await resolveOptions(entries, cliArgs)
         expect(result).toStrictEqual({
             ...DEFAULT_BUILD_OPTIONS,
-            config: path.join(process.cwd(), TS_CONFIG),
-            entry: entries.map(entry => path.join(process.cwd(), entry)),
+            config: toAbsolute(TS_CONFIG),
+            entry: entries.map(entry => toAbsolute(entry)),
             extensions: ["cjs", "mts", "wasm"],
-            output: path.join(process.cwd(), DEFAULT_BUILD_OPTIONS.output),
+            output: toAbsolute(DEFAULT_BUILD_OPTIONS.output),
         })
     })
 
@@ -162,10 +162,10 @@ describe.concurrent("arg parse", () => {
         const result = await resolveOptions(entries, cliArgs)
         expect(result).toStrictEqual({
             ...DEFAULT_BUILD_OPTIONS,
-            config: path.join(process.cwd(), MJS_CONFIG),
-            entry: entries.map(entry => path.join(process.cwd(), entry)),
+            config: toAbsolute(MJS_CONFIG),
+            entry: entries.map(entry => toAbsolute(entry)),
             extensions: ["mjs", "wasm"],
-            output: path.join(process.cwd(), DEFAULT_BUILD_OPTIONS.output),
+            output: toAbsolute(DEFAULT_BUILD_OPTIONS.output),
         })
     })
 
@@ -180,10 +180,10 @@ describe.concurrent("arg parse", () => {
         const result = await resolveOptions(entries, cliArgs)
         expect(result).toStrictEqual({
             ...DEFAULT_BUILD_OPTIONS,
-            config: path.join(process.cwd(), CJS_CONFIG),
-            entry: entries.map(entry => path.join(process.cwd(), entry)),
+            config: toAbsolute(CJS_CONFIG),
+            entry: entries.map(entry => toAbsolute(entry)),
             extensions: ["cjs", "wasm"],
-            output: path.join(process.cwd(), DEFAULT_BUILD_OPTIONS.output),
+            output: toAbsolute(DEFAULT_BUILD_OPTIONS.output),
         })
     })
 })
