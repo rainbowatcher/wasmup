@@ -1,3 +1,20 @@
+## 0.6.0 (2024-09-05)
+
+* chore: bump deps ([76bd7fc](https://github.com/rainbowatcher/wasmup/commit/76bd7fc))
+* chore: remove husky ([76cd447](https://github.com/rainbowatcher/wasmup/commit/76cd447))
+* chore: use @commitlint/config-conventional instead of custom rules ([6f0830f](https://github.com/rainbowatcher/wasmup/commit/6f0830f))
+* chore: use simple-git-hooks instead of husky ([b802b80](https://github.com/rainbowatcher/wasmup/commit/b802b80))
+* chore(deps): bump deps ([5d1cda1](https://github.com/rainbowatcher/wasmup/commit/5d1cda1))
+* chore(deps): bump deps ([fe149d7](https://github.com/rainbowatcher/wasmup/commit/fe149d7))
+* test: add test case for build command ([8415c8e](https://github.com/rainbowatcher/wasmup/commit/8415c8e))
+* test: use eslint rule for tests ([cd43d05](https://github.com/rainbowatcher/wasmup/commit/cd43d05))
+* feat: can resolve cargo workspace properties ([62c5a8e](https://github.com/rainbowatcher/wasmup/commit/62c5a8e))
+* feat: use extra util for path and fs ([cd13fb9](https://github.com/rainbowatcher/wasmup/commit/cd13fb9))
+* fix: correctly handle entry option ([2c03cb6](https://github.com/rainbowatcher/wasmup/commit/2c03cb6))
+* revert: distinguish between publish and release ([86fc9e1](https://github.com/rainbowatcher/wasmup/commit/86fc9e1))
+
+
+
 ## <small>0.5.5 (2024-08-05)</small>
 
 * chore: distinguish between publish and release ([7b1b694](https://github.com/rainbowatcher/wasmup/commit/7b1b694))
