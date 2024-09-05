@@ -8,16 +8,17 @@ import { resolveOptions } from "../src/commands/build"
 import { DEFAULT_BUILD_OPTIONS } from "../src/consts"
 import type { CommandLineArgs, ConfigOptions } from "../src/util"
 
-afterAll(async () => {
-    await writeFile("fixture/configs/config.json", "{}")
-})
 
 describe.concurrent("arg parse", () => {
+    afterAll(async () => {
+        await writeFile("fixture/configs/config.json", "{}")
+    })
+
     it("should equal to default", async () => {
         const entries = ["fixture/less"]
         const cliArgs: CommandLineArgs = {}
         const resolvedOptions = await resolveOptions(entries, cliArgs)
-        expect(resolvedOptions).toEqual({
+        expect(resolvedOptions).toStrictEqual({
             ...DEFAULT_BUILD_OPTIONS,
             entry: entries.map(entry => path.join(process.cwd(), entry)),
             output: path.join(process.cwd(), DEFAULT_BUILD_OPTIONS.output),
@@ -34,7 +35,7 @@ describe.concurrent("arg parse", () => {
             config,
         }
         const result = await resolveOptions(entries, cliArgs)
-        expect(result).toEqual({
+        expect(result).toStrictEqual({
             ...DEFAULT_BUILD_OPTIONS,
             clean: true,
             config: path.join(process.cwd(), config),
@@ -58,7 +59,7 @@ describe.concurrent("arg parse", () => {
             config,
         }
         const resolvedOptions = await resolveOptions(entries, cliArgs)
-        expect(resolvedOptions).toEqual({
+        expect(resolvedOptions).toStrictEqual({
             ...DEFAULT_BUILD_OPTIONS,
             clean: true,
             config: path.join(process.cwd(), config),
@@ -84,7 +85,7 @@ describe.concurrent("arg parse", () => {
             release: true,
         }
         const result = await resolveOptions(entries, args)
-        expect(result).toEqual({
+        expect(result).toStrictEqual({
             ...DEFAULT_BUILD_OPTIONS,
             clean: false,
             config: path.join(process.cwd(), config),
@@ -104,7 +105,7 @@ describe.concurrent("arg parse", () => {
             config,
         }
         const result = await resolveOptions(entries, cliArgs)
-        expect(result).toEqual({
+        expect(result).toStrictEqual({
             ...DEFAULT_BUILD_OPTIONS,
             config: path.join(process.cwd(), config),
             entry: entries.map(entry => path.join(process.cwd(), entry)),
@@ -125,7 +126,7 @@ describe.concurrent("arg parse", () => {
         }
         const result = await resolveOptions(entries, cliArgs)
 
-        expect(result).toEqual({
+        expect(result).toStrictEqual({
             ...DEFAULT_BUILD_OPTIONS,
             config: path.join(process.cwd(), config),
             entry: ["fixture/less"].map(entry => path.join(process.cwd(), entry)),
@@ -145,7 +146,7 @@ describe.concurrent("arg parse", () => {
             extensions: ["cjs", "mts", "wasm"],
         } satisfies ConfigOptions)}`)
         const result = await resolveOptions(entries, cliArgs)
-        expect(result).toEqual({
+        expect(result).toStrictEqual({
             ...DEFAULT_BUILD_OPTIONS,
             config: path.join(process.cwd(), config),
             entry: entries.map(entry => path.join(process.cwd(), entry)),
@@ -165,7 +166,7 @@ describe.concurrent("arg parse", () => {
             extensions: ["mjs", "wasm"],
         } satisfies ConfigOptions)}`)
         const result = await resolveOptions(entries, cliArgs)
-        expect(result).toEqual({
+        expect(result).toStrictEqual({
             ...DEFAULT_BUILD_OPTIONS,
             config: path.join(process.cwd(), config),
             entry: entries.map(entry => path.join(process.cwd(), entry)),
@@ -185,7 +186,7 @@ describe.concurrent("arg parse", () => {
             extensions: ["cjs", "wasm"],
         } satisfies ConfigOptions)}`)
         const result = await resolveOptions(entries, cliArgs)
-        expect(result).toEqual({
+        expect(result).toStrictEqual({
             ...DEFAULT_BUILD_OPTIONS,
             config: path.join(process.cwd(), config),
             entry: entries.map(entry => path.join(process.cwd(), entry)),

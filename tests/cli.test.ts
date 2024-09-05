@@ -28,12 +28,12 @@ Options:
 describe.concurrent("cli stdout", () => {
     it("show help", async () => {
         const { stdout } = await $`${RUNNER} ${SCRIPT} -h`
-        expect(stdout).toEqual(HELP_OUTPUT)
+        expect(stdout).toStrictEqual(HELP_OUTPUT)
     })
 
     it("show help when no command passed", async () => {
         const { stdout } = await $`${RUNNER} ${SCRIPT}`
-        expect(stdout).toEqual(HELP_OUTPUT)
+        expect(stdout).toStrictEqual(HELP_OUTPUT)
     })
 
     it("show version", async () => {
@@ -42,7 +42,7 @@ describe.concurrent("cli stdout", () => {
     })
 
     it("should throw missing args", async () => {
-        await expect(async () => await $({ node: true })`${RUNNER} ${SCRIPT} build`).rejects.toThrowError(ExecaError)
+        await expect(async () => await $({ node: true })`${RUNNER} ${SCRIPT} build`).rejects.toThrow(ExecaError)
     })
 })
 
