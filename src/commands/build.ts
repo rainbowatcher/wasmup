@@ -195,32 +195,34 @@ function addTopLineComment(indexStr: string) {
     return `${disableComment}\n${indexStr}`
 }
 
-function replaceFetch(indexStr: string, fetchExpr: string) {
-    const nodeShims = `if (globalThis.process?.release?.name === "node") {
-            const fs = (await import('fs')).default;
-            input = fs.readFileSync(input);
-        } else {
-            input = fetch(input);
-        }`
-    return indexStr.replace(fetchExpr, nodeShims)
-}
 
 async function rewriteIndexJs(outputDir: string): Promise<void> {
     const indexFile = path.join(outputDir, "index.js")
     let indexStr = await readFile(indexFile, "utf8")
 
-    const fetchExpr = "input = fetch(input);"
-
     indexStr = addTopLineComment(indexStr)
-    indexStr = indexStr.replace("index_bg.wasm", "index.wasm")
+        .replace("index_bg.wasm", "index.wasm")
 
-    if (indexStr.includes(fetchExpr)) {
-        indexStr = replaceFetch(indexStr, fetchExpr)
-        await writeFile(indexFile, indexStr)
-        log.success(c.green("CLI"), `generate ${indexFile}`)
-    } else {
-        log.warn(c.yellow("CLI"), "generated js file may be incorrect")
+    // Check for fetch expression
+    const fetchPattern = "%s = fetch(%s);"
+
+    let replaced = false
+    // `input` is used in wasm-bindgen@0.2.92 and before, `module_or_path` is used in wasm-bindgen@0.2.93 and after
+    for (const paramName of ["input", "module_or_path"]) {
+        const expr = fetchPattern.replaceAll("%s", paramName)
+        log.debug("check for fetch expression: %s", expr)
+        if (indexStr.includes(expr)) {
+            const nodeShims = `if (globalThis.process?.release?.name === "node") { const fs = (await import('fs')).default; ${paramName} = fs.readFileSync(${paramName}); } else { ${expr} }`
+            indexStr = indexStr.replace(expr, nodeShims)
+            log.success(c.green("CLI"), `generated ${indexFile}`)
+            replaced = true
+            break
+        }
     }
+
+    if (!replaced) log.warn(c.yellow("CLI"), "no fetch expression found in index.js")
+
+    await writeFile(indexFile, indexStr)
 }
 
 async function rewriteIndexDts(outputDir: string): Promise<void> {
