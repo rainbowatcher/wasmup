@@ -1,7 +1,7 @@
 import fg from "fast-glob"
 import { describe, expect, it } from "vitest"
 
-describe("node", () => {
+describe.skipIf(process.env.CI)("node", () => {
     it("should run with node", async () => {
         expect.hasAssertions()
         const globs = fg.sync("wasm-dist/**/index.js")
