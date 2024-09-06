@@ -1,3 +1,20 @@
+## 0.7.0 (2024-09-06)
+
+* test: add test case for node to run wasm ([1754d08](https://github.com/rainbowatcher/wasmup/commit/1754d08))
+* test: fix windows compability issue ([103b65a](https://github.com/rainbowatcher/wasmup/commit/103b65a))
+* test: normalize path in expect object ([276fe07](https://github.com/rainbowatcher/wasmup/commit/276fe07))
+* test: re-organize tests ([f914e3f](https://github.com/rainbowatcher/wasmup/commit/f914e3f))
+* test: skip test in ci, because this test case need run wasmup build first ([3d4eddf](https://github.com/rainbowatcher/wasmup/commit/3d4eddf))
+* chore: add fast-glob as dev dep ([5a645f3](https://github.com/rainbowatcher/wasmup/commit/5a645f3))
+* chore: move validateOptions out of resolveOptions ([18ff4ea](https://github.com/rainbowatcher/wasmup/commit/18ff4ea))
+* chore: optimize log print and not throw error when js not match ([cb02926](https://github.com/rainbowatcher/wasmup/commit/cb02926))
+* chore: update wasm-bindgen for less project in fixture ([21bcc71](https://github.com/rainbowatcher/wasmup/commit/21bcc71))
+* feat: add info command ([99c1ce2](https://github.com/rainbowatcher/wasmup/commit/99c1ce2))
+* feat: make clean only remove items in dist ([227d7ab](https://github.com/rainbowatcher/wasmup/commit/227d7ab))
+* fix: wasm-bindgen@0.2.93 has modify the output js content ([123d7c4](https://github.com/rainbowatcher/wasmup/commit/123d7c4))
+
+
+
 ## 0.6.0 (2024-09-05)
 
 * chore: bump deps ([76bd7fc](https://github.com/rainbowatcher/wasmup/commit/76bd7fc))
