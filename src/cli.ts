@@ -2,6 +2,7 @@ import process from "node:process"
 import cac from "cac"
 import { version } from "../package.json"
 import { buildWasm } from "./commands/build"
+import { printSystemInfo } from "./commands/info"
 import { installPreRequisites } from "./commands/install"
 import { log } from "./prompts"
 
@@ -25,6 +26,9 @@ function initCliApp() {
         .example("wasmup build crates/core crates/worker --dev")
         .example("wasmup build --entry crates/core --entry crates/worker --release")
         .action(buildWasm)
+
+    app.command("info", "Show system info")
+        .action(printSystemInfo)
 
     app.version(version)
     app.help()
