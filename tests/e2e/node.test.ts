@@ -8,7 +8,7 @@ describe("node", () => {
         const promises = globs.map(async (indexPath) => {
             expect(indexPath).toBeTruthy()
             const module = await import(indexPath ?? "")
-            await module.default()
+            await module.default({})
             expect(module.hello_world()).toBe("Hello, World!")
         })
         await Promise.all(promises)
