@@ -135,7 +135,7 @@ function validateOptions(opts: BuildOptions): void {
 async function cleanOutputDir(opts: BuildOptions): Promise<void> {
     if (opts.clean) {
         log.debug("clean output directory: %s", opts.output)
-        await rimraf(opts.output)
+        await rimraf(`${opts.output}/*`, { glob: true })
         log.success(c.green("CLI"), `clean ${opts.output}`)
     }
 }
