@@ -29,6 +29,7 @@ const defu = createDefu((obj, key, value) => {
 export async function buildWasm(entries: string[], opts: CommandLineArgs): Promise<void> {
     try {
         const resolvedOpts = await resolveOptions(entries, opts)
+        validateOptions(resolvedOpts)
         await cleanOutputDir(resolvedOpts)
         await Promise.all(resolvedOpts.entry.map(entry => processEntry(entry, resolvedOpts)))
         log.success(c.green("CLI"), "build success")
@@ -87,7 +88,6 @@ export async function resolveOptions(entry: string[], args: CommandLineArgs): Pr
     if (resolvedOpts.output) {
         resolvedOpts.output = toAbsolute(resolvedOpts.output)
     }
-    validateOptions(resolvedOpts)
 
     log.debug("resolved config: %O", resolvedOpts)
     return resolvedOpts as BuildOptions
@@ -126,7 +126,7 @@ async function loadDefaultConfig(currentOpts: Partial<BuildOptions>): Promise<Pa
     return defu(currentOpts, config)
 }
 
-function validateOptions(opts: Partial<BuildOptions>): void {
+function validateOptions(opts: BuildOptions): void {
     if (opts.dev && opts.release) {
         throw new Error("Cannot specify both --dev and --release")
     }
