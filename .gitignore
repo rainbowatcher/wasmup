@@ -147,3 +147,4 @@ dist
 target
 wasm-dist
 .pnpm-store
+temp
