@@ -37,3 +37,36 @@ export const DEFAULT_BUILD_OPTIONS: Omit<BuildOptions, "config"> = {
     output: "wasm-dist",
     release: false,
 }
+
+export const NON_WEB_PLATFORM_SCRIPT = `
+
+import { initSync } from "./index.js"
+
+const wasm_url = new URL("index_bg.wasm", import.meta.url)
+let wasmCode
+switch (wasm_url.protocol) {
+    case "file:": {
+        if (globalThis.Deno) {
+            wasmCode = await Deno.readFile(wasm_url)
+        } else if (globalThis.process?.release?.name === "node") {
+            const fs = await import("fs")
+            wasmCode = await fs.promises.readFile(wasm_url)
+        } else {
+            throw new Error("platform not support")
+        }
+        break
+    }
+    case "https:":
+    case "http:": {
+        const response = await fetch(wasm_url)
+        wasmCode = await response.arrayBuffer()
+        break
+    }
+    default:
+        throw new Error(\`Unsupported protocol: \${wasm_url.protocol}\`)
+}
+
+
+initSync({module: wasmCode})
+
+export * from "./index.js"`

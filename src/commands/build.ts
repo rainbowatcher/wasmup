@@ -1,4 +1,5 @@
 /* eslint-disable unicorn/no-process-exit */
+import { writeFileSync } from "node:fs"
 import {
     readdir, readFile, unlink, writeFile,
 } from "node:fs/promises"
@@ -13,7 +14,7 @@ import c from "picocolors"
 import { rimraf } from "rimraf"
 import { parse, TomlDate } from "smol-toml"
 import { loadConfig } from "unconfig"
-import { DEFAULT_BUILD_OPTIONS } from "../consts"
+import { DEFAULT_BUILD_OPTIONS, NON_WEB_PLATFORM_SCRIPT } from "../consts"
 import { log } from "../prompts"
 import { pkgJsonComparator, stableStringify } from "../util"
 import type { TomlPrimitive } from "smol-toml"
@@ -43,8 +44,7 @@ async function processEntry(entry: string, opts: BuildOptions): Promise<void> {
     const outputDir = getOutputDir(entry, opts)
     await build(entry, outputDir, opts)
     await optimize(outputDir, opts)
-    await rewriteIndexJs(outputDir)
-    await rewriteIndexDts(outputDir)
+    generateNonWebPlatformScript(outputDir)
     await chores(outputDir, opts)
     await generatePackageJson(entry, outputDir, opts)
 }
@@ -177,7 +177,7 @@ async function optimize(outputDir: string, opts: BuildOptions): Promise<void> {
     ].filter(Boolean)
 
     const sourceWasm = path.join(outputDir, "index_bg.wasm")
-    const targetWasm = path.join(outputDir, "index.wasm")
+    const targetWasm = path.join(outputDir, "index_bg.wasm")
 
     log.debug("execute command: %s", `wasm-opt ${sourceWasm} -o ${targetWasm} ${extraOptArgs.join(" ")}`)
 
@@ -189,51 +189,9 @@ async function optimize(outputDir: string, opts: BuildOptions): Promise<void> {
     }
 }
 
-function addTopLineComment(indexStr: string) {
-    const disableComment = `/* eslint-disable unicorn/no-abusive-eslint-disable */
-/* eslint-disable */`
-    return `${disableComment}\n${indexStr}`
-}
-
-
-async function rewriteIndexJs(outputDir: string): Promise<void> {
-    const indexFile = path.join(outputDir, "index.js")
-    let indexStr = await readFile(indexFile, "utf8")
-
-    indexStr = addTopLineComment(indexStr)
-        .replace("index_bg.wasm", "index.wasm")
-
-    // Check for fetch expression
-    const fetchPattern = "%s = fetch(%s);"
-
-    let replaced = false
-    // `input` is used in wasm-bindgen@0.2.92 and before, `module_or_path` is used in wasm-bindgen@0.2.93 and after
-    for (const paramName of ["input", "module_or_path"]) {
-        const expr = fetchPattern.replaceAll("%s", paramName)
-        log.debug("check for fetch expression: %s", expr)
-        if (indexStr.includes(expr)) {
-            const nodeShims = `if (globalThis.process?.release?.name === "node") { const fs = (await import('fs')).default; ${paramName} = fs.readFileSync(${paramName}); } else { ${expr} }`
-            indexStr = indexStr.replace(expr, nodeShims)
-            log.success(c.green("CLI"), `generated ${indexFile}`)
-            replaced = true
-            break
-        }
-    }
-
-    if (!replaced) log.warn(c.yellow("CLI"), "no fetch expression found in index.js")
-
-    await writeFile(indexFile, indexStr)
-}
-
-async function rewriteIndexDts(outputDir: string): Promise<void> {
-    const indexDtsFile = path.join(outputDir, "index.d.ts")
-    log.debug("begin re-write index.d.ts: %s", indexDtsFile)
-
-    let indexDtsStr = await readFile(indexDtsFile, "utf8")
-    indexDtsStr = `/* eslint-disable unicorn/no-abusive-eslint-disable */\n${indexDtsStr}`
-
-    await writeFile(indexDtsFile, indexDtsStr)
-    log.success(c.blue("DTS"), `generate ${indexDtsFile}`)
+function generateNonWebPlatformScript(outputDir: string, fileName = "non_web.js"): void {
+    const jsFile = path.join(outputDir, fileName)
+    writeFileSync(jsFile, NON_WEB_PLATFORM_SCRIPT)
 }
 
 
@@ -269,6 +227,16 @@ async function generatePackageJson(entry: string, outputDir: string, opts: Build
         bugs,
         contributors,
         description,
+        exports: {
+            ".": {
+                import: "./index.js",
+                require: "./index.js",
+            },
+            "./non-web": {
+                import: "./non_web.js",
+                require: "./non_web.js",
+            },
+        },
         files: validFiles,
         homepage,
         keywords,
@@ -291,6 +259,7 @@ async function generatePackageJson(entry: string, outputDir: string, opts: Build
 async function parseProjectFile(entry: string): Promise<Record<string, any>> {
     const cargoPath = path.join(entry, "Cargo.toml")
     const file = await readFile(cargoPath, "utf8")
+
     let parentCargoFile: Record<string, TomlPrimitive> = {}
     if (file.includes("workspace")) {
         const parentFilePath = await findUp("Cargo.toml", { cwd: path.dirname(toAbsolute(entry)), type: "file" })
@@ -328,8 +297,6 @@ function resolveCargoWorkspace(parent: Record<string, any>, project: Record<stri
 
 async function chores(outputDir: string, opts: BuildOptions): Promise<void> {
     const filesToRemove = [
-        "index_bg.wasm",
-        "index_bg.wasm.d.ts",
         opts.ignoreOutput ? "" : ".gitignore",
     ].filter(Boolean)
 
