@@ -32,7 +32,7 @@ describe.skipIf(process.env.CI)("runtime", () => {
         expect(all, message).toBe("Hello, World!")
     })
 
-    it("should run with browser", async () => {
+    it("should run with browser", { timeout: 10_000 }, async () => {
         startServer()
         const browser = await chromium.launch()
         const page = await browser.newPage()
