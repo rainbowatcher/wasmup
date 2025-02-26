@@ -1,10 +1,10 @@
 import process from "node:process"
 import cac from "cac"
-import { version } from "../package.json"
 import { buildWasm } from "./commands/build"
 import { printSystemInfo } from "./commands/info"
 import { installPreRequisites } from "./commands/install"
 import { log } from "./prompts"
+import { version } from "../package.json"
 
 function initCliApp() {
     const app = cac("wasmup")

@@ -15,8 +15,8 @@ import type {
 
 export function symbol(state: State) {
     switch (state) {
-        case "initial":
-        case "active": {
+        case "active":
+        case "initial": {
             return c.cyan(S_STEP_ACTIVE)
         }
         case "cancel": {
@@ -50,11 +50,11 @@ export async function confirm(opts: ConfirmOptions | string): Promise<string> {
                 ? `${c.green(S_RADIO_ACTIVE)} ${active} / ${c.gray(S_RADIO_INACTIVE)} ${inactive}`
                 : `${c.gray(S_RADIO_INACTIVE)} ${active} / ${c.green(S_RADIO_ACTIVE)} ${inactive}`
             switch (this.state) {
-                case "submit": {
-                    return `${title} ${value}`
-                }
                 case "cancel": {
                     return `${title} ${c.strikethrough(value)}`
+                }
+                case "submit": {
+                    return `${title} ${value}`
                 }
                 default: {
                     return `${title} \n${toggle}`
@@ -108,9 +108,6 @@ export async function select<Value>(opts: SelectOptions<Value>): Promise<string>
     const opt = (option: Option<Value>, state: "active" | "cancelled" | "inactive" | "selected") => {
         const label = option.label ?? String(option.value)
         switch (state) {
-            case "selected": {
-                return `${c.dim(label)}`
-            }
             case "active": {
                 return `${c.green(S_RADIO_ACTIVE)} ${label} ${
                     option.hint ? c.dim(`(${option.hint})`) : ""
@@ -118,6 +115,9 @@ export async function select<Value>(opts: SelectOptions<Value>): Promise<string>
             }
             case "cancelled": {
                 return `${c.strikethrough(c.dim(label))}`
+            }
+            case "selected": {
+                return `${c.dim(label)}`
             }
             default: {
                 return `${c.dim(S_RADIO_INACTIVE)} ${c.dim(label)}`
@@ -133,14 +133,14 @@ export async function select<Value>(opts: SelectOptions<Value>): Promise<string>
             const title = `${symbol(this.state)} ${opts.message}`
 
             switch (this.state) {
-                case "submit": {
-                    return `${title} ${opt(this.options[this.cursor], "selected")}`
-                }
                 case "cancel": {
                     return `${title} ${opt(
                         this.options[this.cursor],
                         "cancelled",
                     )}\n`
+                }
+                case "submit": {
+                    return `${title} ${opt(this.options[this.cursor], "selected")}`
                 }
                 default: {
                     return `${title}\n${limitOptions({

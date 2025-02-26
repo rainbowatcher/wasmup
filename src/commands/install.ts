@@ -81,8 +81,16 @@ export async function installPreRequisites(args: any) {
 
 async function install(pm: string, name: string) {
     switch (pm) {
+        case "bun": {
+            await execa("bun", ["install", name, "-g"])
+            break
+        }
         case "cargo": {
             await execa("cargo", ["install", name, "--locked"])
+            break
+        }
+        case "local": {
+            console.log("not implement yet")
             break
         }
         case "npm": {
@@ -95,14 +103,6 @@ async function install(pm: string, name: string) {
         }
         case "yarn": {
             await execa("yarn", ["global", "add", name])
-            break
-        }
-        case "bun": {
-            await execa("bun", ["install", name, "-g"])
-            break
-        }
-        case "local": {
-            console.log("not implement yet")
             break
         }
     }
