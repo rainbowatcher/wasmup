@@ -27,6 +27,7 @@ const defu = createDefu((obj, key, value) => {
     }
 })
 
+
 export async function buildWasm(entries: string[], opts: CommandLineArgs): Promise<void> {
     try {
         const resolvedOpts = await resolveOptions(entries, opts)
@@ -43,7 +44,6 @@ export async function buildWasm(entries: string[], opts: CommandLineArgs): Promi
 async function processEntry(entry: string, opts: BuildOptions): Promise<void> {
     const outputDir = getOutputDir(entry, opts)
     await build(entry, outputDir, opts)
-    await optimize(outputDir, opts)
     generateNonWebPlatformScript(outputDir)
     await chores(outputDir, opts)
     await generatePackageJson(entry, outputDir, opts)
@@ -147,7 +147,6 @@ async function build(entry: string, outputDir: string, opts: BuildOptions): Prom
         "build",
         "-t",
         "web",
-        "--no-opt",
         "--no-pack",
         "--out-name",
         "index",
@@ -167,27 +166,6 @@ async function build(entry: string, outputDir: string, opts: BuildOptions): Prom
     }
 }
 
-async function optimize(outputDir: string, opts: BuildOptions): Promise<void> {
-    const extraOptArgs = [
-        ...(opts.release ? ["--strip-dwarf", "--zero-filled-memory", "--strip-debug", "--flatten", "--vacuum", "--rse"] : []),
-        "--optimize-level",
-        `${opts.opt.optLevel}`,
-        "--shrink-level",
-        `${opts.opt.shrinkLevel}`,
-    ].filter(Boolean)
-
-    const sourceWasm = path.join(outputDir, "index_bg.wasm")
-    const targetWasm = path.join(outputDir, "index_bg.wasm")
-
-    log.debug("execute command: %s", `wasm-opt ${sourceWasm} -o ${targetWasm} ${extraOptArgs.join(" ")}`)
-
-    try {
-        await execa("wasm-opt", [sourceWasm, "-o", targetWasm, ...extraOptArgs])
-        log.success(c.green("CLI"), `optimize ${targetWasm}`)
-    } catch (error: any) {
-        throw new Error(`Optimization failed: ${error.message}`)
-    }
-}
 
 function generateNonWebPlatformScript(outputDir: string, fileName = "non_web.js"): void {
     const jsFile = path.join(outputDir, fileName)

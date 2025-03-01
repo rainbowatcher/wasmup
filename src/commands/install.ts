@@ -6,18 +6,16 @@ import {
     confirm, createSpinner, log, select,
 } from "../prompts"
 import { commandExists } from "../util"
-import { getLatestRelease } from "../util/github"
 import type { PackageManager } from "../prompts/types"
 
 const WASM_PACK = "wasm-pack"
-const WASM_OPT = "wasm-opt"
 
 export async function installPreRequisites(args: any) {
     const { dry } = args
 
     if (process.env.CI) {
         log.info("CI detected, install pre-requisites through package manager")
-        const { exitCode } = await execa("pnpm", ["install", "-g", WASM_PACK, WASM_OPT])
+        const { exitCode } = await execa("pnpm", ["install", "-g", WASM_PACK])
         log.info("Install pre-requisites done")
         process.exit(exitCode)
     }
@@ -31,7 +29,6 @@ export async function installPreRequisites(args: any) {
         spinner.stop("Command cargo is not found", 1)
     }
     const isWasmPackExists = await commandExists(WASM_PACK)
-    const isWasmOptExists = await commandExists(WASM_OPT)
     const ctx = {
         installWasmOpt: false,
         installWasmPack: false,
@@ -45,16 +42,6 @@ export async function installPreRequisites(args: any) {
             process.exit(0)
         }
         ctx.installWasmPack = true
-    }
-
-    if (!isWasmOptExists) {
-        spinner.stop()
-        const installWasmOpt = await confirm("Command wasm-opt is not found, install it?")
-        if (!installWasmOpt) {
-            log.info("Please install wasm-opt manually")
-            process.exit(0)
-        }
-        ctx.installWasmOpt = true
     }
 
     log.info(c.dim("cargo is recommended, because nodejs or bun may fail due to proxy issue by fetch"))
@@ -74,7 +61,6 @@ export async function installPreRequisites(args: any) {
     spinner.start("Installing wasm-pack...")
     if (!dry) {
         ctx.installWasmPack && await install(pm, WASM_PACK)
-        ctx.installWasmOpt && await install(pm, WASM_OPT)
     }
     spinner.stop(`All pre-requisites are installed${dryRun}`)
 }
@@ -106,18 +92,4 @@ async function install(pm: string, name: string) {
             break
         }
     }
-}
-
-export async function getBinaryenDownloadUrl() {
-    const arch = process.arch === "x64" ? "x86_64" : (process.arch === "arm64" ? "arm64" : "not supported")
-    const os = process.platform === "win32" ? "windows" : (process.platform === "darwin" ? "macos" : "linux")
-    if (arch === "not supported") {
-        throw new Error("Unsupported platform")
-    }
-    const json = await getLatestRelease("WebAssembly", "binaryen")
-    const { assets, tag_name: binaryenVersion } = json
-    const assetName = `binaryen-${binaryenVersion}-${arch}-${os}.tar.gz`
-    const url = (assets as any[]).find(asset => asset.name === assetName).browser_download_url
-
-    return url as string
 }
