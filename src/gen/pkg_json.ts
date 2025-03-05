@@ -41,7 +41,7 @@ export async function generatePkgJson({ entry, opts, outputDir }: BuildContext) 
         homepage: customHomepage ?? (typeof repository === "string" ? `${repository}#readme` : undefined),
         keywords,
         license,
-                name: opts.scope ? `@${opts.scope}/${cargoPkgName}` : cargoPkgName,
+        name: opts.scope ? `@${opts.scope}/${cargoPkgName}` : cargoPkgName,
         repository,
         type: "module",
         types: "index.d.ts",
