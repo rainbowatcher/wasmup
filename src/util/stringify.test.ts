@@ -1,7 +1,8 @@
 import dedent from "dedent"
 import { describe, expect, it } from "vitest"
-import stableStringify, { pkgJsonComparator } from "../src/util/stringify"
-import type { KVPair } from "../src/util/stringify"
+import { stableStringify } from "./stringify"
+import { pkgJsonComparator } from "../gen/pkg_json"
+import type { KVPair } from "./stringify"
 
 describe.concurrent("stableStringify", () => {
     it("should stringify simple objects", () => {

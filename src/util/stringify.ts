@@ -1,5 +1,5 @@
 // modify from https://github.com/ljharb/json-stable-stringify/blob/main/index.js
-export type KVPair = { key: string; value: any }
+type KVPair = { key: string; value: any }
 
 type ReplacerFunction<T extends any = any> = (key: string, value: T) => T
 
@@ -15,58 +15,8 @@ type StringifyOptions = {
 // eslint-disable-next-line ts/no-unsafe-return
 const defaultReplacer: ReplacerFunction = (_, value) => value
 
-export const pkgJsonComparator: CompareFunction = (a, b) => {
-    const order = [
-        "publisher",
-        "name",
-        "displayName",
-        "type",
-        "version",
-        "private",
-        "packageManager",
-        "description",
-        "author",
-        "license",
-        "funding",
-        "homepage",
-        "repository",
-        "bugs",
-        "keywords",
-        "categories",
-        "sideEffects",
-        "exports",
-        "main",
-        "module",
-        "unpkg",
-        "jsdelivr",
-        "types",
-        "typesVersions",
-        "bin",
-        "icon",
-        "files",
-        "engines",
-        "activationEvents",
-        "contributes",
-        "scripts",
-        "peerDependencies",
-        "peerDependenciesMeta",
-        "dependencies",
-        "optionalDependencies",
-        "devDependencies",
-        "pnpm",
-        "overrides",
-        "resolutions",
-        "husky",
-        "simple-git-hooks",
-        "lint-staged",
-        "eslintConfig",
-    ]
-    const idxPre = order.includes(a.key) ? order.indexOf(a.key) : 99
-    const idxNext = order.includes(b.key) ? order.indexOf(b.key) : 99
-    return idxPre - idxNext
-}
 
-export function stableStringify(obj: any, options: StringifyOptions = {}): string {
+function stableStringify(obj: any, options: StringifyOptions = {}): string {
     const {
         cmp,
         cycles = false,
@@ -133,4 +83,6 @@ export function stableStringify(obj: any, options: StringifyOptions = {}): strin
     return stringify({ "": obj }, "", obj, 0) ?? "null"
 }
 
-export default stableStringify
+export { stableStringify }
+
+export type { CompareFunction, KVPair }

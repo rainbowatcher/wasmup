@@ -1,6 +1,6 @@
 import process from "node:process"
 import cac from "cac"
-import { buildWasm } from "./commands/build"
+import { runBuildCmd } from "./commands/build"
 import { printSystemInfo } from "./commands/info"
 import { installPreRequisites } from "./commands/install"
 import { log } from "./prompts"
@@ -25,7 +25,7 @@ function initCliApp() {
         .option("--scope <scope>", "The npm scope to use in package.json")
         .example("wasmup build crates/core crates/worker --dev")
         .example("wasmup build --entry crates/core --entry crates/worker --release")
-        .action(buildWasm)
+        .action(runBuildCmd)
 
     app.command("info", "Show system info")
         .action(printSystemInfo)

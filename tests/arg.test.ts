@@ -1,12 +1,13 @@
 import { writeFile } from "node:fs/promises"
 import path from "node:path"
 import { toAbsolute } from "@rainbowatcher/path-extra"
+import { c } from "tar"
 import {
     afterAll, describe, expect, it,
 } from "vitest"
-import { resolveOptions } from "../src/commands/build"
+import BuildCommand from "../src/commands/build"
 import { DEFAULT_BUILD_OPTIONS } from "../src/consts"
-import type { CommandLineArgs, ConfigOptions } from "../src/util"
+import type { CommandLineArgs, ConfigOptions } from "../src/types"
 
 
 describe.concurrent("arg parse", () => {
@@ -51,10 +52,6 @@ describe.concurrent("arg parse", () => {
         it("should merge with config", async () => {
             await writeFile(JSON_CONFIG, JSON.stringify({
                 clean: true,
-                opt: {
-                    optLevel: "2",
-                    shrinkLevel: "1",
-                },
                 release: false,
             } satisfies ConfigOptions))
             const cliArgs: CommandLineArgs = {
@@ -66,10 +63,6 @@ describe.concurrent("arg parse", () => {
                 clean: true,
                 config: toAbsolute(JSON_CONFIG),
                 entry: entries.map(entry => toAbsolute(entry)),
-                opt: {
-                    optLevel: "2",
-                    shrinkLevel: "1",
-                },
                 output: toAbsolute(DEFAULT_BUILD_OPTIONS.output),
             })
         })
@@ -187,3 +180,9 @@ describe.concurrent("arg parse", () => {
         })
     })
 })
+
+async function resolveOptions(entries: string[], cliArgs: CommandLineArgs) {
+    const buildCommand = new BuildCommand(entries, cliArgs)
+    await buildCommand.resolveOptions()
+    return buildCommand.opts
+}

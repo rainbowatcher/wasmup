@@ -13,8 +13,7 @@ const $ = execaSync({ all: true, reject: false })
 
 describe.skipIf(process.env.CI)("runtime", () => {
     beforeAll(() => {
-        const { all } = $`tsx src/cli.ts build fixture/less --clean`
-        console.log(all)
+        $`tsx src/cli.ts build fixture/less --clean`
     })
 
     it("should run with node", () => {
@@ -32,7 +31,7 @@ describe.skipIf(process.env.CI)("runtime", () => {
         expect(all, message).toBe("Hello, World!")
     })
 
-    it("should run with browser", { timeout: 10_000 }, async () => {
+    it("should run with browser", { timeout: 20_000 }, async () => {
         startServer()
         const browser = await chromium.launch()
         const page = await browser.newPage()

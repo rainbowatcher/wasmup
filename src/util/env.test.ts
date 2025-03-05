@@ -2,7 +2,7 @@ import fs from "node:fs/promises"
 import { tmpdir } from "node:os"
 import process from "node:process"
 import { describe, expect, it } from "vitest"
-import { commandExists } from "../src/util"
+import { commandExists } from "./env"
 
 
 describe("commandExists", () => {

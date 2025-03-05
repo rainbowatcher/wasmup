@@ -5,7 +5,6 @@ export default defineConfig({
         coverage: {
             include: ["src/*"],
         },
-        dir: "tests",
         name: "wasmup",
     },
 })

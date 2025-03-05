@@ -14,14 +14,20 @@
     ],
     "cSpell.words": [
         "binaryen",
+        "bindgen",
         "defu",
+        "demangle",
         "Deno",
         "dtolnay",
+        "gufa",
+        "lookpath",
         "ofetch",
         "pwasm",
+        "rainbowatcher",
         "smol",
         "taiki",
         "unconfig",
         "wasmup",
+        "webassembly"
     ],
 }
