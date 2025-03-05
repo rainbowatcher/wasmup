@@ -2,7 +2,7 @@ import os from "node:os"
 import process from "node:process"
 import { execaSync } from "execa"
 import { commandExists } from "../util"
-import type { CommandLineArgs } from "../util"
+import type { CommandLineArgs } from "../types"
 
 const execa = execaSync({ all: true, reject: false })
 

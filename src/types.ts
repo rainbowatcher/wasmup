@@ -1,12 +1,10 @@
-/* v8 ignore next 3 */
-export function defineConfig(config: ConfigOptions) {
-    return config
+type BuildContext = {
+    entry: string
+    opts: BuildOptions
+    outputDir: string
 }
 
-export type ConfigOptions = Partial<Omit<BuildOptions, "config">>
-export type CommandLineArgs = Partial<Omit<BuildOptions, "opt">>
-
-export type BuildOptions = {
+type BuildOptions = {
     /**
      * Whether to clean output directory
      * @default false
@@ -49,11 +47,6 @@ export type BuildOptions = {
     ignoreOutput: boolean
 
     /**
-     * Optimization settings
-     */
-    opt: Optimization
-
-    /**
      * The wasm build output path
      */
     output: string
@@ -71,16 +64,12 @@ export type BuildOptions = {
     scope?: string
 }
 
-export type Optimization = {
-    /**
-     * Optimization level
-     * @default 4
-     */
-    optLevel: string
+type ConfigOptions = Partial<Omit<BuildOptions, "config">>
+type CommandLineArgs = Partial<Omit<BuildOptions, "opts">>
 
-    /**
-     * Shrink level
-     * @default 4
-     */
-    shrinkLevel: string
+type MaybeUndefined<T> = T | undefined
+
+
+export type {
+    BuildContext, BuildOptions, CommandLineArgs, ConfigOptions, MaybeUndefined,
 }
