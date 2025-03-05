@@ -1,7 +1,6 @@
 import { writeFile } from "node:fs/promises"
 import path from "node:path"
 import { toAbsolute } from "@rainbowatcher/path-extra"
-import { c } from "tar"
 import {
     afterAll, describe, expect, it,
 } from "vitest"
