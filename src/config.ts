@@ -1,6 +1,5 @@
 import { isFileSync } from "@rainbowatcher/fs-extra"
 import { toAbsolute } from "@rainbowatcher/path-extra"
-import defu from "defu"
 import { loadConfig } from "unconfig"
 import { log } from "./prompts"
 import type { BuildOptions, CommandLineArgs } from "./types"
@@ -39,7 +38,7 @@ async function loadUserSpecifiedConfigFile(configPath: string): Promise<Partial<
     })
 
     log.debug("load specified config file: %s", sources)
-    return defu({ config: absConfigPath }, config)
+    return { ...config, config: configPath }
 }
 
 export async function loadWasmupConfig(args: CommandLineArgs): Promise<Partial<BuildOptions>> {

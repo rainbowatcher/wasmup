@@ -28,6 +28,6 @@
         "taiki",
         "unconfig",
         "wasmup",
-        "webassembly"
+        "webassembly",
     ],
 }
