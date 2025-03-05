@@ -60,6 +60,22 @@ class BuildCommand {
             : output
     }
 
+    private mergeBuildOptions(entries: string[], userConfig: Partial<BuildOptions>): BuildOptions {
+        const cliOptions = {
+            ...this.#cliArgs,
+            entry: entries,
+        }
+        return merge(cliOptions, userConfig, DEFAULT_BUILD_OPTIONS) as BuildOptions
+    }
+
+    private normalizeFilePaths(buildOpts: BuildOptions): void {
+        buildOpts.entry = buildOpts.entry?.map(entry => toAbsolute(entry))
+        buildOpts.output = toAbsolute(buildOpts.output)
+        if (buildOpts.config) {
+            buildOpts.config = toAbsolute(buildOpts.config)
+        }
+    }
+
     async process(): Promise<void> {
         const tasks = this.#opts.entry.map(async (entry) => {
             const outputDir = this.getOutputDir(entry)
@@ -80,26 +96,24 @@ class BuildCommand {
         await Promise.all(tasks)
     }
 
+    private resolveEntries(userConfig: Partial<BuildOptions>): string[] {
+        if (typeof this.#cliArgs.entry === "string") {
+            return [this.#cliArgs.entry]
+        }
+        if (Array.isArray(this.#cliArgs.entry)) {
+            return this.#cliArgs.entry
+        }
+        if (userConfig?.entry) {
+            return userConfig.entry
+        }
+        return this.#entries
+    }
+
     async resolveOptions() {
         const userConfig = await loadWasmupConfig(this.#cliArgs)
-        let entries = this.#entries
-        if (typeof this.#cliArgs.entry === "string") {
-            entries = [this.#cliArgs.entry]
-        } else if (Array.isArray(this.#cliArgs.entry)) {
-            entries = this.#cliArgs.entry
-        } else if (userConfig?.entry) {
-            entries = userConfig.entry
-        }
-        const cliOptions = {
-            ...this.#cliArgs,
-            entry: entries,
-        }
-        const buildOpts = merge(cliOptions, userConfig, DEFAULT_BUILD_OPTIONS) as BuildOptions
-        buildOpts.entry = buildOpts.entry?.map(entry => toAbsolute(entry))
-        buildOpts.output = toAbsolute(buildOpts.output)
-        if (buildOpts.config) {
-            buildOpts.config = toAbsolute(buildOpts.config)
-        }
+        const entries = this.resolveEntries(userConfig)
+        const buildOpts = this.mergeBuildOptions(entries, userConfig)
+        this.normalizeFilePaths(buildOpts)
         log.debug("resolved options: %O", buildOpts)
         this.#opts = buildOpts
     }
