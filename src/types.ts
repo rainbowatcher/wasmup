@@ -62,6 +62,15 @@ type BuildOptions = {
      * @default undefined
      */
     scope?: string
+
+    /**
+     * Whether to generate shims
+     * @summary
+     * The shims are used to provide compatibility with nodejs/deno/bun platforms
+     * and provide a way to check functions parameters
+     * @default false
+     */
+    shims?: boolean
 }
 
 type ConfigOptions = Partial<Omit<BuildOptions, "config">>
@@ -69,7 +78,25 @@ type CommandLineArgs = Partial<Omit<BuildOptions, "opts">>
 
 type MaybeUndefined<T> = T | undefined
 
+/**
+ * Function parameter, only fit for primitive types
+ */
+type FuncParam = {
+    name: string
+    type: string
+}
+
+type FuncDeclare = {
+    name: string
+    params: FuncParam[]
+    returnType: string
+}
+
+type DtsExports = {
+    classes: string[]
+    functions: FuncDeclare[]
+}
 
 export type {
-    BuildContext, BuildOptions, CommandLineArgs, ConfigOptions, MaybeUndefined,
+    BuildContext, BuildOptions, CommandLineArgs, ConfigOptions, DtsExports, FuncDeclare, FuncParam, MaybeUndefined,
 }

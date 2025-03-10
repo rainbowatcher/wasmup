@@ -31,4 +31,13 @@ export const DEFAULT_BUILD_OPTIONS: Omit<BuildOptions, "config" | "entry"> = {
     ignoreOutput: false,
     output: "wasm-dist",
     release: false,
+    shims: false,
 }
+
+export const SHIMS = "shims"
+
+export const PRIMITIVE_TYPES = [
+    "string",
+    "number",
+    "boolean",
+]

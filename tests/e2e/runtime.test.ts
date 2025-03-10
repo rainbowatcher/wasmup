@@ -13,7 +13,7 @@ const $ = execaSync({ all: true, reject: false })
 
 describe.skipIf(process.env.CI)("runtime", () => {
     beforeAll(() => {
-        $`tsx src/cli.ts build fixture/less --clean`
+        $`tsx src/cli.ts build fixture/less --clean --shims`
     })
 
     it("should run with node", () => {

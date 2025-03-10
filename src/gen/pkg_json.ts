@@ -1,6 +1,7 @@
 import { readdir } from "node:fs/promises"
 import path from "node:path"
 import { parseProjectFile } from "../cargo"
+import { SHIMS } from "../consts"
 import type { BuildContext } from "../types"
 import type { CompareFunction } from "../util"
 
@@ -28,14 +29,8 @@ export async function generatePkgJson({ entry, opts, outputDir }: BuildContext) 
         contributors: authors?.length > 1 ? authors.slice(1) : undefined,
         description,
         exports: {
-            ".": {
-                import: "./index.js",
-                require: "./index.js",
-            },
-            "./non-web": {
-                import: "./non_web.js",
-                require: "./non_web.js",
-            },
+            ".": "./index.js",
+            [`./${SHIMS}`]: `./${SHIMS}.js`,
         },
         files: validFiles,
         homepage: customHomepage ?? (typeof repository === "string" ? `${repository}#readme` : undefined),
