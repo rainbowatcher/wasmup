@@ -23,6 +23,7 @@ function initCliApp() {
         .option("-o, --output <output>", "Output path")
         .option("--release", "Build for release")
         .option("--scope <scope>", "The npm scope to use in package.json")
+        .option("--shims", "Generate shims")
         .example("wasmup build crates/core crates/worker --dev")
         .example("wasmup build --entry crates/core --entry crates/worker --release")
         .action(runBuildCmd)

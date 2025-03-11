@@ -7,7 +7,7 @@ import { toAbsolute } from "@rainbowatcher/path-extra"
 import { execa } from "execa"
 import c from "picocolors"
 import { loadWasmupConfig } from "../config"
-import { DEFAULT_BUILD_OPTIONS } from "../consts"
+import { DEFAULT_BUILD_OPTIONS, SHIMS } from "../consts"
 import { generatePkgJson, pkgJsonComparator } from "../gen/pkg_json"
 import { generateShims } from "../gen/shims"
 import { log } from "../prompts"
@@ -47,9 +47,10 @@ class BuildCommand {
 
         try {
             await execa("wasm-pack", buildCommand)
-            log.success(c.green("CLI"), `build ${entry}`)
+            log.success(c.green("BUILD"), `build: ${entry}`)
         } catch (error: any) {
-            throw new Error(`Build failed: ${error.message}`)
+            log.error(c.red("BUILD"), `build: ${entry} failed: ${error.message}`)
+            process.exit(1)
         }
     }
 
@@ -78,11 +79,11 @@ class BuildCommand {
 
     async process(): Promise<void> {
         const tasks = this.#opts.entry.map(async (entry) => {
+            log.info(c.blue("BUILD"), `start build for entry: ${entry}`)
             const outputDir = this.getOutputDir(entry)
             const context: BuildContext = { entry, opts: this.#opts, outputDir }
-
             await this.build(context)
-            await generateShims(outputDir, "non_web.js")
+            await generateShims(outputDir, this.#opts, `${SHIMS}.js`)
             if (this.#opts.ignoreOutput) {
                 await tryRemoveFile(path.join(outputDir, ".gitignore"))
             }
@@ -91,7 +92,7 @@ class BuildCommand {
                 path.join(outputDir, "package.json"),
                 `${stableStringify(pkgJson, { cmp: pkgJsonComparator, space: 4 })}\n`,
             )
-            log.debug("package.json generated")
+            log.success(c.green("PKG"), "package.json generated")
         })
         await Promise.all(tasks)
     }
@@ -124,9 +125,9 @@ class BuildCommand {
             this.validate()
             if (this.#opts.clean) {
                 await tryClearDir(this.#opts.output)
+                log.success(c.green("CLEAN"), "clean output dir")
             }
             await this.process()
-            log.success(c.green("CLI"), "build success")
         } catch (error: any) {
             log.error(`build failed: ${error.message}`)
             process.exit(1)
@@ -155,6 +156,7 @@ class BuildCommand {
         if (dev && release) {
             throw new Error("Cannot specify both --dev and --release")
         }
+        log.debug("options validation passed")
     }
 
     get opts() {
