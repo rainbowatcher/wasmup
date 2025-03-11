@@ -31,13 +31,15 @@ switch (wasm_url.protocol) {
 }
 
 export function initSync(module_or_path) {
-    if (module_or_path !== undefined 
-        && module_or_path !== null 
-        && typeof module_or_path === 'object'
-        && Object.keys(module_or_path).length > 0
-        ) return original_initSync(module_or_path);
     if (typeof wasmCode === "undefined") {
-        if (isDeno) {
+        if (module_or_path !== undefined 
+            && module_or_path !== null 
+            && typeof module_or_path === 'object'
+            && Object.keys(module_or_path).length > 0
+            ) {
+            wasmCode = original_initSync(module_or_path);
+            return
+        } else if (isDeno) {
             wasmCode = Deno.readFileSync(wasm_url);
         } else if (isNode) {
             wasmCode = fs.readFileSync(wasm_url);
