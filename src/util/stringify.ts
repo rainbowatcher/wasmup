@@ -12,7 +12,6 @@ type StringifyOptions = {
     space?: number | string
 }
 
-// eslint-disable-next-line ts/no-unsafe-return
 const defaultReplacer: ReplacerFunction = (_, value) => value
 
 

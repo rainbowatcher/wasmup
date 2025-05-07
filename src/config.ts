@@ -12,7 +12,6 @@ async function loadDefaultConfig(): Promise<Partial<BuildOptions>> {
         }, {
             files: "package.json",
             rewrite(config: any) {
-                // eslint-disable-next-line ts/no-unsafe-return
                 return config.wasmup
             },
         }],

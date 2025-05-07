@@ -177,7 +177,6 @@ function resolveMsgArr(messages: any[]) {
         if (typeof m === "object") {
             return JSON.stringify(m)
         } else {
-            // eslint-disable-next-line ts/no-unsafe-return
             return m
         }
     }).join(" ")

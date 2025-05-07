@@ -21,7 +21,6 @@ describe("mergeWith", () => {
 
         const result = mergeWith(target, source, (objValue, srcValue) => {
             if (Array.isArray(objValue)) {
-                // eslint-disable-next-line ts/no-unsafe-return
                 return [...objValue, ...srcValue]
             }
         })

@@ -45,7 +45,6 @@ describe.concurrent("stableStringify", () => {
 
     it("should handle custom replacer functions", () => {
         const obj = { a: 1, b: 2, c: 3 }
-        // eslint-disable-next-line ts/no-unsafe-return
         const replacer = (key: string, value: any) => (key === "a" ? undefined : value)
         expect(stableStringify(obj, { replacer })).toBe('{"b":2,"c":3}')
     })
