@@ -29,6 +29,6 @@
         "tsdown",
         "unconfig",
         "wasmup",
-        "webassembly"
+        "webassembly",
     ],
 }
