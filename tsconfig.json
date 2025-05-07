@@ -19,6 +19,5 @@
         "vitest.config.ts",
         "tsup.config.ts",
         "wasmup.config.ts",
-        "cross-release.config.ts"
     ]
 }
