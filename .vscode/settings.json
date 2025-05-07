@@ -26,8 +26,9 @@
         "rainbowatcher",
         "smol",
         "taiki",
+        "tsdown",
         "unconfig",
         "wasmup",
-        "webassembly",
+        "webassembly"
     ],
 }

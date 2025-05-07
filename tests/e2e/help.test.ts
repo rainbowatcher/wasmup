@@ -1,6 +1,6 @@
 import { $, ExecaError } from "execa"
 import { describe, expect, it } from "vitest"
-import { version } from "../../package.json"
+import { version } from "../../package.json" with { type: "json" }
 
 const RUNNER = "tsx"
 const SCRIPT = "src/cli.ts"
