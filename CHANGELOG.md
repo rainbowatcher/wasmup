@@ -1,3 +1,9 @@
+## <small>0.8.2 (2025-05-14)</small>
+
+* fix: should handle union type ([26b8665](https://github.com/rainbowatcher/wasmup/commit/26b8665))
+
+
+
 ## <small>0.8.1 (2025-05-14)</small>
 
 * fix: property in config should optional ([92dc89b](https://github.com/rainbowatcher/wasmup/commit/92dc89b))
