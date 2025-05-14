@@ -224,7 +224,7 @@ function genValidationFunc(param: FuncParam): string {
         for (const ty of unions) {
             assertion.push(`!(${name} instanceof ${ty})`)
         }
-        return `if ${assertion.join(" && ")} { throw new Error("Invalid parameter: ${name} must be a ${type}"); }`
+        return `if (${assertion.join(" && ")}) { throw new Error("Invalid parameter: ${name} must be a ${type}"); }`
     }
     return `if (!(${name} instanceof ${type})) { throw new Error("Invalid parameter: ${name} must be a ${type}"); }`
 }
