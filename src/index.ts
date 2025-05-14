@@ -1,5 +1,5 @@
-import type { BuildOptions } from "./types"
+import type { ConfigOptions } from "./types"
 
-export function defineConfig(config: BuildOptions) {
+export function defineConfig(config: ConfigOptions) {
     return config
 }
