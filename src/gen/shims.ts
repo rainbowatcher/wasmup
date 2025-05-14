@@ -218,6 +218,13 @@ function genValidationFunc(param: FuncParam): string {
         return `if (!(${name} instanceof ${jsTypName})) { throw new Error("Invalid parameter: ${name} must be a ${jsTypName}"); }`
     } else if (PRIMITIVE_TYPES.includes(type)) {
         return `if (typeof ${name} !== "${type}") { throw new Error("Invalid parameter: ${name} must be a ${type}"); }`
+    } else if (type.includes("|")) { // is union type
+        const unions = type.split("|").map(i => i.trim())
+        const assertion: string[] = []
+        for (const ty of unions) {
+            assertion.push(`!(${name} instanceof ${ty})`)
+        }
+        return `if ${assertion.join(" && ")} { throw new Error("Invalid parameter: ${name} must be a ${type}"); }`
     }
     return `if (!(${name} instanceof ${type})) { throw new Error("Invalid parameter: ${name} must be a ${type}"); }`
 }
