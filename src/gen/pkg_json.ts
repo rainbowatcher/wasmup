@@ -43,7 +43,7 @@ export async function generatePkgJson({ entry, opts, outputDir }: BuildContext) 
         name: opts.scope ? `@${opts.scope}/${cargoPkgName}` : cargoPkgName,
         repository,
         type: "module",
-        types: "index.d.ts",
+        types: opts.shims ? "shims.d.ts" : "index.d.ts",
         version,
     }
 }
