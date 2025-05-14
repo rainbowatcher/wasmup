@@ -34,7 +34,7 @@
         "lint": "eslint .",
         "prepare": "simple-git-hooks",
         "changelog": "conventional-changelog -si CHANGELOG.md",
-        "release": "cross-release --all -x 'pnpm changelog' && pnpm build && npm publish",
+        "release": "cross-release -ayx 'pnpm changelog' && pnpm build && npm publish",
         "start": "tsx src/cli.ts",
         "test": "vitest",
         "prepare:playwright": "playwright install chromium",
