@@ -100,8 +100,8 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0(conventional-commits-filter@5.0.0)
       cross-release-cli:
-        specifier: ^0.2.2
-        version: 0.2.2
+        specifier: ^0.3.0
+        version: 0.3.0
       dedent:
         specifier: ^1.6.0
         version: 1.6.0
@@ -1491,11 +1491,11 @@ packages:
       typescript:
         optional: true
 
-  cross-bump@0.2.2:
-    resolution: {integrity: sha512-uQKh0kfBxXHmTykD+hz9nU55/4Tbmxr4XQurqEefZy8VYwjiLEAEmrU3KpUamKp4yLKsIiLDR2ddZdjufygWtA==}
+  cross-bump@0.3.0:
+    resolution: {integrity: sha512-wpnYj3ubhn5/gwA+3csag4i9y5SFyEQXuoGs2jQXVuveKCkkzhGXG6mPfyGr1TwBAVEnPRypGDFLwdhz2G/vnA==}
 
-  cross-release-cli@0.2.2:
-    resolution: {integrity: sha512-SBv5Qh6NR4g2ISyCBVHfbj/Kynf+NrTz4rDgAxEz/km18MkbvIeWH8NECzK9taD8kI4M5UfmD8Fkl2rCDHC01Q==}
+  cross-release-cli@0.3.0:
+    resolution: {integrity: sha512-MKLTAxvQXG+yGErf8zgkkuWLXNywIaeDd+dmFl6PQA2r6fwJtSEL3m/L7GxiQCyqDZpeE2J8/S32Dict/vFspg==}
     hasBin: true
 
   cross-spawn@7.0.6:
@@ -4614,7 +4614,7 @@ snapshots:
     optionalDependencies:
       typescript: 5.8.3
 
-  cross-bump@0.2.2:
+  cross-bump@0.3.0:
     dependencies:
       '@rainbowatcher/toml-edit-js': 0.2.1
       cheerio: 1.0.0
@@ -4623,14 +4623,14 @@ snapshots:
       is-glob: 4.0.3
       semver: 7.7.2
 
-  cross-release-cli@0.2.2:
+  cross-release-cli@0.3.0:
     dependencies:
       '@clack/prompts': 0.10.1
       '@rainbowatcher/common': 0.7.0
       '@rainbowatcher/fs-extra': 0.7.0
       '@rainbowatcher/path-extra': 0.7.0
       cac: 6.7.14
-      cross-bump: 0.2.2
+      cross-bump: 0.3.0
       debug: 4.4.1
       defu: 6.1.4
       execa: 9.5.3

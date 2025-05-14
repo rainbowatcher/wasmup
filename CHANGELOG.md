@@ -1,3 +1,14 @@
+## <small>0.8.1 (2025-05-14)</small>
+
+* fix: property in config should optional ([92dc89b](https://github.com/rainbowatcher/wasmup/commit/92dc89b))
+* fix: remove question symbol in param name ([20480cf](https://github.com/rainbowatcher/wasmup/commit/20480cf))
+* fix: types should be shims.d.ts when shims enabled ([aaab7c8](https://github.com/rainbowatcher/wasmup/commit/aaab7c8))
+* fix: use shims as default entry when shims is enable ([3febaa3](https://github.com/rainbowatcher/wasmup/commit/3febaa3))
+* chore: add changelog ([58e9d81](https://github.com/rainbowatcher/wasmup/commit/58e9d81))
+* chore: enable shims by default ([7b84281](https://github.com/rainbowatcher/wasmup/commit/7b84281))
+
+
+
 ## 0.8.0 (2025-05-14)
 
 * chore: add tailing comma ([90e2e65](https://github.com/rainbowatcher/wasmup/commit/90e2e65))
