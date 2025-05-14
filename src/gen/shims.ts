@@ -91,7 +91,7 @@ export function parseExportFunctions(content: string): FuncDeclare[] {
             .map((param) => {
                 const [paramName, paramType] = param.split(":").map(p => p.trim())
                 return {
-                    name: paramName,
+                    name: paramName.endsWith("?") ? paramName.slice(0, -1) : paramName,
                     type: paramType ?? "any",
                 }
             })
