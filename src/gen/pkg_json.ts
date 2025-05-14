@@ -28,10 +28,14 @@ export async function generatePkgJson({ entry, opts, outputDir }: BuildContext) 
         bugs: typeof repository === "string" ? `${repository}/issues` : undefined,
         contributors: authors?.length > 1 ? authors.slice(1) : undefined,
         description,
-        exports: {
-            ".": "./index.js",
-            [`./${SHIMS}`]: `./${SHIMS}.js`,
-        },
+        exports: opts.shims
+            ? {
+                ".": `./${SHIMS}.js`,
+                "./index": "./index.js",
+            }
+            : {
+                ".": "./index.js",
+            },
         files: validFiles,
         homepage: customHomepage ?? (typeof repository === "string" ? `${repository}#readme` : undefined),
         keywords,
