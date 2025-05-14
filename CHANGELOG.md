@@ -1,3 +1,10 @@
+## <small>0.8.3 (2025-05-14)</small>
+
+* fix: fix shims generate error ([bd5e522](https://github.com/rainbowatcher/wasmup/commit/bd5e522))
+* chore: update release script ([f0e4903](https://github.com/rainbowatcher/wasmup/commit/f0e4903))
+
+
+
 ## <small>0.8.2 (2025-05-14)</small>
 
 * fix: should handle union type ([26b8665](https://github.com/rainbowatcher/wasmup/commit/26b8665))
