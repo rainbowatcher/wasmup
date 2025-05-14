@@ -68,7 +68,7 @@ type BuildOptions = {
      * @summary
      * The shims are used to provide compatibility with nodejs/deno/bun platforms
      * and provide a way to check functions parameters
-     * @default false
+     * @default true
      */
     shims?: boolean
 }
