@@ -1,3 +1,9 @@
+## <small>0.8.6 (2025-05-15)</small>
+
+* chore: update configuration, dependencies, and validation logic ([a94592c](https://github.com/rainbowatcher/wasmup/commit/a94592c))
+
+
+
 ## <small>0.8.5 (2025-05-15)</small>
 
 * refactor: improve WebAssembly bindings and type handling robustness ([43dea59](https://github.com/rainbowatcher/wasmup/commit/43dea59))
