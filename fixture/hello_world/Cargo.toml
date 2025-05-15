@@ -54,7 +54,7 @@ wasm-opt = [
     "--inlining",
     # removes unreachable code
     "--dce",
-    "--minify-imports-and-exports-and-modules",
+    # "--minify-imports-and-exports-and-modules",
     # Grand Unified Flow Analysis
     "--gufa",
 ]
