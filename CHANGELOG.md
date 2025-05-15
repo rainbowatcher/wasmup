@@ -1,3 +1,10 @@
+## <small>0.8.5 (2025-05-15)</small>
+
+* refactor: improve WebAssembly bindings and type handling robustness ([43dea59](https://github.com/rainbowatcher/wasmup/commit/43dea59))
+* chore: fix wasmup executable path in package.json ([48c07c5](https://github.com/rainbowatcher/wasmup/commit/48c07c5))
+
+
+
 ## <small>0.8.4 (2025-05-15)</small>
 
 * test: add wasm-opt options in cargo config ([163529c](https://github.com/rainbowatcher/wasmup/commit/163529c))
