@@ -227,10 +227,10 @@ function genValidationFunc(param: FuncParam): string {
             .filter(t => !NONE_TYPES.includes(t))
         if (unions.length > 1) {
             for (const ty of unions) {
-                assertions.push(getAssert(ty, jsTypeName))
+                assertions.push(getAssert(ty, ty))
             }
         } else if (unions.length > 0) {
-            assertions.push(getAssert(unions[0], jsTypeName))
+            assertions.push(getAssert(unions[0], unions[0]))
         }
     }
 

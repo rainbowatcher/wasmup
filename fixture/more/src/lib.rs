@@ -12,57 +12,57 @@ pub fn hello_world_rename() -> String {
     "Hello, World!".to_string()
 }
 
-#[wasm_bindgen(js_name = "u64")]
+#[wasm_bindgen]
 pub fn u64(a: u64) -> u64 {
     a
 }
 
-#[wasm_bindgen(js_name = "u32")]
+#[wasm_bindgen]
 pub fn u32(a: u32) -> u32 {
     a
 }
 
-#[wasm_bindgen(js_name = "u16")]
+#[wasm_bindgen]
 pub fn u16(a: u16) -> u16 {
     a
 }
 
-#[wasm_bindgen(js_name = "u8")]
+#[wasm_bindgen]
 pub fn u8(a: u8) -> u8 {
     a
 }   
 
-#[wasm_bindgen(js_name = "i64")]
+#[wasm_bindgen]
 pub fn i64(a: i64) -> i64 {
     a
 }
 
-#[wasm_bindgen(js_name = "i32")]
+#[wasm_bindgen]
 pub fn i32(a: i32) -> i32 {
     a
 }   
 
-#[wasm_bindgen(js_name = "i16")]
+#[wasm_bindgen]
 pub fn i16(a: i16) -> i16 {
     a
 }
 
-#[wasm_bindgen(js_name = "i8")]
+#[wasm_bindgen]
 pub fn i8(a: i8) -> i8 {
     a
 }
 
-#[wasm_bindgen(js_name = "f32")]
+#[wasm_bindgen]
 pub fn f32(a: f32) -> f32 {
     a
 }
 
-#[wasm_bindgen(js_name = "f64")] 
+#[wasm_bindgen] 
 pub fn f64(a: f64) -> f64 {
     a
 }
 
-#[wasm_bindgen(js_name = "str")]
+#[wasm_bindgen]
 pub fn str(a: &str) -> String {
     a.to_string()
 }
@@ -75,6 +75,14 @@ pub fn string_fn(a: String) -> String {
 #[wasm_bindgen(js_name = "jsValue")]
 pub fn js_value(a: &JsValue) -> JsValue {
     a.clone()
+}
+
+#[wasm_bindgen]
+pub fn option_u32(a: Option<u32>) -> u32 {
+    match a {
+        Some(val) => val,
+        None => 0,
+    }
 }
 
 // array params
