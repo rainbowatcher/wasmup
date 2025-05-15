@@ -1,3 +1,12 @@
+## <small>0.8.4 (2025-05-15)</small>
+
+* test: add wasm-opt options in cargo config ([163529c](https://github.com/rainbowatcher/wasmup/commit/163529c))
+* test: refactor test setup and execution for cross-environment compatibility ([8623414](https://github.com/rainbowatcher/wasmup/commit/8623414))
+* refactor: enhance type handling and include null/undefined in constants ([167ba60](https://github.com/rainbowatcher/wasmup/commit/167ba60))
+* chore: update TypeScript target to ESNext for modern syntax support ([848aeb4](https://github.com/rainbowatcher/wasmup/commit/848aeb4))
+
+
+
 ## <small>0.8.3 (2025-05-14)</small>
 
 * fix: fix shims generate error ([bd5e522](https://github.com/rainbowatcher/wasmup/commit/bd5e522))
