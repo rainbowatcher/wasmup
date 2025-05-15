@@ -36,8 +36,17 @@ export const DEFAULT_BUILD_OPTIONS: Omit<BuildOptions, "config" | "entry"> = {
 
 export const SHIMS = "shims"
 
+
+export const NONE_TYPES = [
+    "null",
+    "undefined",
+]
+
 export const PRIMITIVE_TYPES = [
     "string",
     "number",
     "boolean",
+    "symbol",
+    "bigint",
+    ...NONE_TYPES,
 ]

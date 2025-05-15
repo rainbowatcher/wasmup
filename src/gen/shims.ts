@@ -1,7 +1,7 @@
 import { readFile, rename, writeFile } from "node:fs/promises"
 import path from "node:path"
 import c from "picocolors"
-import { PRIMITIVE_TYPES } from "../consts"
+import { NONE_TYPES, PRIMITIVE_TYPES } from "../consts"
 import { log } from "../prompts"
 import type {
     BuildOptions, DtsExports, FuncDeclare, FuncParam,
@@ -201,7 +201,7 @@ function getFunctionWrappers(exportedFunctions: FuncDeclare[]): string {
 function genValidationFunc(param: FuncParam): string {
     const { name, type } = param
     const typeMap = {
-        bigint: "BigInt",
+        // bigint: "BigInt",
         BigInt64Array: "BigInt64Array",
         BigUint64Array: "BigUint64Array",
         Float32Array: "Float32Array",
@@ -213,20 +213,28 @@ function genValidationFunc(param: FuncParam): string {
         Uint32Array: "Uint32Array",
         Uint8Array: "Uint8Array",
     }
-    const jsTypName = typeMap[type as keyof typeof typeMap]
-    if (Object.keys(typeMap).includes(type)) {
-        return `if (!(${name} instanceof ${jsTypName})) { throw new Error("Invalid parameter: ${name} must be a ${jsTypName}"); }`
-    } else if (PRIMITIVE_TYPES.includes(type)) {
-        return `if (typeof ${name} !== "${type}") { throw new Error("Invalid parameter: ${name} must be a ${type}"); }`
+    const assertions: string[] = []
+    const jsTypeName = typeMap[type as keyof typeof typeMap] ?? type
+
+    const getAssert = (ty: string, expect: string) => (PRIMITIVE_TYPES.includes(ty) ? `typeof ${name} !== "${expect}"` : `!(${name} instanceof ${expect})`)
+
+    if (PRIMITIVE_TYPES.includes(type)) {
+        assertions.push(getAssert(type, jsTypeName))
+    } else if (Object.keys(typeMap).includes(type)) {
+        assertions.push(getAssert(type, jsTypeName))
     } else if (type.includes("|")) { // is union type
-        const unions = type.split("|").map(i => i.trim())
-        const assertion: string[] = []
-        for (const ty of unions) {
-            assertion.push(`!(${name} instanceof ${ty})`)
+        const unions = type.split("|").map(t => t.trim())
+            .filter(t => !NONE_TYPES.includes(t))
+        if (unions.length > 1) {
+            for (const ty of unions) {
+                assertions.push(getAssert(ty, jsTypeName))
+            }
+        } else if (unions.length > 0) {
+            assertions.push(getAssert(unions[0], jsTypeName))
         }
-        return `if (${assertion.join(" && ")}) { throw new Error("Invalid parameter: ${name} must be a ${type}"); }`
     }
-    return `if (!(${name} instanceof ${type})) { throw new Error("Invalid parameter: ${name} must be a ${type}"); }`
+
+    return assertions.length > 0 ? `if (${assertions.join(" && ")}) { throw new Error("Invalid parameter: ${name} must be a ${jsTypeName}"); }` : ""
 }
 
 function genWrapperFunc(name: string, params: string, paramVerifies: string): string {
