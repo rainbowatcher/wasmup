@@ -180,3 +180,13 @@ impl Person {
 pub fn person(person: &Person) -> JsValue {
     to_value(person).unwrap()
 }
+
+#[wasm_bindgen(js_name = "optionPerson")]
+pub fn option_person(person: Option<Person>) -> JsValue {
+    match person {
+        Some(p) => {
+            to_value(&p).unwrap()
+        },
+        None => JsValue::null(),
+    }
+}

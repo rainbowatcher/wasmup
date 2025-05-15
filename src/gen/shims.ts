@@ -216,7 +216,14 @@ function genValidationFunc(param: FuncParam): string {
     const assertions: string[] = []
     const jsTypeName = typeMap[type as keyof typeof typeMap] ?? type
 
-    const getAssert = (ty: string, expect: string) => (PRIMITIVE_TYPES.includes(ty) ? `typeof ${name} !== "${expect}"` : `!(${name} instanceof ${expect})`)
+    const getAssert = (ty: string, expect: string) => {
+        if (PRIMITIVE_TYPES.includes(ty)) {
+            return `typeof ${name} !== "${expect}"`
+        } else if (Object.keys(typeMap).includes(ty)) {
+            return `!(${name} instanceof ${expect})`
+        }
+        return ""
+    }
 
     if (PRIMITIVE_TYPES.includes(type)) {
         assertions.push(getAssert(type, jsTypeName))
@@ -234,7 +241,7 @@ function genValidationFunc(param: FuncParam): string {
         }
     }
 
-    return assertions.length > 0 ? `if (${assertions.join(" && ")}) { throw new Error("Invalid parameter: ${name} must be a ${jsTypeName}"); }` : ""
+    return assertions.some(Boolean) ? `if (${assertions.join(" && ")}) { throw new Error("Invalid parameter: ${name} must be a ${jsTypeName}"); }` : ""
 }
 
 function genWrapperFunc(name: string, params: string, paramVerifies: string): string {

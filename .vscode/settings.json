@@ -12,6 +12,12 @@
         "jsonc",
         "markdown",
     ],
+    "rust-analyzer.linkedProjects": [
+        // "fixture/hello_world/Cargo.toml",
+        // "fixture/less/Cargo.toml",
+        "fixture/more/Cargo.toml",
+        // "fixture/workspace/Cargo.toml",
+    ],
     "cSpell.words": [
         "binaryen",
         "bindgen",
