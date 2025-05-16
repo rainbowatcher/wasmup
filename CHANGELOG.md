@@ -1,3 +1,9 @@
+## 0.9.0 (2025-05-16)
+
+* refactor: standardize WebAssembly initialization and environment detection ([7b9957e](https://github.com/rainbowatcher/wasmup/commit/7b9957e))
+
+
+
 ## <small>0.8.6 (2025-05-15)</small>
 
 * chore: update configuration, dependencies, and validation logic ([a94592c](https://github.com/rainbowatcher/wasmup/commit/a94592c))
