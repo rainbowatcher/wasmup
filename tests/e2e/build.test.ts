@@ -32,27 +32,77 @@ describe.skipIf(process.env.CI)("build command", () => {
         })
 
         describe.skipIf(process.env.CI)("runtime", async () => {
+            const expected = "Hello, World!"
             // @ts-expect-error type missing
             const server = await import("../__util__/server.js")
             const playwright = await import("playwright")
-            const scriptPath = path.resolve(import.meta.dirname, "../__util__/index.js")
+            const indexScript = path.resolve(import.meta.dirname, "../__util__/index.js")
+            const indexNodeScript = path.resolve(import.meta.dirname, "../__util__/index_node.js")
+            const indexSyncScript = path.resolve(import.meta.dirname, "../__util__/index_sync.js")
+            const shimsScript = path.resolve(import.meta.dirname, "../__util__/shims.js")
+            const shimsSyncScript = path.resolve(import.meta.dirname, "../__util__/shims_sync.js")
             beforeAll(() => {
                 execa({ cwd: entry })`tsx src/cli.ts build . --clean --shims`
             })
 
-            it("should run with node", () => {
-                const { all, message } = execa`node ${scriptPath}`
-                expect(all, message).toBe("Hello, World!")
+            it("index.js should can not run with node", () => {
+                const { all } = execa`node ${indexNodeScript}`
+                expect(all, all).toBe(expected)
             })
 
-            it("should run with deno", () => {
-                const { all, message } = execa`deno run -A ${scriptPath}`
-                expect(all, message).toBe("Hello, World!")
+            it("index.js should run with deno", () => {
+                const { all, message } = execa`deno run -A ${indexScript}`
+                expect(all, message).toBe(expected)
             })
 
-            it("should run with bun", () => {
-                const { all, message } = execa`bun run ${scriptPath}`
-                expect(all, message).toBe("Hello, World!")
+            it("index.js should run with bun", () => {
+                const { all, message } = execa`bun run ${indexScript}`
+                expect(all, message).toBe(expected)
+            })
+
+            it("index_sync.js should run with node", () => {
+                const { all } = execa`node ${indexSyncScript}`
+                expect(all, all).toBe(expected)
+            })
+
+            it("index_sync.js should run with deno", () => {
+                const { all } = execa`deno run -A ${indexSyncScript}`
+                expect(all, all).toBe(expected)
+            })
+
+            it("index_sync.js should run with bun", () => {
+                const { all } = execa`bun ${indexSyncScript}`
+                expect(all, all).toBe(expected)
+            })
+
+            it("shims.js should run with node", () => {
+                const { all, message } = execa`node ${shimsScript}`
+                expect(all, message).toBe(expected)
+            })
+
+            it("shims.js should run with deno", () => {
+                const { all, message } = execa`deno run -A ${shimsScript}`
+                expect(all, message).toBe(expected)
+            })
+
+            it("shims.js should run with bun", () => {
+                const { all, message } = execa`bun run ${shimsScript}`
+                expect(all, message).toBe(expected)
+            })
+
+            it("shims_sync.js should run with node", () => {
+                const { all } = execa`node ${shimsSyncScript}`
+                expect(all, all).toBe(expected)
+            })
+
+            it("shims_sync.js should run with deno", () => {
+                const { all } = execa`deno run -A ${shimsSyncScript}`
+                expect(all, all).toBe(expected)
+            })
+
+            it("shims_sync.js should run with bun", () => {
+                const { all } = execa`bun ${shimsSyncScript}`
+                expect(all, all).toBe(expected)
             })
 
             it("should run with browser", { timeout: 20_000 }, async () => {
@@ -61,11 +111,18 @@ describe.skipIf(process.env.CI)("build command", () => {
                 const page = await browser.newPage()
                 await page.goto("http://localhost:3000")
                 const text = await page.textContent("#root")
-                expect(text).toBe("Hello, World!")
+                expect(text).toBe(expected)
+                await browser.close()
+            })
 
-                onTestFinished(async () => {
-                    await browser.close()
-                })
+            it("should index_sync run with browser", { timeout: 20_000 }, async () => {
+                server.startSyncServer()
+                const browser = await playwright.chromium.launch()
+                const page = await browser.newPage()
+                await page.goto("http://localhost:3001")
+                const text = await page.textContent("#root")
+                expect(text).toBe(expected)
+                await browser.close()
             })
         })
     })

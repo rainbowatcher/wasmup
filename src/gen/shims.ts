@@ -7,15 +7,15 @@ import type {
     BuildOptions, DtsExports, FuncDeclare, FuncParam,
 } from "../types"
 
-const PRE_IMPORT = `import original_init, { initSync as original_initSync } from "./index.js"`
+const PRE_IMPORT = `import originalInit, { initSync as originalInitSync } from "./index.js"`
 
 const INIT_SYNC = `
-const wasm_url = new URL("index_bg.wasm", import.meta.url);
-let wasmCode;
-let fs;
-const isDeno = typeof globalThis.Deno !== "undefined";
+const wasmUrl = new URL("index_bg.wasm", import.meta.url);
+let wasmBuffer, wasm, fs;
+const isDeno = !!globalThis.Deno;
 const isNode = globalThis.process?.release?.name === "node";
-switch (wasm_url.protocol) {
+const isBrowser = !!globalThis.window;
+switch (wasmUrl.protocol) {
     case "file:": {
         if (isNode) {
             fs = await import("node:fs");
@@ -27,37 +27,60 @@ switch (wasm_url.protocol) {
         throw new Error("HTTP/HTTPS protocol is not supported in sync mode");
     }
     default:
-        throw new Error(\`Unsupported protocol: \${wasm_url.protocol}\`);
+        throw new Error(\`Unsupported protocol: \${wasmUrl.protocol}\`);
+}
+
+function __initWasmCodeSync() {
+    if (isNode) { // bun should same as node
+        wasmBuffer = fs.readFileSync(wasmUrl);
+    } else if (isDeno) {
+        wasmBuffer = Deno.readFileSync(wasmUrl);
+    } else {
+        throw new Error("synchronous init not support for current platform");
+    }
+}
+
+async function __initWasmCodeAsync() {
+    if (isNode) { // bun should same as node
+        wasmBuffer = await fs.promises.readFile(wasmUrl);
+    } else if (isDeno) {
+        wasmBuffer = await Deno.readFile(wasmUrl);
+    } else if (isBrowser) {
+        wasmBuffer = await fetch(wasmUrl);
+    } else {
+        throw new Error("asynchronous init not support for current platform");
+    }
 }
 
 export function initSync(module_or_path) {
-    if (typeof wasmCode === "undefined") {
+    if (wasm) return wasm;
+    if (wasmBuffer === undefined) {
         if (module_or_path !== undefined 
             && module_or_path !== null 
             && typeof module_or_path === 'object'
             && Object.keys(module_or_path).length > 0
             ) {
-            wasmCode = original_initSync(module_or_path);
+            wasm = originalInitSync(module_or_path);
             return
-        } else if (isDeno) {
-            wasmCode = Deno.readFileSync(wasm_url);
-        } else if (isNode) {
-            wasmCode = fs.readFileSync(wasm_url);
-        } else {
-            throw new Error("platform not support");
         }
+        __initWasmCodeSync()
     }
-    original_initSync({ module: wasmCode });
-}
-
-function checkInit() {
-    if (!wasmCode) {
-        throw new Error("WASM module not initialized");
-    }
+    originalInitSync({ module: wasmBuffer });
 }
 
 export async function init() {
-    wasmCode = await original_init();
+    if (wasm) return wasm;
+    if (wasmBuffer === undefined) {
+        await __initWasmCodeAsync()
+    }
+
+    wasm = await originalInit({ module_or_path: wasmBuffer })
+}
+
+function checkInit() {
+    if (wasmBuffer === undefined) {
+        throw new Error("WASM module not initialized");
+    }
 }
 
 export default init;
