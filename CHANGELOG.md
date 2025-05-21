@@ -1,3 +1,9 @@
+## <small>0.9.1 (2025-05-21)</small>
+
+* refactor: refactor filesystem and DTS handling to use namespaced imports ([045970c](https://github.com/rainbowatcher/wasmup/commit/045970c))
+
+
+
 ## 0.9.0 (2025-05-16)
 
 * refactor: standardize WebAssembly initialization and environment detection ([7b9957e](https://github.com/rainbowatcher/wasmup/commit/7b9957e))
