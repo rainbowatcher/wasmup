@@ -4,7 +4,7 @@ import process from "node:process"
 import { toAbsolute } from "@rainbowatcher/path-extra"
 import { execaSync } from "execa"
 import {
-    beforeAll, describe, expect, it, onTestFinished,
+    beforeAll, describe, expect, it,
 } from "vitest"
 
 const RUNNER = "tsx"
