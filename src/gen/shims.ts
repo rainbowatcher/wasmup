@@ -1,4 +1,4 @@
-import { readFile, rename, writeFile } from "node:fs/promises"
+import fs from "node:fs/promises"
 import path from "node:path"
 import c from "picocolors"
 import { NONE_TYPES, PRIMITIVE_TYPES } from "../consts"
@@ -150,7 +150,7 @@ export function parseExportClasses(content: string): string[] {
  * @returns parsed exports from the file
  */
 export async function parseDts(dtsPath: string): Promise<DtsExports> {
-    const content = await readFile(dtsPath, "utf8")
+    const content = await fs.readFile(dtsPath, "utf8")
     return {
         classes: parseExportClasses(content),
         functions: parseExportFunctions(content),
@@ -172,9 +172,12 @@ export async function generateShims(outputDir: string, opts: BuildOptions, filen
     const { classes, functions } = await parseDts(dtsPath)
 
     const shimsContent = generateShimsContent(functions, classes)
-    await rename(dtsPath, newDtsPath)
+    let dtsContent = await fs.readFile(dtsPath, "utf8")
+    dtsContent = dtsContent.replace("initSync(module", "initSync(module?")
+    await fs.writeFile(newDtsPath, dtsContent)
+    await fs.rm(dtsPath)
+    await fs.writeFile(jsFile, shimsContent)
     log.success(c.green("SHIMS"), "generate shims")
-    await writeFile(jsFile, shimsContent)
 }
 
 function generateShimsContent(functions: FuncDeclare[], classes: string[]): string {
