@@ -1,3 +1,10 @@
+## 0.10.0 (2025-06-26)
+
+* chore: enhance documentation, clarify build configs, and fix config formatting ([4f18b9a](https://github.com/rainbowatcher/wasmup/commit/4f18b9a))
+* feat: introduce CLI script and profiling support for build process ([fcc8397](https://github.com/rainbowatcher/wasmup/commit/fcc8397))
+
+
+
 ## <small>0.9.2 (2025-06-26)</small>
 
 * chore: implement build progress spinners and update dependencies ([0ff45b1](https://github.com/rainbowatcher/wasmup/commit/0ff45b1))
