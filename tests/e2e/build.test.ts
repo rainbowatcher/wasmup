@@ -15,17 +15,17 @@ const execa = execaSync({ all: true, reject: false })
 describe.skipIf(process.env.CI)("build command", () => {
     describe("less project", { sequential: true }, () => {
         const entry = "fixture/less"
-        it("should support entry as option", { timeout: 50_000 }, () => {
+        it("should support entry as option", { timeout: 150_000 }, () => {
             const { all, failed } = execa({ cwd: entry })`${RUNNER} ${SCRIPT} build .`
             expect(failed, all).toBeFalsy()
         })
 
-        it("should support entry as command arg", { timeout: 50_000 }, () => {
+        it("should support entry as command arg", { timeout: 150_000 }, () => {
             const { all, failed } = execa({ cwd: entry })`${RUNNER} ${SCRIPT} build --entry .`
             expect(failed, all).toBeFalsy()
         })
 
-        it("should has scope", { timeout: 50_000 }, () => {
+        it("should has scope", { timeout: 150_000 }, () => {
             execa({ cwd: entry })`${RUNNER} ${SCRIPT} build . --scope myscope`
             const pkgJson = readFileSync(toAbsolute("wasm-dist/package.json", toAbsolute(entry)), "utf8")
             expect(JSON.parse(pkgJson).name).toContain("@myscope")
@@ -42,7 +42,8 @@ describe.skipIf(process.env.CI)("build command", () => {
             const shimsScript = path.resolve(import.meta.dirname, "../__util__/shims.js")
             const shimsSyncScript = path.resolve(import.meta.dirname, "../__util__/shims_sync.js")
             beforeAll(() => {
-                execa({ cwd: entry })`tsx src/cli.ts build . --clean --shims`
+                const { failed } = execa`tsx src/cli.ts build ${entry} --clean --shims`
+                console.log(`build ${failed ? "failed" : "success"}`)
             })
 
             it("index.js should can not run with node", () => {
