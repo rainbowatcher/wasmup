@@ -1,12 +1,11 @@
 /* eslint-disable unicorn/no-process-exit */
 import process from "node:process"
+import select from "@inquirer/select"
 import { execa } from "execa"
 import c from "picocolors"
-import {
-    confirm, createSpinner, log, select,
-} from "../prompts"
 import { commandExists } from "../util"
-import type { PackageManager } from "../prompts/types"
+import { log } from "../util/log"
+import type { PackageManager } from "../types"
 
 const WASM_PACK = "wasm-pack"
 
@@ -20,59 +19,35 @@ export async function installPreRequisites(args: any) {
         process.exit(exitCode)
     }
 
-    const spinner = createSpinner()
     const dryRun = dry ? ` ${c.bgBlue(" DRY RUN ")}` : ""
     log.info(`Start Install pre-requisites${dryRun}`)
-    spinner.start("Checking pre-requisites...")
-    const isCargoExists = await commandExists("cargo")
-    if (!isCargoExists) {
-        spinner.stop("Command cargo is not found", 1)
-    }
-    const isWasmPackExists = await commandExists(WASM_PACK)
-    const ctx = {
-        installWasmOpt: false,
-        installWasmPack: false,
+    if (await commandExists(WASM_PACK)) {
+        log.info(`${WASM_PACK} is already installed`)
+        process.exit(0)
     }
 
-    if (!isWasmPackExists) {
-        spinner.stop()
-        const installWasmPack = await confirm("Command wasm-pack is not found, install it?")
-        if (!installWasmPack) {
-            log.info("Please install wasm-pack manually")
-            process.exit(0)
-        }
-        ctx.installWasmPack = true
-    }
-
-    log.info(c.dim("cargo is recommended, because nodejs or bun may fail due to proxy issue by fetch"))
+    log.info(c.dim("cargo is recommended"))
 
     const pm = await select<"local" | PackageManager>({
-        message: "Select a package manager to install wasm-pack",
-        options: [
-            { hint: "cargo install, recommended", label: "Cargo", value: "cargo" },
-            { hint: "npm i -g", label: "Npm", value: "npm" },
-            { hint: "pnpm i -g", label: "Pnpm", value: "pnpm" },
-            { hint: "yarn global add", label: "Yarn", value: "yarn" },
-            { hint: "bun i -g", label: "Bun", value: "bun" },
-            { hint: "project directory", label: "Local", value: "local" },
+        choices: [
+            { description: "cargo install, recommended", name: "Cargo", value: "cargo" },
+            { description: "npm i -g", name: "Npm", value: "npm" },
+            { description: "pnpm i -g", name: "Pnpm", value: "pnpm" },
+            { description: "yarn global add", name: "Yarn", value: "yarn" },
+            { description: "bun i -g", name: "Bun", value: "bun" },
+            { description: "project directory", name: "Local", value: "local" },
         ],
+        message: "Select a package manager to install wasm-pack",
     })
 
-    spinner.start("Installing wasm-pack...")
-    if (!dry) {
-        ctx.installWasmPack && await install(pm, WASM_PACK)
-    }
-    spinner.stop(`All pre-requisites are installed${dryRun}`)
+    await install(pm, WASM_PACK, dry)
 }
 
-async function install(pm: string, name: string) {
+async function install(pm: string, name: string, dry: boolean) {
+    let command = ""
     switch (pm) {
         case "bun": {
-            await execa("bun", ["install", name, "-g"])
-            break
-        }
-        case "cargo": {
-            await execa("cargo", ["install", name, "--locked"])
+            command = `bun install ${name} -g`
             break
         }
         case "local": {
@@ -80,16 +55,24 @@ async function install(pm: string, name: string) {
             break
         }
         case "npm": {
-            await execa("npm", ["install", name, "-g"])
+            command = `npm install ${name} -g`
             break
         }
         case "pnpm": {
-            await execa("pnpm", ["install", name, "-g"])
+            command = `pnpm install ${name} -g`
             break
         }
         case "yarn": {
-            await execa("yarn", ["global", "add", name])
+            command = `yarn global add ${name}`
             break
         }
+        default: {
+            command = `cargo install ${name} --locked`
+        }
+    }
+    log.info(`executing ${command}`)
+    if (!dry) {
+        const { exitCode } = await execa`${command}`
+        process.exit(exitCode)
     }
 }

@@ -97,6 +97,8 @@ type DtsExports = {
     functions: FuncDeclare[]
 }
 
+type PackageManager = "bun" | "cargo" | "npm" | "pnpm" | "yarn"
+
 export type {
-    BuildContext, BuildOptions, CommandLineArgs, ConfigOptions, DtsExports, FuncDeclare, FuncParam, MaybeUndefined,
+    BuildContext, BuildOptions, CommandLineArgs, ConfigOptions, DtsExports, FuncDeclare, FuncParam, MaybeUndefined, PackageManager,
 }

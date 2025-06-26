@@ -14,15 +14,6 @@ export const SYMBOLS = {
     warn: s("⚠", "!"),
 }
 
-export const S_STEP_ACTIVE = SYMBOLS.step
-export const S_STEP_CANCEL = SYMBOLS.error
-export const S_STEP_ERROR = SYMBOLS.fatal
-export const S_STEP_SUBMIT = SYMBOLS.success
-
-export const S_RADIO_ACTIVE = s("●", "-")
-export const S_RADIO_INACTIVE = s("○", " ")
-
-
 export const DEFAULT_BUILD_OPTIONS: Omit<BuildOptions, "config" | "entry"> = {
     clean: false,
     dev: false,
@@ -35,7 +26,6 @@ export const DEFAULT_BUILD_OPTIONS: Omit<BuildOptions, "config" | "entry"> = {
 }
 
 export const SHIMS = "shims"
-
 
 export const NONE_TYPES = [
     "null",
