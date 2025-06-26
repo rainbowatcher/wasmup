@@ -184,7 +184,7 @@ function generateShimsContent(functions: FuncDeclare[], classes: string[]): stri
     const funcsWithParams = functions.filter(f => f.params.some(p => p.type !== "any"))
     const funcsWithoutParams = functions.filter(f => f.params.every(p => p.type === "any"))
     const directExportItems = getDirectExports(funcsWithoutParams, classes)
-    const directExports = `export { ${directExportItems} } from "./index.js"`
+    const directExports = directExportItems ? `export { ${directExportItems} } from "./index.js"` : undefined
     const renameImports = getRenameImports(funcsWithParams)
     const classImports = classes?.length > 0 ? `, ${classes.join(", ")}` : ""
     const imports = `import { ${renameImports}${classImports} } from "./index.js"`
@@ -196,7 +196,7 @@ function generateShimsContent(functions: FuncDeclare[], classes: string[]): stri
         directExports,
         INIT_SYNC,
         functionWrappers,
-    ].join("\n")
+    ].filter(Boolean).join("\n")
 }
 
 function getDirectExports(functions: FuncDeclare[], classes: string[]): string {
