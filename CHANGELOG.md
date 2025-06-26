@@ -1,3 +1,20 @@
+## <small>0.9.2 (2025-06-26)</small>
+
+* chore: implement build progress spinners and update dependencies ([0ff45b1](https://github.com/rainbowatcher/wasmup/commit/0ff45b1))
+* chore: implement centralized custom logging across source files ([0ea89c5](https://github.com/rainbowatcher/wasmup/commit/0ea89c5))
+* chore: optimize export statement generation to avoid unnecessary code ([06e56e2](https://github.com/rainbowatcher/wasmup/commit/06e56e2))
+* chore: refactor dependencies and update related packages ([ed31023](https://github.com/rainbowatcher/wasmup/commit/ed31023))
+* chore: remove unused onTestFinished import in test setup ([23666da](https://github.com/rainbowatcher/wasmup/commit/23666da))
+* chore: simplify build and install command usage with aliases ([d688cc8](https://github.com/rainbowatcher/wasmup/commit/d688cc8))
+* chore: switch to find-up-simple for improved dependency management ([b7a20d5](https://github.com/rainbowatcher/wasmup/commit/b7a20d5))
+* chore: update dependencies and tooling versions for compatibility ([c82ec47](https://github.com/rainbowatcher/wasmup/commit/c82ec47))
+* chore(deps): bump deps ([9aa3638](https://github.com/rainbowatcher/wasmup/commit/9aa3638))
+* refactor: refactor installation process and clean up prompt-related code ([8e1a03a](https://github.com/rainbowatcher/wasmup/commit/8e1a03a))
+* refactor: simplify greeting function parameter and formatting logic ([b5630e1](https://github.com/rainbowatcher/wasmup/commit/b5630e1))
+* test: improve build robustness and logging with timeout adjustments ([d043af2](https://github.com/rainbowatcher/wasmup/commit/d043af2))
+
+
+
 ## <small>0.9.1 (2025-05-21)</small>
 
 * refactor: refactor filesystem and DTS handling to use namespaced imports ([045970c](https://github.com/rainbowatcher/wasmup/commit/045970c))

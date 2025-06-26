@@ -37,6 +37,6 @@
         "wasmup",
         "webassembly",
         "yocto",
-        "yoctocolors"
+        "yoctocolors",
     ],
 }
