@@ -3,7 +3,7 @@ import path from "node:path"
 import { toAbsolute } from "@rainbowatcher/path-extra"
 import { findUp } from "find-up"
 import { parse, TomlDate } from "smol-toml"
-import { log } from "./prompts"
+import { log } from "./util/log"
 import type { TomlPrimitive } from "smol-toml"
 
 type WorkspaceConfig = {

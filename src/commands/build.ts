@@ -10,9 +10,9 @@ import { loadWasmupConfig } from "../config"
 import { DEFAULT_BUILD_OPTIONS, SHIMS } from "../consts"
 import { generatePkgJson, pkgJsonComparator } from "../gen/pkg_json"
 import { generateShims } from "../gen/shims"
-import { log } from "../prompts"
 import { stableStringify } from "../util"
 import { tryClearDir, tryRemoveFile } from "../util/fs"
+import { log } from "../util/log"
 import { merge } from "../util/merge"
 import type { BuildContext, BuildOptions, CommandLineArgs } from "../types"
 
@@ -79,7 +79,7 @@ class BuildCommand {
 
     async process(): Promise<void> {
         const tasks = this.#opts.entry.map(async (entry) => {
-            log.info(c.blue("BUILD"), `start build for entry: ${entry}`)
+            log.info(c.blue("BUILD"), `building for entry: ${entry}`)
             const outputDir = this.getOutputDir(entry)
             const context: BuildContext = { entry, opts: this.#opts, outputDir }
             await this.build(context)
@@ -92,7 +92,7 @@ class BuildCommand {
                 path.join(outputDir, "package.json"),
                 `${stableStringify(pkgJson, { cmp: pkgJsonComparator, space: 4 })}\n`,
             )
-            log.success(c.green("PKG"), "package.json generated")
+            log.success(c.green("P K G"), "generate package.json")
         })
         await Promise.all(tasks)
     }

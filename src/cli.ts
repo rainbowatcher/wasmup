@@ -3,7 +3,7 @@ import cac from "cac"
 import { runBuildCmd } from "./commands/build"
 import { printSystemInfo } from "./commands/info"
 import { installPreRequisites } from "./commands/install"
-import { log } from "./prompts"
+import { log } from "./util/log"
 import { version } from "../package.json"
 
 function initCliApp() {

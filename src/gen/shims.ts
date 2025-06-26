@@ -2,7 +2,7 @@ import fs from "node:fs/promises"
 import path from "node:path"
 import c from "picocolors"
 import { NONE_TYPES, PRIMITIVE_TYPES } from "../consts"
-import { log } from "../prompts"
+import { log } from "../util/log"
 import type {
     BuildOptions, DtsExports, FuncDeclare, FuncParam,
 } from "../types"

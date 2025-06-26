@@ -1,7 +1,7 @@
 import { isFileSync } from "@rainbowatcher/fs-extra"
 import { toAbsolute } from "@rainbowatcher/path-extra"
 import { loadConfig } from "unconfig"
-import { log } from "./prompts"
+import { log } from "./util/log"
 import type { BuildOptions, CommandLineArgs } from "./types"
 
 async function loadDefaultConfig(): Promise<Partial<BuildOptions>> {
