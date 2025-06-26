@@ -9,10 +9,12 @@ import { version } from "../package.json"
 function initCliApp() {
     const app = cac("wasmup")
     app.command("install", "Install pre-requisites")
+        .alias("i")
         .option("--dry", "Dry run")
         .action(installPreRequisites)
 
     app.command("build [...entry]", "Build wasm")
+        .alias("b")
         .option("--clean", "Clean output directory")
         .option("-c, --config", "Config to load")
         .option("--dev", "Build for development")
