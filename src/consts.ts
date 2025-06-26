@@ -21,7 +21,7 @@ export const DEFAULT_BUILD_OPTIONS: Omit<BuildOptions, "config" | "entry"> = {
     extensions: ["js", "ts", "wasm"],
     ignoreOutput: false,
     output: "wasm-dist",
-    release: false,
+    profiling: false,
     shims: true,
 }
 

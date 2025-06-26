@@ -24,9 +24,10 @@
     "module": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "bin": {
-        "wasmup": "dist/cli.js"
+        "wasmup": "bin/wasmup.js"
     },
     "files": [
+        "bin",
         "dist"
     ],
     "scripts": {

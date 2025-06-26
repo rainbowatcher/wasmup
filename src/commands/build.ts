@@ -31,7 +31,10 @@ class BuildCommand {
     }
 
     async build({ entry, opts, outputDir }: BuildContext): Promise<void> {
-        const extraBuildArgs = opts.release ? ["--release"] : []
+        const extraBuildArgs = []
+        if (opts.dev) extraBuildArgs.push("--dev")
+        if (opts.profiling) extraBuildArgs.push("--profiling")
+
         const buildCommand = [
             "build",
             "-t",
@@ -139,7 +142,7 @@ class BuildCommand {
     }
 
     validate(): void {
-        const { dev, entry: entries, release } = this.#opts
+        const { dev, entry: entries, profiling } = this.#opts
 
         if (entries?.length === 0) {
             throw new Error("no entry provided")
@@ -157,8 +160,8 @@ class BuildCommand {
             }
         }
 
-        if (dev && release) {
-            throw new Error("Cannot specify both --dev and --release")
+        if (dev && profiling) {
+            throw new Error("Cannot specify both --dev and --profiling")
         }
         log.debug("options validation passed")
     }

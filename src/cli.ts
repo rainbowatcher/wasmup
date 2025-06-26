@@ -23,11 +23,11 @@ function initCliApp() {
         .option("--extensions <exts>", "File extensions should be included, separated by comma")
         .option("--ignore-output", "Add a .gitignore file in output directory")
         .option("-o, --output <output>", "Output path")
-        .option("--release", "Build for release")
+        .option("--profiling", "Enable profiling build")
         .option("--scope <scope>", "The npm scope to use in package.json")
         .option("--shims", "Generate shims")
         .example("wasmup build crates/core crates/worker --dev")
-        .example("wasmup build --entry crates/core --entry crates/worker --release")
+        .example("wasmup build --entry crates/core --entry crates/worker --profiling")
         .action(runBuildCmd)
 
     app.command("info", "Show system info")

@@ -51,7 +51,7 @@ describe.concurrent("arg parse", () => {
         it("should merge with config", async () => {
             await writeFile(JSON_CONFIG, JSON.stringify({
                 clean: true,
-                release: false,
+                profiling: false,
             } satisfies ConfigOptions))
             const cliArgs: CommandLineArgs = {
                 config: JSON_CONFIG,
@@ -69,12 +69,12 @@ describe.concurrent("arg parse", () => {
         it("cli args priority should higher than config", async () => {
             await writeFile(JSON_CONFIG, JSON.stringify({
                 clean: true,
-                release: false,
+                profiling: false,
             } satisfies ConfigOptions))
             const args: CommandLineArgs = {
                 clean: false,
                 config: JSON_CONFIG,
-                release: true,
+                profiling: true,
             }
             const result = await resolveOptions(entries, args)
             expect(result).toStrictEqual({
@@ -83,7 +83,7 @@ describe.concurrent("arg parse", () => {
                 config: toAbsolute(JSON_CONFIG),
                 entry: entries.map(entry => toAbsolute(entry)),
                 output: toAbsolute(DEFAULT_BUILD_OPTIONS.output),
-                release: true,
+                profiling: true,
             })
         })
 

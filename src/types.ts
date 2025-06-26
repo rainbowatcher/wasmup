@@ -18,7 +18,8 @@ type BuildOptions = {
     config?: string
 
     /**
-     * Whether to build for development
+     * Enable development build, Enable debug info, and disable optimizations
+     * If not specified, use the release build by default.
      * @default false
      */
     dev: boolean
@@ -52,10 +53,11 @@ type BuildOptions = {
     output: string
 
     /**
-     * Whether to build for release
+     * Enable profiling build. Enable optimizations and debug info
+     * If not specified, use the release build by default.
      * @default false
      */
-    release: boolean
+    profiling: boolean
 
     /**
      * The npm scope to use in package.json
