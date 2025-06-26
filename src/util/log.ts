@@ -1,5 +1,5 @@
 import createDebug from "debug"
-import c from "picocolors"
+import c from "yoctocolors"
 import { SYMBOLS } from "../consts"
 
 const debug = createDebug("wasmup")

@@ -5,7 +5,8 @@ import process from "node:process"
 import { isDirSync, isFileSync } from "@rainbowatcher/fs-extra"
 import { toAbsolute } from "@rainbowatcher/path-extra"
 import { execa } from "execa"
-import c from "picocolors"
+import yoctoSpinner from "yocto-spinner"
+import c from "yoctocolors"
 import { loadWasmupConfig } from "../config"
 import { DEFAULT_BUILD_OPTIONS, SHIMS } from "../consts"
 import { generatePkgJson, pkgJsonComparator } from "../gen/pkg_json"
@@ -21,6 +22,7 @@ class BuildCommand {
     #cliArgs: CommandLineArgs
     #entries: string[]
     #opts!: BuildOptions
+    #spinner = yoctoSpinner()
 
     constructor(entries: string[], args: CommandLineArgs) {
         log.debug("cli args: %o %o", entries, args)
@@ -46,10 +48,12 @@ class BuildCommand {
         log.debug("execute command: %s", `wasm-pack ${buildCommand.join(" ")}`)
 
         try {
+            this.#spinner.start()
             await execa("wasm-pack", buildCommand)
-            log.success(c.green("BUILD"), `build: ${entry}`)
+            this.#spinner.success(`${c.green("BUILD")} built wasm in ${entry}`)
         } catch (error: any) {
-            log.error(c.red("BUILD"), `build: ${entry} failed: ${error.message}`)
+            this.#spinner.error(`${c.red("BUILD")} build failed`)
+            log.error(error.message)
             process.exit(1)
         }
     }
@@ -79,7 +83,7 @@ class BuildCommand {
 
     async process(): Promise<void> {
         const tasks = this.#opts.entry.map(async (entry) => {
-            log.info(c.blue("BUILD"), `building for entry: ${entry}`)
+            this.#spinner.text = `${c.blue("BUILD")} building for entry: ${entry}`
             const outputDir = this.getOutputDir(entry)
             const context: BuildContext = { entry, opts: this.#opts, outputDir }
             await this.build(context)

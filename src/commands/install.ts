@@ -2,7 +2,8 @@
 import process from "node:process"
 import select from "@inquirer/select"
 import { execa } from "execa"
-import c from "picocolors"
+import yoctoSpinner from "yocto-spinner"
+import c from "yoctocolors"
 import { commandExists } from "../util"
 import { log } from "../util/log"
 import type { PackageManager } from "../types"
@@ -40,10 +41,18 @@ export async function installPreRequisites(args: any) {
         message: "Select a package manager to install wasm-pack",
     })
 
-    await install(pm, WASM_PACK, dry)
+    const spinner = yoctoSpinner({ text: `Installing ${WASM_PACK}` }).start()
+    const code = await install(pm, WASM_PACK, dry)
+    if (code === 0) {
+        spinner.success("Success!")
+    } else {
+        spinner.error("Failed!")
+    }
+
+    process.exit(code)
 }
 
-async function install(pm: string, name: string, dry: boolean) {
+async function install(pm: string, name: string, dry: boolean): Promise<number> {
     let command = ""
     switch (pm) {
         case "bun": {
@@ -73,6 +82,7 @@ async function install(pm: string, name: string, dry: boolean) {
     log.info(`executing ${command}`)
     if (!dry) {
         const { exitCode } = await execa`${command}`
-        process.exit(exitCode)
+        return exitCode ?? 0
     }
+    return 0
 }

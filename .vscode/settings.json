@@ -36,5 +36,7 @@
         "unconfig",
         "wasmup",
         "webassembly",
+        "yocto",
+        "yoctocolors"
     ],
 }

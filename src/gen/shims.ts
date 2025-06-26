@@ -1,6 +1,6 @@
 import fs from "node:fs/promises"
 import path from "node:path"
-import c from "picocolors"
+import c from "yoctocolors"
 import { NONE_TYPES, PRIMITIVE_TYPES } from "../consts"
 import { log } from "../util/log"
 import type {
