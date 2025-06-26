@@ -48,7 +48,7 @@
         "cac": "^6.7.14",
         "debug": "^4.4.1",
         "execa": "^9.6.0",
-        "find-up": "^7.0.0",
+        "find-up-simple": "^1.0.1",
         "is-executable": "^2.0.1",
         "is-unicode-supported": "^2.1.0",
         "lookpath": "^1.2.3",

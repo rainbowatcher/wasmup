@@ -1,13 +1,13 @@
 import { readFile } from "node:fs/promises"
 import dedent from "dedent"
-import { findUp } from "find-up"
+import { findUp } from "find-up-simple"
 import {
     describe, expect, it, vi,
 } from "vitest"
 import { parseProjectFile } from "./cargo"
 
 vi.mock("node:fs/promises")
-vi.mock("find-up")
+vi.mock("find-up-simple")
 
 describe("parseProjectFile", () => {
     it("should parse normal project Cargo.toml correctly", async () => {
