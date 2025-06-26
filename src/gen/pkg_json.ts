@@ -21,7 +21,7 @@ export async function generatePkgJson({ entry, opts, outputDir }: BuildContext) 
     } = projectConfig
 
     const files = await readdir(outputDir)
-    const validFiles = files.filter(f => opts.extensions.includes(path.extname(f).slice(1)))
+    const validFiles = files.filter(f => f !== ".gitignore").filter(f => opts.extensions.includes(path.extname(f).slice(1)))
 
     return {
         author: authors?.[0],

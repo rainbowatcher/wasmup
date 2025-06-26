@@ -53,7 +53,7 @@ class BuildCommand {
         try {
             this.#spinner.start()
             await execa("wasm-pack", buildCommand)
-            this.#spinner.success(`${c.green("BUILD")} built wasm in ${entry}`)
+            this.#spinner.success(`${c.green("BUILD")} built for entry ${entry}`)
         } catch (error: any) {
             this.#spinner.error(`${c.red("BUILD")} build failed`)
             log.error(error.message)

@@ -6,8 +6,54 @@
 
 Wasm build, made easy
 
-> [!WARN]
+> [!WARNING]
 > It's in early development status, use in your own risk.
+
+## features
+
+- Build a set of code that can run seamlessly in Node.js, Deno, Bun, and browsers.
+- No setup needed, just use directly.
+- The generated package.json in pretty order.
+- Add parameter validation to functions.
+
+## Usage
+
+```sh
+pnpm install -D wasmup
+```
+
+```jsonc
+{
+    // ...
+    "scripts": {
+        "build": "wasmup build --clean ."
+    }
+}
+```
+
+### Configuration
+
+The Wasmup configuration file may be named any of the following:
+
+- `wasmup.config.js`
+- `wasmup.config.cjs`
+- `wasmup.config.mjs`
+- `wasmup.config.ts`
+- `wasmup.config.mts`
+- `wasmup.config.cts`
+- `wasmup.config.json`
+
+It should be placed in the root directory of your project and export an configuration objects. Here’s an example:
+
+```ts
+import { defineConfig } from "wasmup"
+
+export default defineConfig({
+    clean: true,
+    output: "packages/toml-edit-js",
+    scope: "rainbowatcher",
+})
+```
 
 ### wasm-opt options
 
