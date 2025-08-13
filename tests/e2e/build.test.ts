@@ -46,81 +46,101 @@ describe.skipIf(process.env.CI)("build command", () => {
                 console.log(`build ${failed ? "failed" : "success"}`)
             })
 
-            it("index.js should can not run with node", () => {
+            it("index.js should be able to run in node", () => {
                 const { all } = execa`node ${indexNodeScript}`
                 expect(all, all).toBe(expected)
             })
 
-            it("index.js should run with deno", () => {
+            it("index.js should be able to run in deno", () => {
                 const { all, message } = execa`deno run -A ${indexScript}`
                 expect(all, message).toBe(expected)
             })
 
-            it("index.js should run with bun", () => {
+            it("index.js should be able to run in bun", () => {
                 const { all, message } = execa`bun run ${indexScript}`
                 expect(all, message).toBe(expected)
             })
 
-            it("index_sync.js should run with node", () => {
+            it("index_sync.js should be able to run in node", () => {
                 const { all } = execa`node ${indexSyncScript}`
                 expect(all, all).toBe(expected)
             })
 
-            it("index_sync.js should run with deno", () => {
+            it("index_sync.js should be able to run in deno", () => {
                 const { all } = execa`deno run -A ${indexSyncScript}`
                 expect(all, all).toBe(expected)
             })
 
-            it("index_sync.js should run with bun", () => {
+            it("index_sync.js should be able to run in bun", () => {
                 const { all } = execa`bun ${indexSyncScript}`
                 expect(all, all).toBe(expected)
             })
 
-            it("shims.js should run with node", () => {
+            it("shims.js should be able to run in node", () => {
                 const { all, message } = execa`node ${shimsScript}`
                 expect(all, message).toBe(expected)
             })
 
-            it("shims.js should run with deno", () => {
+            it("shims.js should be able to run in deno", () => {
                 const { all, message } = execa`deno run -A ${shimsScript}`
                 expect(all, message).toBe(expected)
             })
 
-            it("shims.js should run with bun", () => {
+            it("shims.js should be able to run in bun", () => {
                 const { all, message } = execa`bun run ${shimsScript}`
                 expect(all, message).toBe(expected)
             })
 
-            it("shims_sync.js should run with node", () => {
+            it("shims_sync.js should be able to run in node", () => {
                 const { all } = execa`node ${shimsSyncScript}`
                 expect(all, all).toBe(expected)
             })
 
-            it("shims_sync.js should run with deno", () => {
+            it("shims_sync.js should be able to run in deno", () => {
                 const { all } = execa`deno run -A ${shimsSyncScript}`
                 expect(all, all).toBe(expected)
             })
 
-            it("shims_sync.js should run with bun", () => {
+            it("shims_sync.js should be able to run in bun", () => {
                 const { all } = execa`bun ${shimsSyncScript}`
                 expect(all, all).toBe(expected)
             })
 
-            it("should run with browser", { timeout: 20_000 }, async () => {
-                server.startServer()
-                const browser = await playwright.chromium.launch()
+            it("index.js with async should be able to run in browser", { timeout: 20_000 }, async () => {
+                server.startIndexServer()
+                const browser = await playwright.chromium.launch({ headless: true })
                 const page = await browser.newPage()
-                await page.goto("http://localhost:3000")
+                await page.goto("http://localhost:13000")
                 const text = await page.textContent("#root")
                 expect(text).toBe(expected)
                 await browser.close()
             })
 
-            it("should index_sync run with browser", { timeout: 20_000 }, async () => {
-                server.startSyncServer()
-                const browser = await playwright.chromium.launch()
+            it("index.js with sync should be able to run in browser", { timeout: 20_000 }, async () => {
+                server.startIndexSyncServer()
+                const browser = await playwright.chromium.launch({ headless: true })
                 const page = await browser.newPage()
-                await page.goto("http://localhost:3001")
+                await page.goto("http://localhost:13001")
+                const text = await page.textContent("#root")
+                expect(text).toBe(expected)
+                await browser.close()
+            })
+
+            it("shims.js with async should be able to run in browser", { timeout: 20_000 }, async () => {
+                server.startShimsServer()
+                const browser = await playwright.chromium.launch({ headless: true })
+                const page = await browser.newPage()
+                await page.goto("http://localhost:13002")
+                const text = await page.textContent("#root")
+                expect(text).toBe(expected)
+                await browser.close()
+            })
+
+            it("shims.js with sync should be able to run in browser", { timeout: 20_000 }, async () => {
+                server.startShimsSyncServer()
+                const browser = await playwright.chromium.launch({ headless: true })
+                const page = await browser.newPage()
+                await page.goto("http://localhost:13003")
                 const text = await page.textContent("#root")
                 expect(text).toBe(expected)
                 await browser.close()

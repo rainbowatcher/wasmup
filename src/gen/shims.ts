@@ -24,7 +24,7 @@ switch (wasmUrl.protocol) {
     }
     case "https:":
     case "http:": {
-        throw new Error("HTTP/HTTPS protocol is not supported in sync mode");
+        break;
     }
     default:
         throw new Error(\`Unsupported protocol: \${wasmUrl.protocol}\`);
