@@ -1,3 +1,10 @@
+## <small>0.10.1 (2025-08-13)</small>
+
+* chore: bump deps ([89533bc](https://github.com/rainbowatcher/wasmup/commit/89533bc))
+* fix: refactor server setup and enhance cross-environment shim tests ([d09c508](https://github.com/rainbowatcher/wasmup/commit/d09c508))
+
+
+
 ## 0.10.0 (2025-06-26)
 
 * chore: enhance documentation, clarify build configs, and fix config formatting ([4f18b9a](https://github.com/rainbowatcher/wasmup/commit/4f18b9a))
