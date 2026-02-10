@@ -1,3 +1,9 @@
+## <small>0.10.2 (2026-02-10)</small>
+
+* fix(shims): preserve object init args and keep empty-object fallback in browser ([9f39e8c](https://github.com/rainbowatcher/wasmup/commit/9f39e8c))
+
+
+
 ## <small>0.10.1 (2025-08-13)</small>
 
 * chore: bump deps ([89533bc](https://github.com/rainbowatcher/wasmup/commit/89533bc))
