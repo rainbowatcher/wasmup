@@ -31,6 +31,27 @@ pnpm install -D wasmup
 }
 ```
 
+### Runtime usage (Node.js / Bun / Deno / Web)
+
+Use the same ESM API in all runtimes:
+
+```ts
+import init, { hello_world } from "your-wasm-package"
+
+await init()
+console.log(hello_world())
+```
+
+For sync initialization:
+
+1. `initSync` is only supported in Node.js, Bun and Deno.
+2. `initSync` is not supported in browsers.
+
+For browser deployment:
+
+1. Keep `index_bg.wasm` accessible by URL.
+2. `index_bg.wasm` should be deployed next to the generated JS entry (or with an equivalent URL mapping).
+
 ### Configuration
 
 The Wasmup configuration file may be named any of the following:

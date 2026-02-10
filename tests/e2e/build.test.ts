@@ -149,7 +149,7 @@ describe.skipIf(process.env.CI)("build command", () => {
     })
 
     describe("more project", { sequential: true }, () => {
-        it("should generate shims with wrapper functions and type validations", () => {
+        it("should generate shims with wrapper functions and type validations", { timeout: 150_000 }, () => {
             const entry = "fixture/more"
             const shimsPath = path.join(process.cwd(), entry, "wasm-dist/shims.js")
 

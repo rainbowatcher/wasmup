@@ -11,74 +11,120 @@ const PRE_IMPORT = `import originalInit, { initSync as originalInitSync } from "
 
 const INIT_SYNC = `
 const wasmUrl = new URL("index_bg.wasm", import.meta.url);
-let wasmBuffer, wasm, fs;
-const isDeno = !!globalThis.Deno;
+let wasmBuffer, wasm, nodeFs;
+const isDeno = typeof globalThis.Deno !== "undefined";
 const isNode = globalThis.process?.release?.name === "node";
-const isBrowser = !!globalThis.window;
-switch (wasmUrl.protocol) {
-    case "file:": {
-        if (isNode) {
-            fs = await import("node:fs");
-        }
-        break
-    }
-    case "https:":
-    case "http:": {
-        break;
-    }
-    default:
-        throw new Error(\`Unsupported protocol: \${wasmUrl.protocol}\`);
+const isBun = typeof globalThis.Bun !== "undefined";
+const isBrowser = typeof globalThis.window !== "undefined";
+const isFileProtocol = wasmUrl.protocol === "file:";
+if ((isNode || isBun) && isFileProtocol) {
+    nodeFs = await import("node:fs");
 }
 
 function __initWasmCodeSync() {
-    if (isNode) { // bun should same as node
-        wasmBuffer = fs.readFileSync(wasmUrl);
+    if (isNode || isBun) {
+        if (!isFileProtocol) {
+            throw new Error("synchronous init only supports file protocol in node/bun");
+        }
+        wasmBuffer = nodeFs.readFileSync(wasmUrl);
     } else if (isDeno) {
         wasmBuffer = Deno.readFileSync(wasmUrl);
     } else {
         throw new Error("synchronous init not support for current platform");
     }
+    return wasmBuffer;
 }
 
 async function __initWasmCodeAsync() {
-    if (isNode) { // bun should same as node
-        wasmBuffer = await fs.promises.readFile(wasmUrl);
+    if (isNode || isBun) {
+        if (isFileProtocol) {
+            wasmBuffer = await nodeFs.promises.readFile(wasmUrl);
+        } else {
+            wasmBuffer = wasmUrl;
+        }
     } else if (isDeno) {
-        wasmBuffer = await Deno.readFile(wasmUrl);
+        if (isFileProtocol) {
+            wasmBuffer = await Deno.readFile(wasmUrl);
+        } else {
+            wasmBuffer = wasmUrl;
+        }
     } else if (isBrowser) {
-        wasmBuffer = await fetch(wasmUrl);
+        wasmBuffer = wasmUrl;
     } else {
         throw new Error("asynchronous init not support for current platform");
     }
+    return wasmBuffer;
+}
+
+function wrapSyncInitArg(module_or_path) {
+    if (module_or_path === undefined) {
+        return undefined;
+    }
+    if (
+        module_or_path !== null
+        && typeof module_or_path === "object"
+    ) {
+        if (Object.hasOwn(module_or_path, "module")) {
+            return module_or_path;
+        }
+        if (Object.keys(module_or_path).length === 0) {
+            return undefined;
+        }
+    }
+    return { module: module_or_path };
+}
+
+function wrapInitArg(module_or_path) {
+    if (module_or_path === undefined) {
+        return undefined;
+    }
+    if (
+        module_or_path !== null
+        && typeof module_or_path === "object"
+    ) {
+        if (Object.hasOwn(module_or_path, "module_or_path")) {
+            return module_or_path;
+        }
+        if (
+            Object.getPrototypeOf(module_or_path) === Object.prototype
+            && Object.keys(module_or_path).length === 0
+        ) {
+            return undefined;
+        }
+    }
+    return { module_or_path };
+}
+
+function isInitialized() {
+    return wasm !== undefined;
 }
 
 export function initSync(module_or_path) {
-    if (wasm) return wasm;
-    if (wasmBuffer === undefined) {
-        if (module_or_path !== undefined 
-            && module_or_path !== null 
-            && typeof module_or_path === 'object'
-            && Object.keys(module_or_path).length > 0
-            ) {
-            wasm = originalInitSync(module_or_path);
-            return
-        }
-        __initWasmCodeSync()
+    if (isInitialized()) return wasm;
+    if (module_or_path === undefined) {
+        module_or_path = __initWasmCodeSync();
     }
-    originalInitSync({ module: wasmBuffer });
+    const wrapped = wrapSyncInitArg(module_or_path);
+    wasm = wrapped === undefined
+        ? originalInitSync()
+        : originalInitSync(wrapped);
+    return wasm;
 }
 
-export async function init() {
-    if (wasm) return wasm;
-    if (wasmBuffer === undefined) {
-        await __initWasmCodeAsync()
+export async function init(module_or_path) {
+    if (isInitialized()) return wasm;
+    if (module_or_path === undefined) {
+        module_or_path = await __initWasmCodeAsync();
     }
-
-    wasm = await originalInit({ module_or_path: wasmBuffer })
+    const wrapped = wrapInitArg(module_or_path);
+    wasm = wrapped === undefined
+        ? await originalInit()
+        : await originalInit(wrapped);
+    return wasm;
 }
 
 function checkInit() {
-    if (wasmBuffer === undefined) {
+    if (!isInitialized()) {
         throw new Error("WASM module not initialized");
     }
 }
@@ -240,7 +286,7 @@ function genValidationFunc(param: FuncParam): string {
         Uint8Array: "Uint8Array",
     }
     const assertions: string[] = []
-    const jsTypeName = typeMap[type as keyof typeof typeMap] ?? type
+    const expectedTypeText = type
 
     const getAssert = (ty: string, expect: string) => {
         if (PRIMITIVE_TYPES.includes(ty)) {
@@ -251,23 +297,41 @@ function genValidationFunc(param: FuncParam): string {
         return ""
     }
 
-    if (PRIMITIVE_TYPES.includes(type)) {
-        assertions.push(getAssert(type, jsTypeName))
-    } else if (Object.keys(typeMap).includes(type)) {
-        assertions.push(getAssert(type, jsTypeName))
-    } else if (type.includes("|")) { // is union type
-        const unions = type.split("|").map(t => t.trim())
-            .filter(t => !NONE_TYPES.includes(t))
-        if (unions.length > 1) {
-            for (const ty of unions) {
-                assertions.push(getAssert(ty, ty))
-            }
-        } else if (unions.length > 0) {
-            assertions.push(getAssert(unions[0], unions[0]))
+    if (type.includes("|")) {
+        const unionTypes = type.split("|").map(t => t.trim())
+        const allowsNullish = unionTypes.some(t => NONE_TYPES.includes(t))
+        const concreteTypes = unionTypes.filter(t => !NONE_TYPES.includes(t))
+
+        for (const unionType of concreteTypes) {
+            const jsType = typeMap[unionType as keyof typeof typeMap] ?? unionType
+            assertions.push(getAssert(unionType, jsType))
         }
+
+        const checks = assertions.filter(Boolean)
+        if (checks.length === 0) {
+            return ""
+        }
+
+        const condition = checks.join(" && ")
+        const finalCondition = allowsNullish
+            ? `${name} != null && (${condition})`
+            : condition
+
+        return `if (${finalCondition}) { throw new Error("Invalid parameter: ${name} must be a ${expectedTypeText}"); }`
     }
 
-    return assertions.some(Boolean) ? `if (${assertions.join(" && ")}) { throw new Error("Invalid parameter: ${name} must be a ${jsTypeName}"); }` : ""
+    if (PRIMITIVE_TYPES.includes(type)) {
+        const jsType = typeMap[type as keyof typeof typeMap] ?? type
+        assertions.push(getAssert(type, jsType))
+    } else if (Object.keys(typeMap).includes(type)) {
+        const jsType = typeMap[type as keyof typeof typeMap] ?? type
+        assertions.push(getAssert(type, jsType))
+    }
+
+    const checks = assertions.filter(Boolean)
+    return checks.length > 0
+        ? `if (${checks.join(" && ")}) { throw new Error("Invalid parameter: ${name} must be a ${expectedTypeText}"); }`
+        : ""
 }
 
 function genWrapperFunc(name: string, params: string, paramVerifies: string): string {

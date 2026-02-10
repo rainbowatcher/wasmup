@@ -32,9 +32,11 @@ export async function generatePkgJson({ entry, opts, outputDir }: BuildContext) 
             ? {
                 ".": `./${SHIMS}.js`,
                 "./index": "./index.js",
+                "./index_bg.wasm": "./index_bg.wasm",
             }
             : {
                 ".": "./index.js",
+                "./index_bg.wasm": "./index_bg.wasm",
             },
         files: validFiles,
         homepage: customHomepage ?? (typeof repository === "string" ? `${repository}#readme` : undefined),
