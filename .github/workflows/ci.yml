@@ -27,6 +27,9 @@ jobs:
       - name: Install
         run: pnpm i --frozen-lockfile
 
+      - name: Format Check
+        run: pnpm run fmt:check
+
       - name: Lint
         run: pnpm run lint
 
