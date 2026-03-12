@@ -18,6 +18,8 @@ Wasm build, made easy
 
 ## Usage
 
+Requires Node.js `>=20.19.0`.
+
 ```sh
 pnpm install -D wasmup
 ```

@@ -88,5 +88,8 @@
             "@commitlint/config-conventional"
         ]
     },
+    "engines": {
+        "node": ">=20.19.0"
+    },
     "packageManager": "pnpm@10.32.1"
 }
