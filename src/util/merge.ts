@@ -52,7 +52,7 @@ type MergeFunction<T = any, S = any> = (
 export function mergeWith<T extends Record<PropertyKey, any>, S extends Record<PropertyKey, any>>(
     target: T,
     source: S,
-    merge?: MergeFunction,
+    mergeFunction?: MergeFunction,
 ): S & T {
     if (source === undefined) {
         return target
@@ -66,14 +66,14 @@ export function mergeWith<T extends Record<PropertyKey, any>, S extends Record<P
         const targetValue = target[key]
         const sourceValue = source[key]
 
-        const merged = merge?.(targetValue, sourceValue, key, target, source)
+        const merged = mergeFunction?.(targetValue, sourceValue, key, target, source)
 
         if (merged != null) {
             target[key] = merged
         } else if (Array.isArray(sourceValue)) {
             target[key] ??= sourceValue
         } else if (isObjectLike(targetValue) && isObjectLike(sourceValue)) {
-            target[key] = mergeWith(targetValue ?? {}, sourceValue, merge)
+            target[key] = mergeWith(targetValue ?? {}, sourceValue, mergeFunction)
         } else if (targetValue === undefined && sourceValue !== undefined) {
             target[key] = sourceValue
         }

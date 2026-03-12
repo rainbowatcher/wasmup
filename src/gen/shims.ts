@@ -244,7 +244,7 @@ function generateShimsContent(functions: FuncDeclare[], classes: string[]): stri
 
 function getDirectExports(functions: FuncDeclare[], classes: string[]): string {
     const functionNames = functions.map((f) => f.name)
-    const classNames = classes.map((c) => c)
+    const classNames = classes.map((cls) => cls)
     return [...functionNames, ...classNames].join(", ")
 }
 

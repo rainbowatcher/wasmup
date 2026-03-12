@@ -1,7 +1,7 @@
 // modify from https://github.com/ljharb/json-stable-stringify/blob/main/index.js
 type KVPair = { key: string; value: any }
 
-type ReplacerFunction<T extends any = any> = (key: string, value: T) => T
+type ReplacerFunction<T = any> = (key: string, value: T) => T
 
 type CompareFunction = (a: KVPair, b: KVPair) => number
 
@@ -55,7 +55,7 @@ function stableStringify(obj: any, options: StringifyOptions = {}): string {
 
         seen.push(node)
 
-        const keys = Object.keys(node).sort(
+        const keys = Object.keys(node).toSorted(
             cmp ? (a, b) => cmp({ key: a, value: node[a] }, { key: b, value: node[b] }) : undefined,
         )
 

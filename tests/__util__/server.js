@@ -9,8 +9,8 @@ export function _startServer(name, port) {
     app.use(
         "/wasm-dist",
         express.static(path.join(import.meta.dirname, "../../wasm-dist"), {
-            setHeaders(res, path) {
-                res.setHeader("Content-Type", mime.getType(path))
+            setHeaders(res, filePath) {
+                res.setHeader("Content-Type", mime.getType(filePath))
             },
         }),
     )

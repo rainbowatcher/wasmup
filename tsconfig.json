@@ -16,6 +16,6 @@
         "tests/**/*.ts",
         "vitest.config.ts",
         "tsdown.config.ts",
-        "wasmup.config.ts",
+        "wasmup.config.ts"
     ]
 }

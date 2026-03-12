@@ -13,8 +13,8 @@ async function loadDefaultConfig(): Promise<Partial<BuildOptions>> {
             },
             {
                 files: "package.json",
-                rewrite(config: any) {
-                    return config.wasmup
+                rewrite(conf: any) {
+                    return conf.wasmup
                 },
             },
         ],

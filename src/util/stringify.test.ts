@@ -4,6 +4,14 @@ import { stableStringify } from "./stringify"
 import { pkgJsonComparator } from "../gen/pkg_json"
 import type { KVPair } from "./stringify"
 
+function executeReplacer(key: string, value: unknown): unknown {
+    return key === "a" ? undefined : value
+}
+
+function compareByValueDesc(a: KVPair, b: KVPair): number {
+    return Number(b.value) - Number(a.value)
+}
+
 describe.concurrent("stableStringify", () => {
     it("should stringify simple objects", () => {
         const obj = { a: 1, b: "two", c: true }
@@ -53,14 +61,12 @@ describe.concurrent("stableStringify", () => {
 
     it("should handle custom replacer functions", () => {
         const obj = { a: 1, b: 2, c: 3 }
-        const replacer = (key: string, value: any) => (key === "a" ? undefined : value)
-        expect(stableStringify(obj, { replacer })).toBe('{"b":2,"c":3}')
+        expect(stableStringify(obj, { replacer: executeReplacer })).toBe('{"b":2,"c":3}')
     })
 
     it("should handle custom compare functions", () => {
         const obj = { a: 1, b: 2, c: 3 }
-        const cmp = (a: KVPair, b: KVPair) => b.value - a.value
-        expect(stableStringify(obj, { cmp })).toBe('{"c":3,"b":2,"a":1}')
+        expect(stableStringify(obj, { cmp: compareByValueDesc })).toBe('{"c":3,"b":2,"a":1}')
     })
 
     it("should handle indentation", () => {
