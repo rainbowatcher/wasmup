@@ -26,7 +26,8 @@ describe.skipIf(process.env.CI)("build command", () => {
         })
 
         it("should has scope", { timeout: 150_000 }, () => {
-            execa({ cwd: entry })`${RUNNER} ${SCRIPT} build . --scope myscope`
+            const { all, failed } = execa({ cwd: entry })`${RUNNER} ${SCRIPT} build . --scope myscope`
+            expect(failed, all).toBeFalsy()
             const pkgJson = readFileSync(toAbsolute("wasm-dist/package.json", toAbsolute(entry)), "utf8")
             expect(JSON.parse(pkgJson).name).toContain("@myscope")
         })
