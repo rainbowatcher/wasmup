@@ -21,7 +21,9 @@ export async function generatePkgJson({ entry, opts, outputDir }: BuildContext) 
     } = projectConfig
 
     const files = await readdir(outputDir)
-    const validFiles = files.filter(f => f !== ".gitignore").filter(f => opts.extensions.includes(path.extname(f).slice(1)))
+    const validFiles = files
+        .filter((f) => f !== ".gitignore")
+        .filter((f) => opts.extensions.includes(path.extname(f).slice(1)))
 
     return {
         author: authors?.[0],
@@ -30,16 +32,17 @@ export async function generatePkgJson({ entry, opts, outputDir }: BuildContext) 
         description,
         exports: opts.shims
             ? {
-                ".": `./${SHIMS}.js`,
-                "./index": "./index.js",
-                "./index_bg.wasm": "./index_bg.wasm",
-            }
+                  ".": `./${SHIMS}.js`,
+                  "./index": "./index.js",
+                  "./index_bg.wasm": "./index_bg.wasm",
+              }
             : {
-                ".": "./index.js",
-                "./index_bg.wasm": "./index_bg.wasm",
-            },
+                  ".": "./index.js",
+                  "./index_bg.wasm": "./index_bg.wasm",
+              },
         files: validFiles,
-        homepage: customHomepage ?? (typeof repository === "string" ? `${repository}#readme` : undefined),
+        homepage:
+            customHomepage ?? (typeof repository === "string" ? `${repository}#readme` : undefined),
         keywords,
         license,
         name: opts.scope ? `@${opts.scope}/${cargoPkgName}` : cargoPkgName,
@@ -49,7 +52,6 @@ export async function generatePkgJson({ entry, opts, outputDir }: BuildContext) 
         version,
     }
 }
-
 
 export const pkgJsonComparator: CompareFunction = (a, b) => {
     const order = [

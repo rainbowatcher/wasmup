@@ -1,9 +1,7 @@
 import * as fsExtra from "@rainbowatcher/fs-extra"
 import * as pathExtra from "@rainbowatcher/path-extra"
 import * as unconfig from "unconfig"
-import {
-    describe, expect, it, vi,
-} from "vitest"
+import { describe, expect, it, vi } from "vitest"
 import { loadWasmupConfig } from "./config"
 
 vi.mock("@rainbowatcher/path-extra")
@@ -62,9 +60,11 @@ describe("loadWasmupConfig", () => {
         expect(pathExtra.toAbsolute).toHaveBeenCalledWith(inputConfigPath)
         expect(fsExtra.isFileSync).toHaveBeenCalledWith(mockAbsolutePath)
         expect(unconfig.loadConfig).toHaveBeenCalledWith({
-            sources: [{
-                files: mockAbsolutePath,
-            }],
+            sources: [
+                {
+                    files: mockAbsolutePath,
+                },
+            ],
         })
     })
 
@@ -77,8 +77,8 @@ describe("loadWasmupConfig", () => {
         vi.mocked(fsExtra.isFileSync).mockReturnValue(false)
 
         // Act & Assert
-        await expect(loadWasmupConfig({ config: inputConfigPath }))
-            .rejects
-            .toThrow(`${mockAbsolutePath} is not a valid file.`)
+        await expect(loadWasmupConfig({ config: inputConfigPath })).rejects.toThrow(
+            `${mockAbsolutePath} is not a valid file.`,
+        )
     })
 })

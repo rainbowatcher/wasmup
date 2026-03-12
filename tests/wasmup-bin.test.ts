@@ -1,6 +1,4 @@
-import {
-    beforeEach, describe, expect, it, vi,
-} from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 
 const cliEntrypointLoaded = vi.hoisted(() => vi.fn())
 

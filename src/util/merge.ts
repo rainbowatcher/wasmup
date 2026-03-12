@@ -1,6 +1,12 @@
 import type { MaybeUndefined } from "../types"
 
-type MergeFunction<T = any, S = any> = (targetValue: T[keyof T], sourceValue: S[keyof S], key: PropertyKey, target: T, source: S) => T[keyof T] extends undefined ? S[keyof S] : T[keyof T]
+type MergeFunction<T = any, S = any> = (
+    targetValue: T[keyof T],
+    sourceValue: S[keyof S],
+    key: PropertyKey,
+    target: T,
+    source: S,
+) => T[keyof T] extends undefined ? S[keyof S] : T[keyof T]
 
 /**
  * Merges the properties of the source object into the target object.
@@ -57,7 +63,6 @@ export function mergeWith<T extends Record<PropertyKey, any>, S extends Record<P
     const sourceKeys = Object.keys(source) as Array<keyof S>
 
     for (const key of sourceKeys) {
-
         const targetValue = target[key]
         const sourceValue = source[key]
 
@@ -118,7 +123,10 @@ export function arrayComposer<T>(objValue: MaybeUndefined<T>, sourceValue: Maybe
     }
 }
 
-export function merge<T extends Record<PropertyKey, any>, S extends Record<PropertyKey, any>>(target: T, ...sources: S[]): T {
+export function merge<T extends Record<PropertyKey, any>, S extends Record<PropertyKey, any>>(
+    target: T,
+    ...sources: S[]
+): T {
     let result = target
     for (const source of sources) {
         result = mergeWith(result, source)

@@ -6,15 +6,18 @@ import type { BuildOptions, CommandLineArgs } from "./types"
 
 async function loadDefaultConfig(): Promise<Partial<BuildOptions>> {
     const { config, sources } = await loadConfig<Partial<BuildOptions>>({
-        sources: [{
-            extensions: ["ts", "mts", "cts", "js", "mjs", "cjs", "json"],
-            files: "wasmup.config",
-        }, {
-            files: "package.json",
-            rewrite(config: any) {
-                return config.wasmup
+        sources: [
+            {
+                extensions: ["ts", "mts", "cts", "js", "mjs", "cjs", "json"],
+                files: "wasmup.config",
             },
-        }],
+            {
+                files: "package.json",
+                rewrite(config: any) {
+                    return config.wasmup
+                },
+            },
+        ],
     })
     if (config) {
         log.debug("find config file: %s", sources)
@@ -31,9 +34,11 @@ async function loadUserSpecifiedConfigFile(configPath: string): Promise<Partial<
     }
 
     const { config, sources } = await loadConfig<Partial<BuildOptions>>({
-        sources: [{
-            files: absConfigPath,
-        }],
+        sources: [
+            {
+                files: absConfigPath,
+            },
+        ],
     })
 
     log.debug("load specified config file: %s", sources)

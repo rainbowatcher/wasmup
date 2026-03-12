@@ -35,11 +35,19 @@ describe.concurrent("stableStringify", () => {
         const obj = { a: {} }
         // @ts-expect-error assign self
         obj.a.b = obj
-        expect(stableStringify(obj, { cycles: true })).toStrictEqual(JSON.stringify({ a: { b: "__cycle__" } }))
+        expect(stableStringify(obj, { cycles: true })).toStrictEqual(
+            JSON.stringify({ a: { b: "__cycle__" } }),
+        )
     })
 
     it("should handle custom toJSON methods", () => {
-        const obj = { a: { toJSON() { return "custom" } } }
+        const obj = {
+            a: {
+                toJSON() {
+                    return "custom"
+                },
+            },
+        }
         expect(stableStringify(obj)).toBe('{"a":"custom"}')
     })
 
@@ -65,17 +73,9 @@ describe.concurrent("stableStringify", () => {
             author: "rainbowatcher <rainbow-w@qq.com>",
             bugs: "https://github.com/rainbowatcher/wasmup/issues",
             description: "a simple wasm project",
-            files: [
-                "index.d.ts",
-                "index.js",
-                "index.wasm",
-            ],
+            files: ["index.d.ts", "index.js", "index.wasm"],
             homepage: "https://github.com/rainbowatcher/wasmup/#readme",
-            keywords: [
-                "webassembly",
-                "wasm",
-                "web",
-            ],
+            keywords: ["webassembly", "wasm", "web"],
             license: "MIT",
             main: "index.js",
             module: "index.js",

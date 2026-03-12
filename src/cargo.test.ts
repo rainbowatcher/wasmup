@@ -1,9 +1,7 @@
 import { readFile } from "node:fs/promises"
 import dedent from "dedent"
 import { findUp } from "find-up-simple"
-import {
-    describe, expect, it, vi,
-} from "vitest"
+import { describe, expect, it, vi } from "vitest"
 import { parseProjectFile } from "./cargo"
 
 vi.mock("node:fs/promises")
@@ -99,8 +97,6 @@ describe("parseProjectFile", () => {
     it("should handle file read errors", async () => {
         vi.mocked(readFile).mockRejectedValueOnce(new Error("File not found"))
 
-        await expect(parseProjectFile("test-path"))
-            .rejects
-            .toThrow("File not found")
+        await expect(parseProjectFile("test-path")).rejects.toThrow("File not found")
     })
 })

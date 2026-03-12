@@ -28,6 +28,8 @@ describe.concurrent("cli stdout", () => {
     })
 
     it("should throw missing args", async () => {
-        await expect(async () => await $({ node: true })`${RUNNER} ${SCRIPT} build`).rejects.toThrow(ExecaError)
+        await expect(
+            async () => await $({ node: true })`${RUNNER} ${SCRIPT} build`,
+        ).rejects.toThrow(ExecaError)
     })
 })

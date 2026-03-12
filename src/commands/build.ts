@@ -17,7 +17,6 @@ import { log } from "../util/log"
 import { merge } from "../util/merge"
 import type { BuildContext, BuildOptions, CommandLineArgs } from "../types"
 
-
 class BuildCommand {
     #cliArgs: CommandLineArgs
     #entries: string[]
@@ -63,9 +62,7 @@ class BuildCommand {
 
     getOutputDir(entry: string): string {
         const { entry: entries, output } = this.#opts
-        return entries.length > 1
-            ? path.join(output, path.basename(entry))
-            : output
+        return entries.length > 1 ? path.join(output, path.basename(entry)) : output
     }
 
     private mergeBuildOptions(entries: string[], userConfig: Partial<BuildOptions>): BuildOptions {
@@ -77,7 +74,7 @@ class BuildCommand {
     }
 
     private normalizeFilePaths(buildOpts: BuildOptions): void {
-        buildOpts.entry = buildOpts.entry?.map(entry => toAbsolute(entry))
+        buildOpts.entry = buildOpts.entry?.map((entry) => toAbsolute(entry))
         buildOpts.output = toAbsolute(buildOpts.output)
         if (buildOpts.config) {
             buildOpts.config = toAbsolute(buildOpts.config)

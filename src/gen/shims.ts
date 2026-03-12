@@ -3,9 +3,7 @@ import path from "node:path"
 import c from "yoctocolors"
 import { NONE_TYPES, PRIMITIVE_TYPES } from "../consts"
 import { log } from "../util/log"
-import type {
-    BuildOptions, DtsExports, FuncDeclare, FuncParam,
-} from "../types"
+import type { BuildOptions, DtsExports, FuncDeclare, FuncParam } from "../types"
 
 const PRE_IMPORT = `import originalInit, { initSync as originalInitSync } from "./index.js"`
 
@@ -154,11 +152,12 @@ export function parseExportFunctions(content: string): FuncDeclare[] {
             continue
         }
 
-        const parsedParams = params.split(",")
-            .map(param => param.trim())
+        const parsedParams = params
+            .split(",")
+            .map((param) => param.trim())
             .filter(Boolean)
             .map((param) => {
-                const [paramName, paramType] = param.split(":").map(p => p.trim())
+                const [paramName, paramType] = param.split(":").map((p) => p.trim())
                 return {
                     name: paramName.endsWith("?") ? paramName.slice(0, -1) : paramName,
                     type: paramType ?? "any",
@@ -227,43 +226,39 @@ export async function generateShims(outputDir: string, opts: BuildOptions, filen
 }
 
 function generateShimsContent(functions: FuncDeclare[], classes: string[]): string {
-    const funcsWithParams = functions.filter(f => f.params.some(p => p.type !== "any"))
-    const funcsWithoutParams = functions.filter(f => f.params.every(p => p.type === "any"))
+    const funcsWithParams = functions.filter((f) => f.params.some((p) => p.type !== "any"))
+    const funcsWithoutParams = functions.filter((f) => f.params.every((p) => p.type === "any"))
     const directExportItems = getDirectExports(funcsWithoutParams, classes)
-    const directExports = directExportItems ? `export { ${directExportItems} } from "./index.js"` : undefined
+    const directExports = directExportItems
+        ? `export { ${directExportItems} } from "./index.js"`
+        : undefined
     const renameImports = getRenameImports(funcsWithParams)
     const classImports = classes?.length > 0 ? `, ${classes.join(", ")}` : ""
     const imports = `import { ${renameImports}${classImports} } from "./index.js"`
     const functionWrappers = getFunctionWrappers(funcsWithParams)
 
-    return [
-        PRE_IMPORT,
-        imports,
-        directExports,
-        INIT_SYNC,
-        functionWrappers,
-    ].filter(Boolean).join("\n")
+    return [PRE_IMPORT, imports, directExports, INIT_SYNC, functionWrappers]
+        .filter(Boolean)
+        .join("\n")
 }
 
 function getDirectExports(functions: FuncDeclare[], classes: string[]): string {
-    const functionNames = functions.map(f => f.name)
-    const classNames = classes.map(c => c)
+    const functionNames = functions.map((f) => f.name)
+    const classNames = classes.map((c) => c)
     return [...functionNames, ...classNames].join(", ")
 }
 
 function getRenameImports(exportedFunctions: FuncDeclare[]): string {
-    return exportedFunctions
-        .map(exp => `${exp.name} as original_${exp.name}`)
-        .join(", ")
+    return exportedFunctions.map((exp) => `${exp.name} as original_${exp.name}`).join(", ")
 }
 
 function getFunctionWrappers(exportedFunctions: FuncDeclare[]): string {
     return exportedFunctions
         .map((exp) => {
-            const params = exp.params.map(param => `${param.name}`).join(", ")
+            const params = exp.params.map((param) => `${param.name}`).join(", ")
             const paramVerifies = exp.params
-                .filter(p => p.type !== "any")
-                .map(p => genValidationFunc(p))
+                .filter((p) => p.type !== "any")
+                .map((p) => genValidationFunc(p))
                 .join("\n")
             return genWrapperFunc(exp.name, params, paramVerifies)
         })
@@ -298,9 +293,9 @@ function genValidationFunc(param: FuncParam): string {
     }
 
     if (type.includes("|")) {
-        const unionTypes = type.split("|").map(t => t.trim())
-        const allowsNullish = unionTypes.some(t => NONE_TYPES.includes(t))
-        const concreteTypes = unionTypes.filter(t => !NONE_TYPES.includes(t))
+        const unionTypes = type.split("|").map((t) => t.trim())
+        const allowsNullish = unionTypes.some((t) => NONE_TYPES.includes(t))
+        const concreteTypes = unionTypes.filter((t) => !NONE_TYPES.includes(t))
 
         for (const unionType of concreteTypes) {
             const jsType = typeMap[unionType as keyof typeof typeMap] ?? unionType
@@ -313,9 +308,7 @@ function genValidationFunc(param: FuncParam): string {
         }
 
         const condition = checks.join(" && ")
-        const finalCondition = allowsNullish
-            ? `${name} != null && (${condition})`
-            : condition
+        const finalCondition = allowsNullish ? `${name} != null && (${condition})` : condition
 
         return `if (${finalCondition}) { throw new Error("Invalid parameter: ${name} must be a ${expectedTypeText}"); }`
     }

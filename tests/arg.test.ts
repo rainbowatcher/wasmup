@@ -1,13 +1,10 @@
 import { writeFile } from "node:fs/promises"
 import path from "node:path"
 import { toAbsolute } from "@rainbowatcher/path-extra"
-import {
-    afterAll, describe, expect, it,
-} from "vitest"
+import { afterAll, describe, expect, it } from "vitest"
 import BuildCommand from "../src/commands/build"
 import { DEFAULT_BUILD_OPTIONS } from "../src/consts"
 import type { CommandLineArgs, ConfigOptions } from "../src/types"
-
 
 describe.concurrent("arg parse", () => {
     const JSON_CONFIG = path.join("fixture", "configs", "config.json")
@@ -25,16 +22,19 @@ describe.concurrent("arg parse", () => {
         const resolvedOptions = await resolveOptions(entries, cliArgs)
         expect(resolvedOptions).toStrictEqual({
             ...DEFAULT_BUILD_OPTIONS,
-            entry: entries.map(entry => toAbsolute(entry)),
+            entry: entries.map((entry) => toAbsolute(entry)),
             output: toAbsolute(DEFAULT_BUILD_OPTIONS.output),
         })
     })
 
     describe.sequential("json config", () => {
         it("config options should overwrite default option", async () => {
-            await writeFile(JSON_CONFIG, JSON.stringify({
-                clean: true,
-            }))
+            await writeFile(
+                JSON_CONFIG,
+                JSON.stringify({
+                    clean: true,
+                }),
+            )
             const cliArgs: CommandLineArgs = {
                 config: JSON_CONFIG,
             }
@@ -43,16 +43,19 @@ describe.concurrent("arg parse", () => {
                 ...DEFAULT_BUILD_OPTIONS,
                 clean: true,
                 config: toAbsolute(JSON_CONFIG),
-                entry: entries.map(entry => toAbsolute(entry)),
+                entry: entries.map((entry) => toAbsolute(entry)),
                 output: toAbsolute(DEFAULT_BUILD_OPTIONS.output),
             })
         })
 
         it("should merge with config", async () => {
-            await writeFile(JSON_CONFIG, JSON.stringify({
-                clean: true,
-                profiling: false,
-            } satisfies ConfigOptions))
+            await writeFile(
+                JSON_CONFIG,
+                JSON.stringify({
+                    clean: true,
+                    profiling: false,
+                } satisfies ConfigOptions),
+            )
             const cliArgs: CommandLineArgs = {
                 config: JSON_CONFIG,
             }
@@ -61,16 +64,19 @@ describe.concurrent("arg parse", () => {
                 ...DEFAULT_BUILD_OPTIONS,
                 clean: true,
                 config: toAbsolute(JSON_CONFIG),
-                entry: entries.map(entry => toAbsolute(entry)),
+                entry: entries.map((entry) => toAbsolute(entry)),
                 output: toAbsolute(DEFAULT_BUILD_OPTIONS.output),
             })
         })
 
         it("cli args priority should higher than config", async () => {
-            await writeFile(JSON_CONFIG, JSON.stringify({
-                clean: true,
-                profiling: false,
-            } satisfies ConfigOptions))
+            await writeFile(
+                JSON_CONFIG,
+                JSON.stringify({
+                    clean: true,
+                    profiling: false,
+                } satisfies ConfigOptions),
+            )
             const args: CommandLineArgs = {
                 clean: false,
                 config: JSON_CONFIG,
@@ -81,16 +87,19 @@ describe.concurrent("arg parse", () => {
                 ...DEFAULT_BUILD_OPTIONS,
                 clean: false,
                 config: toAbsolute(JSON_CONFIG),
-                entry: entries.map(entry => toAbsolute(entry)),
+                entry: entries.map((entry) => toAbsolute(entry)),
                 output: toAbsolute(DEFAULT_BUILD_OPTIONS.output),
                 profiling: true,
             })
         })
 
         it("array args should be overwrite", async () => {
-            await writeFile(JSON_CONFIG, JSON.stringify({
-                extensions: ["cjs", "mts", "wasm"],
-            } satisfies ConfigOptions))
+            await writeFile(
+                JSON_CONFIG,
+                JSON.stringify({
+                    extensions: ["cjs", "mts", "wasm"],
+                } satisfies ConfigOptions),
+            )
             const cliArgs: CommandLineArgs = {
                 config: JSON_CONFIG,
             }
@@ -98,7 +107,7 @@ describe.concurrent("arg parse", () => {
             expect(result).toStrictEqual({
                 ...DEFAULT_BUILD_OPTIONS,
                 config: toAbsolute(JSON_CONFIG),
-                entry: entries.map(entry => toAbsolute(entry)),
+                entry: entries.map((entry) => toAbsolute(entry)),
                 extensions: ["cjs", "mts", "wasm"],
                 output: toAbsolute(DEFAULT_BUILD_OPTIONS.output),
             })
@@ -106,10 +115,13 @@ describe.concurrent("arg parse", () => {
 
         it("when entires specified in config not cli", async () => {
             const emptyEntries: string[] = []
-            await writeFile(JSON_CONFIG, JSON.stringify({
-                entry: entries,
-                extensions: ["cjs", "mts", "wasm"],
-            } satisfies ConfigOptions))
+            await writeFile(
+                JSON_CONFIG,
+                JSON.stringify({
+                    entry: entries,
+                    extensions: ["cjs", "mts", "wasm"],
+                } satisfies ConfigOptions),
+            )
             const cliArgs: CommandLineArgs = {
                 config: JSON_CONFIG,
             }
@@ -118,7 +130,7 @@ describe.concurrent("arg parse", () => {
             expect(result).toStrictEqual({
                 ...DEFAULT_BUILD_OPTIONS,
                 config: toAbsolute(JSON_CONFIG),
-                entry: entries.map(entry => toAbsolute(entry)),
+                entry: entries.map((entry) => toAbsolute(entry)),
                 extensions: ["cjs", "mts", "wasm"],
                 output: toAbsolute(DEFAULT_BUILD_OPTIONS.output),
             })
@@ -129,15 +141,18 @@ describe.concurrent("arg parse", () => {
         const cliArgs: CommandLineArgs = {
             config: TS_CONFIG,
         }
-        await writeFile(TS_CONFIG, `export default ${JSON.stringify({
-            entry: entries,
-            extensions: ["cjs", "mts", "wasm"],
-        } satisfies ConfigOptions)}`)
+        await writeFile(
+            TS_CONFIG,
+            `export default ${JSON.stringify({
+                entry: entries,
+                extensions: ["cjs", "mts", "wasm"],
+            } satisfies ConfigOptions)}`,
+        )
         const result = await resolveOptions(entries, cliArgs)
         expect(result).toStrictEqual({
             ...DEFAULT_BUILD_OPTIONS,
             config: toAbsolute(TS_CONFIG),
-            entry: entries.map(entry => toAbsolute(entry)),
+            entry: entries.map((entry) => toAbsolute(entry)),
             extensions: ["cjs", "mts", "wasm"],
             output: toAbsolute(DEFAULT_BUILD_OPTIONS.output),
         })
@@ -147,15 +162,18 @@ describe.concurrent("arg parse", () => {
         const cliArgs: CommandLineArgs = {
             config: MJS_CONFIG,
         }
-        await writeFile(MJS_CONFIG, `export default ${JSON.stringify({
-            entry: entries,
-            extensions: ["mjs", "wasm"],
-        } satisfies ConfigOptions)}`)
+        await writeFile(
+            MJS_CONFIG,
+            `export default ${JSON.stringify({
+                entry: entries,
+                extensions: ["mjs", "wasm"],
+            } satisfies ConfigOptions)}`,
+        )
         const result = await resolveOptions(entries, cliArgs)
         expect(result).toStrictEqual({
             ...DEFAULT_BUILD_OPTIONS,
             config: toAbsolute(MJS_CONFIG),
-            entry: entries.map(entry => toAbsolute(entry)),
+            entry: entries.map((entry) => toAbsolute(entry)),
             extensions: ["mjs", "wasm"],
             output: toAbsolute(DEFAULT_BUILD_OPTIONS.output),
         })
@@ -165,15 +183,18 @@ describe.concurrent("arg parse", () => {
         const cliArgs: CommandLineArgs = {
             config: CJS_CONFIG,
         }
-        await writeFile(CJS_CONFIG, `module.exports = ${JSON.stringify({
-            entry: entries,
-            extensions: ["cjs", "wasm"],
-        } satisfies ConfigOptions)}`)
+        await writeFile(
+            CJS_CONFIG,
+            `module.exports = ${JSON.stringify({
+                entry: entries,
+                extensions: ["cjs", "wasm"],
+            } satisfies ConfigOptions)}`,
+        )
         const result = await resolveOptions(entries, cliArgs)
         expect(result).toStrictEqual({
             ...DEFAULT_BUILD_OPTIONS,
             config: toAbsolute(CJS_CONFIG),
-            entry: entries.map(entry => toAbsolute(entry)),
+            entry: entries.map((entry) => toAbsolute(entry)),
             extensions: ["cjs", "wasm"],
             output: toAbsolute(DEFAULT_BUILD_OPTIONS.output),
         })

@@ -26,8 +26,8 @@ pnpm install -D wasmup
 {
     // ...
     "scripts": {
-        "build": "wasmup build --clean ."
-    }
+        "build": "wasmup build --clean .",
+    },
 }
 ```
 

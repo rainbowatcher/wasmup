@@ -14,14 +14,8 @@ type StringifyOptions = {
 
 const defaultReplacer: ReplacerFunction = (_, value) => value
 
-
 function stableStringify(obj: any, options: StringifyOptions = {}): string {
-    const {
-        cmp,
-        cycles = false,
-        replacer = defaultReplacer,
-        space = "",
-    } = options
+    const { cmp, cycles = false, replacer = defaultReplacer, space = "" } = options
 
     const indent = typeof space === "number" ? " ".repeat(space) : space
 
@@ -48,8 +42,10 @@ function stableStringify(obj: any, options: StringifyOptions = {}): string {
         }
 
         if (Array.isArray(node)) {
-            const items = node.map((item, index) => stringify(node, index.toString(), item, level + 1) ?? "null")
-            return `[${items.map(v => `${nextIndent}${v}`).join(",")}${levelIndent}]`
+            const items = node.map(
+                (item, index) => stringify(node, index.toString(), item, level + 1) ?? "null",
+            )
+            return `[${items.map((v) => `${nextIndent}${v}`).join(",")}${levelIndent}]`
         }
 
         if (seen.includes(node)) {
@@ -59,12 +55,9 @@ function stableStringify(obj: any, options: StringifyOptions = {}): string {
 
         seen.push(node)
 
-        const keys = Object.keys(node).sort(cmp
-            ? (a, b) => cmp(
-                { key: a, value: node[a] },
-                { key: b, value: node[b] },
-            )
-            : undefined)
+        const keys = Object.keys(node).sort(
+            cmp ? (a, b) => cmp({ key: a, value: node[a] }, { key: b, value: node[b] }) : undefined,
+        )
 
         const properties = keys
             .map((k) => {

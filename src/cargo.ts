@@ -15,7 +15,6 @@ type WorkspaceConfig = {
 
 type CargoConfig = Record<string, TomlPrimitive>
 
-
 /**
  * Parse project's Cargo.toml file
  * @param entry - Project entry path
@@ -36,12 +35,16 @@ export async function parseProjectFile(entry: string): Promise<Record<string, an
     return resolved
 }
 
-async function findRootCargoFile(entry: string): Promise<Record<string, TomlPrimitive> | undefined> {
+async function findRootCargoFile(
+    entry: string,
+): Promise<Record<string, TomlPrimitive> | undefined> {
     const currentPath = path.dirname(toAbsolute(entry))
     return findRootCargoFileRecursive(currentPath)
 }
 
-async function findRootCargoFileRecursive(currentPath: string): Promise<Record<string, TomlPrimitive> | undefined> {
+async function findRootCargoFileRecursive(
+    currentPath: string,
+): Promise<Record<string, TomlPrimitive> | undefined> {
     const parentFilePath = await findUp("Cargo.toml", { cwd: currentPath })
     if (!parentFilePath) return
 
@@ -69,16 +72,17 @@ function tryResolveWorkspaceVars(
     const pkg = project.package as Record<string, TomlPrimitive>
     if (!pkg) return project
 
-    const resolvedPkg = Object.fromEntries(Object.entries(pkg).map(([key, value]) => {
-        if (isResolvableObject(value)) {
-            return [key, workspacePkg[key]]
-        }
-        return [key, value]
-    }))
+    const resolvedPkg = Object.fromEntries(
+        Object.entries(pkg).map(([key, value]) => {
+            if (isResolvableObject(value)) {
+                return [key, workspacePkg[key]]
+            }
+            return [key, value]
+        }),
+    )
 
     return { ...project, package: resolvedPkg }
 }
-
 
 /**
  * Check if a value is a resolvable object that can contain workspace properties
@@ -86,8 +90,10 @@ function tryResolveWorkspaceVars(
  * @returns True if the value is a resolvable object, false otherwise
  */
 function isResolvableObject(value: TomlPrimitive): boolean {
-    return value !== null
-        && typeof value === "object"
-        && !(value instanceof TomlDate)
-        && !Array.isArray(value)
+    return (
+        value !== null &&
+        typeof value === "object" &&
+        !(value instanceof TomlDate) &&
+        !Array.isArray(value)
+    )
 }

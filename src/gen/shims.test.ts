@@ -1,9 +1,7 @@
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises"
 import os from "node:os"
 import path from "node:path"
-import {
-    afterEach, describe, expect, it,
-} from "vitest"
+import { afterEach, describe, expect, it } from "vitest"
 import { generateShims } from "./shims"
 import type { BuildOptions } from "../types"
 
@@ -39,7 +37,7 @@ describe("generateShims", () => {
     const tempDirs: string[] = []
 
     afterEach(async () => {
-        await Promise.all(tempDirs.map(dir => rm(dir, { force: true, recursive: true })))
+        await Promise.all(tempDirs.map((dir) => rm(dir, { force: true, recursive: true })))
         tempDirs.length = 0
     })
 
@@ -70,7 +68,7 @@ describe("generateShims", () => {
 
         const generated = await readFile(path.join(tempDir, "shims.js"), "utf8")
 
-        expect(generated).toContain("a != null && (typeof a !== \"number\")")
+        expect(generated).toContain('a != null && (typeof a !== "number")')
         expect(generated).toContain("arr instanceof BigUint64Array")
     })
 
@@ -98,7 +96,9 @@ describe("generateShims", () => {
         const start = generated.indexOf("function wrapInitArg(module_or_path)")
         const end = generated.indexOf("function isInitialized()")
         const wrapInitArgBlock = generated.slice(start, end)
-        expect(wrapInitArgBlock).toContain("Object.getPrototypeOf(module_or_path) === Object.prototype")
+        expect(wrapInitArgBlock).toContain(
+            "Object.getPrototypeOf(module_or_path) === Object.prototype",
+        )
         expect(wrapInitArgBlock).toContain("Object.keys(module_or_path).length === 0")
     })
 

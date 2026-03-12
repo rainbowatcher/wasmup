@@ -6,11 +6,14 @@ import mime from "mime"
 export function _startServer(name, port) {
     const app = express()
 
-    app.use("/wasm-dist", express.static(path.join(import.meta.dirname, "../../wasm-dist"), {
-        setHeaders(res, path) {
-            res.setHeader("Content-Type", mime.getType(path))
-        },
-    }))
+    app.use(
+        "/wasm-dist",
+        express.static(path.join(import.meta.dirname, "../../wasm-dist"), {
+            setHeaders(res, path) {
+                res.setHeader("Content-Type", mime.getType(path))
+            },
+        }),
+    )
 
     app.get("/", (_, res) => {
         const indexHtml = fs.readFileSync(`tests/__util__/${name}.html`, "utf8")

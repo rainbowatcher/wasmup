@@ -31,8 +31,7 @@ function initCliApp() {
         .example("wasmup build --entry crates/core --entry crates/worker --profiling")
         .action(runBuildCmd)
 
-    app.command("info", "Show system info")
-        .action(printSystemInfo)
+    app.command("info", "Show system info").action(printSystemInfo)
 
     app.version(version)
     app.help()
@@ -43,7 +42,12 @@ function execute() {
     const app = initCliApp()
     try {
         const argv = app.parse(process.argv, { run: false })
-        if (!app.matchedCommand && Object.keys(argv.args).length === 0 && Object.keys(argv.options).length === 1 && argv.options["--"].length === 0) {
+        if (
+            !app.matchedCommand &&
+            Object.keys(argv.args).length === 0 &&
+            Object.keys(argv.options).length === 1 &&
+            argv.options["--"].length === 0
+        ) {
             app.outputHelp()
         }
         app.runMatchedCommand()
