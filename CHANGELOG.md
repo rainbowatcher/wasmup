@@ -1,3 +1,8 @@
+## <small>0.10.5 (2026-03-13)</small>
+
+
+
+
 ## <small>0.10.4 (2026-03-13)</small>
 
 * fix(package): update module entry points to use .mjs and .mts extensions ([b0a2a88](https://github.com/rainbowatcher/wasmup/commit/b0a2a88))
