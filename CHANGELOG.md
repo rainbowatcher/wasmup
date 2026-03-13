@@ -1,3 +1,20 @@
+## <small>0.10.3 (2026-03-13)</small>
+
+* fix: change import from cli.js to cli.mjs in bin/wasmup.js ([24cdfd7](https://github.com/rainbowatcher/wasmup/commit/24cdfd7))
+* fix: update cSpell.words to include 'oxlint' ([e0162d4](https://github.com/rainbowatcher/wasmup/commit/e0162d4))
+* fix(ci): require node 20.19+ for tooling ([e8f0343](https://github.com/rainbowatcher/wasmup/commit/e8f0343))
+* fix(lint): resolve oxlint warnings ([35a69fc](https://github.com/rainbowatcher/wasmup/commit/35a69fc))
+* fix(lint): use jsonc oxlint config ([4a4d535](https://github.com/rainbowatcher/wasmup/commit/4a4d535))
+* fix(test): make bin entry check work on windows ([026faa1](https://github.com/rainbowatcher/wasmup/commit/026faa1))
+* fix(tests): capture output and check failure in scope test ([6d1238e](https://github.com/rainbowatcher/wasmup/commit/6d1238e))
+* fix(tsconfig): change moduleResolution from node to bundler ([fe5335e](https://github.com/rainbowatcher/wasmup/commit/fe5335e))
+* chore(deps): bump deps ([7557c40](https://github.com/rainbowatcher/wasmup/commit/7557c40))
+* chore(tooling): add oxfmt format checks ([528e823](https://github.com/rainbowatcher/wasmup/commit/528e823))
+* style: format source and test files ([343b7ff](https://github.com/rainbowatcher/wasmup/commit/343b7ff))
+* refactor: migrate eslint to oxlint ([3b04a6a](https://github.com/rainbowatcher/wasmup/commit/3b04a6a))
+
+
+
 ## <small>0.10.2 (2026-02-10)</small>
 
 - fix(shims): preserve object init args and keep empty-object fallback in browser ([9f39e8c](https://github.com/rainbowatcher/wasmup/commit/9f39e8c))
