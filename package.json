@@ -1,6 +1,6 @@
 {
     "name": "wasmup",
-    "version": "0.10.3",
+    "version": "0.10.4",
     "description": "package util for wasm",
     "keywords": [
         "wasm",

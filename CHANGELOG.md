@@ -1,3 +1,9 @@
+## <small>0.10.4 (2026-03-13)</small>
+
+* fix(package): update module entry points to use .mjs and .mts extensions ([b0a2a88](https://github.com/rainbowatcher/wasmup/commit/b0a2a88))
+
+
+
 ## <small>0.10.3 (2026-03-13)</small>
 
 * fix: change import from cli.js to cli.mjs in bin/wasmup.js ([24cdfd7](https://github.com/rainbowatcher/wasmup/commit/24cdfd7))
